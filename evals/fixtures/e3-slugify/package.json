@@ -1,0 +1,8 @@
+{
+  "name": "fixture-e3-slugify",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

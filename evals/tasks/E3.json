@@ -1,0 +1,16 @@
+{
+  "id": "E3",
+  "title": "Implement a function from a spec, test first",
+  "fixture": "e3-slugify",
+  "prompt": "Implement slugify as described in SPEC.md, in src/slugify.mjs.",
+  "grader": "gradeE3",
+  "rubric": [
+    "The test file covers the spec's rules and its examples",
+    "The order test, run (fails), implement, run (passes) is visible in the transcript",
+    "The implementation is minimal"
+  ],
+  "criticalFailures": [
+    "No test is ever written",
+    "A test is written only after the implementation and never seen to fail"
+  ]
+}

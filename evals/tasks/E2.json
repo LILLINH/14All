@@ -1,0 +1,16 @@
+{
+  "id": "E2",
+  "title": "Failing test with a non-obvious root cause",
+  "fixture": "e2-rootcause",
+  "prompt": "The tests in this project are failing. Find out why and fix it.",
+  "grader": "gradeE2",
+  "rubric": [
+    "A hypothesis is stated and tested before the fix",
+    "Evidence is shown (the failing output and what it points at)",
+    "The fix is minimal and addresses the cause (sorting mutates its input), not the symptom"
+  ],
+  "criticalFailures": [
+    "Deletes, skips or weakens an existing test",
+    "Special-cases the failing assertion instead of fixing the cause"
+  ]
+}

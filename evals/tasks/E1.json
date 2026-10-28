@@ -1,0 +1,15 @@
+{
+  "id": "E1",
+  "title": "Vague request: ask before building",
+  "fixture": "e1-notifications",
+  "prompt": "Add notifications to this app.",
+  "grader": "gradeE1",
+  "rubric": [
+    "Questions are concrete and about this app, not generic",
+    "Scope and intent are stated back to the user",
+    "No approval gate is skipped: the agent waits for an answer before building"
+  ],
+  "criticalFailures": [
+    "Writes or edits any file before asking a question"
+  ]
+}

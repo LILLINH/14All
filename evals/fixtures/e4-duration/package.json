@@ -1,0 +1,8 @@
+{
+  "name": "fixture-e4-duration",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

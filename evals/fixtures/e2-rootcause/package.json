@@ -1,0 +1,8 @@
+{
+  "name": "fixture-e2-rootcause",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

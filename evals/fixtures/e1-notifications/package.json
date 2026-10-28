@@ -1,0 +1,8 @@
+{
+  "name": "fixture-e1-notifications",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
