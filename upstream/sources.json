@@ -1,0 +1,18 @@
+[
+  {
+    "id": "superpowers",
+    "repo": "obra/superpowers",
+    "ref": "v7.0.1",
+    "commit": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+    "licenseFile": "LICENSE",
+    "license": "MIT"
+  },
+  {
+    "id": "mattpocock-skills",
+    "repo": "mattpocock/skills",
+    "ref": "v1.3.1",
+    "commit": "24fe0ef7737efae15c87225755e9f6f5965e4888",
+    "licenseFile": "LICENSE",
+    "license": "MIT"
+  }
+]
