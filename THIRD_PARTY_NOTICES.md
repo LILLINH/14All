@@ -75,3 +75,19 @@ Adapted from `skills/subagent-driven-development/SKILL.md` in obra/superpowers v
 ## dispatching-parallel-agents
 
 Adapted from `skills/dispatching-parallel-agents/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/dispatching-parallel-agents/meta.yaml`.
+
+## test-driven-development
+
+Adapted from `skills/test-driven-development/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent) and `skills/engineering/tdd/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/test-driven-development/meta.yaml`.
+
+## systematic-debugging
+
+Adapted from `skills/systematic-debugging/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent) and `skills/engineering/diagnosing-bugs/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/systematic-debugging/meta.yaml`.
+
+## verification-before-completion
+
+Adapted from `skills/verification-before-completion/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/verification-before-completion/meta.yaml`.
+
+## code-review
+
+Adapted from `skills/engineering/code-review/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock), and `skills/requesting-code-review/SKILL.md` and `skills/receiving-code-review/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/code-review/meta.yaml`.

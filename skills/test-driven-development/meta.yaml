@@ -1,0 +1,17 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/test-driven-development/SKILL.md
+  - repo: mattpocock/skills
+    ref: v1.3.1
+    license: MIT
+    path: skills/engineering/tdd/SKILL.md
+changed:
+  made: true
+  summary: Merged the superpowers iron-law loop with the mattpocock seams, anti-patterns and vertical-slice rules. Kept a refactor step while green (mattpocock moves refactoring to review), dropped the code examples and the separate writing-good-tests file, and condensed.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28

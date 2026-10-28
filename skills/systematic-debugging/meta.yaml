@@ -1,0 +1,17 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/systematic-debugging/SKILL.md
+  - repo: mattpocock/skills
+    ref: v1.3.1
+    license: MIT
+    path: skills/engineering/diagnosing-bugs/SKILL.md
+changed:
+  made: true
+  summary: Merged the superpowers root-cause-first phases with the mattpocock feedback-loop, minimise, ranked-hypothesis and cleanup phases. Dropped the supporting technique files, the pressure-test files, the HITL script reference and the code examples, and condensed.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28
