@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# SessionStart hook: inject the 14All bootstrap skill as session context.
+#
+# Emits exactly ONE JSON shape, chosen by environment. Claude Code reads both the
+# Cursor and the nested shape and would load the bootstrap twice if we sent both.
+#   CURSOR_PLUGIN_ROOT set  -> {"additional_context": ...}
+#   CLAUDE_PLUGIN_ROOT set  -> {"hookSpecificOutput": {...}}
+#   neither                 -> {"additionalContext": ...}
+# Cursor is checked first because it may also define the Claude variable.
+#
+# No network, no eval, every expansion quoted. Always exits 0 so a missing bootstrap
+# never blocks a session.
+
+set -u
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+plugin_root="$(cd "${script_dir}/.." && pwd)"
+bootstrap="${plugin_root}/skills/using-14all/SKILL.md"
+
+# Escape a string for a JSON string literal.
+json_escape() {
+  local LC_ALL=C
+  local s=$1
+  s=${s//\\/\\\\}
+  s=${s//\"/\\\"}
+  s=${s//$'\n'/\\n}
+  s=${s//$'\r'/\\r}
+  s=${s//$'\t'/\\t}
+  s=${s//$'\b'/\\b}
+  s=${s//$'\f'/\\f}
+  if [[ $s =~ [[:cntrl:]] ]]; then
+    local out="" ch esc i
+    for ((i = 0; i < ${#s}; i++)); do
+      ch=${s:i:1}
+      if [[ $ch == [[:cntrl:]] ]]; then
+        printf -v esc '\\u%04x' "'$ch"
+        out+=$esc
+      else
+        out+=$ch
+      fi
+    done
+    s=$out
+  fi
+  printf '%s' "$s"
+}
+
+if [ -r "$bootstrap" ]; then
+  content=$(<"$bootstrap")
+  context="<EXTREMELY_IMPORTANT>
+You have 14All skills.
+
+Below is the full content of your 'using-14all' skill. For every other skill, invoke it by name.
+
+${content}
+</EXTREMELY_IMPORTANT>"
+else
+  context="14All: the bootstrap skill could not be read, so no skills were loaded this session."
+fi
+
+escaped=$(json_escape "$context")
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  printf '{"additional_context":"%s"}\n' "$escaped"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$escaped"
+else
+  printf '{"additionalContext":"%s"}\n' "$escaped"
+fi
+
+exit 0
