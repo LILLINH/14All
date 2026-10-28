@@ -13,7 +13,14 @@
 
 set -u
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Only shell built-ins are used to find the script directory (no dirname): SessionStart can
+# run with an empty or broken PATH, and an external command would fail there.
+script_path=${BASH_SOURCE[0]}
+case "$script_path" in
+  */*) script_dir=${script_path%/*} ;;
+  *) script_dir=. ;;
+esac
+script_dir="$(cd "$script_dir" && pwd)"
 plugin_root="$(cd "${script_dir}/.." && pwd)"
 bootstrap="${plugin_root}/skills/using-14all/SKILL.md"
 
@@ -54,7 +61,7 @@ Below is the full content of your 'using-14all' skill. For every other skill, in
 ${content}
 </EXTREMELY_IMPORTANT>"
 else
-  context="14All: the bootstrap skill could not be read, so no skills were loaded this session."
+  context="14All: the bootstrap skill could not be read (skills/using-14all/SKILL.md under the plugin root), so no skills were loaded this session."
 fi
 
 escaped=$(json_escape "$context")

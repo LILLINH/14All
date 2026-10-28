@@ -4,9 +4,13 @@ sources:
     ref: v1.3.1
     license: MIT
     path: skills/engineering/pr/SKILL.md
+  - repo: humanlayer/skills
+    ref: 653b6411c1f70c275a18e37673b042ff99f67ceb
+    license: MIT
+    path: plugins/show-me/skills/show-me/SKILL.md
 changed:
   made: true
-  summary: Rewrote in shorter original wording. Kept the three-section template (summary, evidence, merge danger), dropped the credits block, the GLOSSARY.md reference and the long code samples. The upstream skill credits a "show-me" skill by Dex Horthy of Humanlayer; that project's license was not checked, so none of its text is copied.
+  summary: Condensed and reworded the mattpocock pr skill, which is itself derived from the HumanLayer show-me skill. Kept the three-section template (summary, evidence, merge danger) and two sentences that remain close to the show-me wording ("Skip preambles and keep the prose brief", "Pick the smallest view that makes the key point clear"). Dropped the credits block, the GLOSSARY.md reference and the long code samples.
 maturity: draft
 adapters_tested: []
 owner: OWNER

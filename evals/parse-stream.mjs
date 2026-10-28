@@ -22,6 +22,9 @@ export function parseStream(raw) {
     } catch {
       continue;
     }
+    // Messages produced inside a subagent carry the id of the tool call that started it.
+    // They are not the main agent's actions, so they are left out of the grade.
+    if (message?.parent_tool_use_id) continue;
     const content = message?.message?.content;
     if (!Array.isArray(content)) continue;
     for (const item of content) {

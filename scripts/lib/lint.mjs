@@ -3,6 +3,7 @@ import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { parse } from 'yaml';
 import { parseSkillFile } from './frontmatter.mjs';
 import { validateMeta } from './meta.mjs';
+import { crossCheckSkillSources } from './sources.mjs';
 
 const MAX_LINES = 400;
 const MAX_NAME = 64;
@@ -35,8 +36,11 @@ function symlinkProblems(dir, root) {
   return problems;
 }
 
-/** Lint one skill directory. Returns a list of problems; empty means valid. */
-export function lintSkillDir(skillDir) {
+/**
+ * Lint one skill directory. Returns a list of problems; empty means valid.
+ * Pass the parsed upstream/sources.json as `sources` to also check that every cited source is pinned.
+ */
+export function lintSkillDir(skillDir, { sources } = {}) {
   const dir = resolve(skillDir);
   const dirName = basename(dir);
   const problems = [];
@@ -85,7 +89,11 @@ export function lintSkillDir(skillDir) {
     add('meta.yaml is missing');
   } else {
     try {
-      for (const msg of validateMeta(parse(readFileSync(metaPath, 'utf8')))) add(`meta.yaml: ${msg}`);
+      const meta = parse(readFileSync(metaPath, 'utf8'));
+      for (const msg of validateMeta(meta)) add(`meta.yaml: ${msg}`);
+      if (sources && Array.isArray(meta?.sources)) {
+        for (const msg of crossCheckSkillSources(meta.sources, sources)) add(`meta.yaml: ${msg}`);
+      }
     } catch (err) {
       add(`meta.yaml is not valid YAML: ${err.message.split('\n')[0]}`);
     }
@@ -95,9 +103,9 @@ export function lintSkillDir(skillDir) {
 }
 
 /** Lint every skill directory directly under skillsRoot. A missing root has no skills. */
-export function lintSkillsRoot(skillsRoot) {
+export function lintSkillsRoot(skillsRoot, options = {}) {
   if (!existsSync(skillsRoot)) return [];
   return readdirSync(skillsRoot, { withFileTypes: true })
     .filter((e) => !e.name.startsWith('.') && (e.isDirectory() || e.isSymbolicLink()))
-    .flatMap((e) => lintSkillDir(join(skillsRoot, e.name)));
+    .flatMap((e) => lintSkillDir(join(skillsRoot, e.name), options));
 }

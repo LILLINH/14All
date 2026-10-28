@@ -38,6 +38,15 @@ test('parseStream ignores malformed lines', () => {
   assert.deepEqual(parseStream(raw), [{ kind: 'text', text: 'ok' }]);
 });
 
+test('parseStream ignores messages produced inside a subagent', () => {
+  const raw = [
+    line({ type: 'assistant', parent_tool_use_id: null, message: { content: [{ type: 'text', text: 'main?' }] } }),
+    line({ type: 'assistant', parent_tool_use_id: 'toolu_1', message: { content: [{ type: 'tool_use', id: 's1', name: 'Write', input: { file_path: 'a.mjs' } }] } }),
+    line({ type: 'user', parent_tool_use_id: 'toolu_1', message: { content: [{ type: 'tool_result', tool_use_id: 's1', content: 'ok' }] } }),
+  ].join('\n');
+  assert.deepEqual(parseStream(raw), [{ kind: 'text', text: 'main?' }]);
+});
+
 // ---- isTestRun
 
 test('isTestRun recognises test commands only', () => {

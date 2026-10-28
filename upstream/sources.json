@@ -14,5 +14,13 @@
     "commit": "24fe0ef7737efae15c87225755e9f6f5965e4888",
     "licenseFile": "LICENSE",
     "license": "MIT"
+  },
+  {
+    "id": "humanlayer-skills",
+    "repo": "humanlayer/skills",
+    "ref": "653b6411c1f70c275a18e37673b042ff99f67ceb",
+    "commit": "653b6411c1f70c275a18e37673b042ff99f67ceb",
+    "licenseFile": "LICENSE",
+    "license": "MIT"
   }
 ]

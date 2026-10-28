@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeRoot } from './helpers.mjs';
@@ -112,4 +112,35 @@ test('run-hook.cmd is executable and forwards to the named script', () => {
   });
   assert.equal(result.status, 0);
   assert.ok(JSON.parse(result.stdout).hookSpecificOutput.additionalContext.includes(MARKER));
+});
+
+// ---- a broken or empty PATH (SessionStart can run that way); external commands are unavailable
+
+const BASH = ['/usr/bin/bash', '/bin/bash'].find((p) => existsSync(p));
+
+test('the hook still injects the bootstrap when PATH is empty', () => {
+  const script = plugin(makeRoot());
+  const result = spawnSync(BASH, [script], { env: { PATH: '/nonexistent', CLAUDE_PLUGIN_ROOT: '/x' }, encoding: 'utf8', cwd: makeRoot() });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(JSON.parse(result.stdout).hookSpecificOutput.additionalContext.includes(MARKER));
+  assert.equal(result.stderr, '');
+});
+
+test('the wrapper still runs the hook when PATH is empty', () => {
+  const dir = makeRoot();
+  plugin(dir);
+  copyFileSync(join(repo, 'hooks', 'run-hook.cmd'), join(dir, 'hooks', 'run-hook.cmd'));
+  chmodSync(join(dir, 'hooks', 'run-hook.cmd'), 0o755);
+  const result = spawnSync(join(dir, 'hooks', 'run-hook.cmd'), ['session-start'], {
+    env: { PATH: '/nonexistent', CLAUDE_PLUGIN_ROOT: '/x' },
+    encoding: 'utf8',
+    cwd: makeRoot(),
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(JSON.parse(result.stdout).hookSpecificOutput.additionalContext.includes(MARKER));
+});
+
+test('the missing-bootstrap note names the file it could not read', () => {
+  const { json } = run(plugin(makeRoot(), null), { CLAUDE_PLUGIN_ROOT: '/x' });
+  assert.match(json.hookSpecificOutput.additionalContext, /skills\/using-14all\/SKILL\.md/);
 });

@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
+    "check:upstream": "node scripts/check-sources.mjs --verify",
     "check": "node scripts/lint-skills.mjs && node scripts/check-notices.mjs && node scripts/check-manifests.mjs && node scripts/check-sources.mjs && node scripts/scan-secrets.mjs"
   },
   "devDependencies": {

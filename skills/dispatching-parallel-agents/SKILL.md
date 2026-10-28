@@ -25,6 +25,10 @@ Do not use it when:
 - You do not yet know what is broken (exploratory debugging).
 - The agents would interfere with each other.
 
+## Inside an implementation plan
+
+When you execute a plan with the `subagent-driven-development` skill, its tasks run serial by default, one implementer after another. Use this skill for plan tasks only when they touch disjoint files and share no state or interfaces; otherwise keep them serial, because parallel edits to the same code conflict.
+
 ## The pattern
 
 1. **Identify independent domains.** Group the work by what is broken. Each group must be fixable without touching another group's code.

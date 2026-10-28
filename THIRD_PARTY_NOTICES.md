@@ -56,6 +56,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+### humanlayer/skills, pinned at 653b6411c1f70c275a18e37673b042ff99f67ceb
+
+```text
+MIT License
+
+Copyright (c) 2026 HumanLayer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
 ## using-14all
 
 Adapted from `skills/using-superpowers/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/using-14all/meta.yaml`. The Claude Code tool map in `references/` is original.
@@ -102,4 +128,4 @@ Adapted from `skills/finishing-a-development-branch/SKILL.md` in obra/superpower
 
 ## pr
 
-Adapted from `skills/engineering/pr/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock), rewritten in original wording. That upstream skill credits a "show-me" skill by Dex Horthy (Humanlayer, https://github.com/humanlayer/skills). We did not check that project's license and copied none of its text. Changed: see `skills/pr/meta.yaml`.
+Adapted from `skills/engineering/pr/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). That skill is itself derived from the `show-me` skill in humanlayer/skills (MIT, Copyright (c) 2026 HumanLayer, pinned at 653b6411c1f70c275a18e37673b042ff99f67ceb; credited there to Dex Horthy). Two sentences in `skills/pr/SKILL.md` remain close to the show-me wording, and the three-part template follows the same idea, so the HumanLayer license is included above. Changed: see `skills/pr/meta.yaml`.
