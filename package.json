@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
-    "check": "node scripts/lint-skills.mjs && node scripts/check-notices.mjs"
+    "check": "node scripts/lint-skills.mjs && node scripts/check-notices.mjs && node scripts/check-manifests.mjs"
   },
   "devDependencies": {
     "yaml": "2.9.1"
