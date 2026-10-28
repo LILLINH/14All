@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/using-superpowers/SKILL.md
+changed:
+  made: true
+  summary: Renamed to 14All, removed per-harness list and Superpowers-specific skill names, added the 14ALL-BOOTSTRAP-V1 marker, rewrote skill priority for 14All skills, and wrote a new Claude Code tool map.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28
