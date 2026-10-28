@@ -91,3 +91,15 @@ Adapted from `skills/verification-before-completion/SKILL.md` in obra/superpower
 ## code-review
 
 Adapted from `skills/engineering/code-review/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock), and `skills/requesting-code-review/SKILL.md` and `skills/receiving-code-review/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/code-review/meta.yaml`.
+
+## using-git-worktrees
+
+Adapted from `skills/using-git-worktrees/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/using-git-worktrees/meta.yaml`.
+
+## finishing-a-development-branch
+
+Adapted from `skills/finishing-a-development-branch/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/finishing-a-development-branch/meta.yaml`.
+
+## pr
+
+Adapted from `skills/engineering/pr/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock), rewritten in original wording. That upstream skill credits a "show-me" skill by Dex Horthy (Humanlayer, https://github.com/humanlayer/skills). We did not check that project's license and copied none of its text. Changed: see `skills/pr/meta.yaml`.

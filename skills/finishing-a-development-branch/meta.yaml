@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/finishing-a-development-branch/SKILL.md
+changed:
+  made: true
+  summary: Condensed, replaced the menu code blocks and cleanup transcripts with prose, referenced the pr skill for the pull request body, and merged the quick-reference table into the steps. The menus, the typed-discard confirmation and the cleanup ownership rules are unchanged.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28
