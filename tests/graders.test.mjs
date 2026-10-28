@@ -126,6 +126,27 @@ test('E3 flags a critical failure when no test file is ever written', () => {
   assert.match(g.criticalFailure, /no test file/);
 });
 
+test('E3 counts a run cut off before the TAP summary as failing when it shows a missing module', () => {
+  const truncated = 'TAP version 13\n# node:internal/modules/esm/resolve:274\n#     throw new ERR_MODULE_NOT_FOUND(\n';
+  const g = gradeE3([
+    edit('src/slugify.test.mjs', 'e1'),
+    bash('npm test 2>&1 | head -20', 'r1'), result('r1', truncated),
+    edit('src/slugify.mjs', 'e2'),
+    bash('npm test 2>&1 | tail -15', 'r2'), result('r2', PASS_OUTPUT),
+  ]);
+  assert.equal(g.pass, true);
+});
+
+test('E3 counts a run with a "not ok" line as failing', () => {
+  const g = gradeE3([
+    edit('tests/slugify.test.mjs', 'e1'),
+    bash('npm test', 'r1'), result('r1', 'not ok 1 - handles spaces\n'),
+    edit('src/slugify.mjs', 'e2'),
+    bash('npm test', 'r2'), result('r2', PASS_OUTPUT),
+  ]);
+  assert.equal(g.pass, true);
+});
+
 test('E3 fails when the test never failed before passing', () => {
   const g = gradeE3([
     edit('tests/slugify.test.mjs', 'e1'),

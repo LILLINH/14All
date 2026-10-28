@@ -1,0 +1,41 @@
+{
+  "taskId": "E3",
+  "mode": "baseline",
+  "run": 2,
+  "exitStatus": 0,
+  "durationMs": 7451,
+  "costUsd": 0.042994599999999994,
+  "turns": 4,
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "grade": {
+    "pass": false,
+    "criticalFailure": "no test file was written",
+    "checks": [
+      {
+        "name": "test written before implementation",
+        "pass": false
+      },
+      {
+        "name": "a failing run came before a passing run",
+        "pass": false
+      }
+    ]
+  },
+  "testFilesIntact": true,
+  "previousGrade": {
+    "pass": false,
+    "criticalFailure": "no test file was written",
+    "checks": [
+      {
+        "name": "test written before implementation",
+        "pass": false
+      },
+      {
+        "name": "a failing run came before a passing run",
+        "pass": false
+      }
+    ]
+  }
+}

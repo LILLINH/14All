@@ -69,7 +69,8 @@ function runOnce(task, mode, index, outDir) {
   writeFileSync(join(rawDir, `${stem}.jsonl`), raw);
 
   const events = parseStream(raw);
-  const grade = GRADERS[task.grader](events, { testFilesIntact: testFilesIntactFor(fixtureDir, workDir) });
+  const testFilesIntact = testFilesIntactFor(fixtureDir, workDir);
+  const grade = GRADERS[task.grader](events, { testFilesIntact });
   const final = raw.trim().split('\n').map((l) => { try { return JSON.parse(l); } catch { return null; } }).findLast((m) => m?.type === 'result');
   const summary = {
     taskId: task.id,
@@ -80,6 +81,7 @@ function runOnce(task, mode, index, outDir) {
     costUsd: final?.total_cost_usd ?? null,
     turns: final?.num_turns ?? null,
     models: final?.modelUsage ? Object.keys(final.modelUsage) : [],
+    testFilesIntact,
     grade,
   };
   writeFileSync(join(outDir, `${stem}.json`), `${JSON.stringify(summary, null, 2)}\n`);

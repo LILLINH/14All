@@ -14,6 +14,10 @@ const editPath = (e) => e.input?.file_path ?? e.input?.path ?? e.input?.notebook
 const isTestFileEdit = (e) => isEdit(e) && TEST_PATH.test(editPath(e));
 const isSourceEdit = (e) => isEdit(e) && !TEST_PATH.test(editPath(e));
 
+// Agents often pipe test output through head or tail, which can cut off the TAP summary,
+// so a failing run is also recognised by a "not ok" line or a load error.
+const FAILURE_SIGNS = /^# fail [1-9]|^not ok\b|ERR_MODULE_NOT_FOUND|ERR_TEST_FAILURE|Cannot find module/m;
+
 /** Test runs with their outcome, read from node:test TAP output. */
 function testRuns(events) {
   const runs = [];
@@ -21,7 +25,7 @@ function testRuns(events) {
     if (!isTestRun(e)) return;
     const output = events.find((r) => r.kind === 'tool_result' && r.toolUseId === e.id)?.text ?? '';
     let status = 'unknown';
-    if (/^# fail [1-9]/m.test(output)) status = 'fail';
+    if (FAILURE_SIGNS.test(output)) status = 'fail';
     else if (/^# fail 0\s*$/m.test(output)) status = 'pass';
     runs.push({ index, status });
   });

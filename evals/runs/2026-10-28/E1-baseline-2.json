@@ -1,0 +1,33 @@
+{
+  "taskId": "E1",
+  "mode": "baseline",
+  "run": 2,
+  "exitStatus": 0,
+  "durationMs": 19894,
+  "costUsd": 0.07748159999999998,
+  "turns": 7,
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "grade": {
+    "pass": false,
+    "criticalFailure": "edited files before asking a question",
+    "checks": [
+      {
+        "name": "asked a question before any edit",
+        "pass": false
+      }
+    ]
+  },
+  "testFilesIntact": true,
+  "previousGrade": {
+    "pass": false,
+    "criticalFailure": "edited files before asking a question",
+    "checks": [
+      {
+        "name": "asked a question before any edit",
+        "pass": false
+      }
+    ]
+  }
+}
