@@ -1,6 +1,6 @@
 # Evidence: Plan 1 acceptance
 
-Date: 2026-10-28. Claude Code 2.1.312. Model reported by the CLI for every run: claude-sonnet-5-5. Node 22.19.0, Linux. The 24 evaluation runs were made at commit `84b8afb`'s predecessor state and regraded as described in section 4. Repository checks were repeated at commit `640649c` after the final review fixes.
+Date: 2026-10-28. Claude Code 2.1.312. Model reported by the CLI for every run: claude-sonnet-5-5. Node 22.19.0, Linux. The 24 evaluation runs were made with the harness at commit `a91f042` and regraded as described in section 4. Repository checks were repeated at commit `640649c` after the final review fixes.
 
 ## 1. Repository checks (clean clone of `640649c`)
 
