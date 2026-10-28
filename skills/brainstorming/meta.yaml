@@ -1,0 +1,17 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/brainstorming/SKILL.md
+  - repo: mattpocock/skills
+    ref: v1.3.1
+    license: MIT
+    path: skills/productivity/grilling/SKILL.md
+changed:
+  made: true
+  summary: Merged superpowers brainstorming with the mattpocock grilling design-tree rounds as a "grilling mode". Dropped the visual companion and its scripts, inlined the builder-check brief, renamed skill references and the design path to docs/specs/, and condensed the text.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28

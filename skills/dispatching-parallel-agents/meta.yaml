@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/dispatching-parallel-agents/SKILL.md
+changed:
+  made: true
+  summary: Condensed, removed the decision graph and dispatch pseudo-syntax, described dispatch as an action instead of naming a tool, and shortened the example.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28

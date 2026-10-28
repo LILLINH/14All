@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: obra/superpowers
+    ref: v7.0.1
+    license: MIT
+    path: skills/writing-plans/SKILL.md
+changed:
+  made: true
+  summary: Condensed, renamed skill references and the plan path to docs/plans/, and replaced the executing-plans handoff with an inline option described in the text because 14All v1 has no executing-plans skill.
+maturity: draft
+adapters_tested: []
+owner: OWNER
+last_reviewed: 2026-10-28

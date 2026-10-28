@@ -59,3 +59,19 @@ SOFTWARE.
 ## using-14all
 
 Adapted from `skills/using-superpowers/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/using-14all/meta.yaml`. The Claude Code tool map in `references/` is original.
+
+## brainstorming
+
+Adapted from `skills/brainstorming/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent) and `skills/productivity/grilling/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/brainstorming/meta.yaml`.
+
+## writing-plans
+
+Adapted from `skills/writing-plans/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/writing-plans/meta.yaml`.
+
+## subagent-driven-development
+
+Adapted from `skills/subagent-driven-development/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/subagent-driven-development/meta.yaml`.
+
+## dispatching-parallel-agents
+
+Adapted from `skills/dispatching-parallel-agents/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/dispatching-parallel-agents/meta.yaml`.
