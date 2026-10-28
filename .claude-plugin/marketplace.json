@@ -1,0 +1,14 @@
+{
+  "name": "14all",
+  "owner": {
+    "name": "OWNER"
+  },
+  "plugins": [
+    {
+      "name": "14all",
+      "source": "./",
+      "description": "A curated, cross-agent toolkit of skills, hooks and workflows that makes AI coding agents more reliable."
+    }
+  ],
+  "description": "Curated skills, hooks and workflows that make AI coding agents more reliable."
+}

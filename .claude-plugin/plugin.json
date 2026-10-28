@@ -1,0 +1,12 @@
+{
+  "name": "14all",
+  "version": "0.1.0",
+  "description": "A curated, cross-agent toolkit of skills, hooks and workflows that makes AI coding agents more reliable.",
+  "author": {
+    "name": "OWNER"
+  },
+  "homepage": "https://github.com/OWNER/14all",
+  "repository": "https://github.com/OWNER/14all",
+  "license": "MIT",
+  "keywords": ["skills", "workflow", "tdd", "debugging", "code-review"]
+}
