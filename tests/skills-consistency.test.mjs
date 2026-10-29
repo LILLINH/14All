@@ -57,3 +57,19 @@ test('code-review needs a concrete case, labels findings by evidence, and does n
   assert.match(text, /never the author's (opinion|conclusion)/i);
   assert.ok(text.split('\n').length < 400);
 });
+
+test('executing-plans records and rechecks a plan hash', () => {
+  const text = read('executing-plans');
+  assert.match(text, /Plan hash:/);
+  assert.match(text, /git hash-object/);
+  assert.match(text, /mismatch[^.]*`Ruling:`/);
+});
+
+test('subagent briefs ask for the line range actually read and say "none provided" for a missing input', () => {
+  for (const name of ['subagent-driven-development', 'dispatching-parallel-agents']) {
+    const text = read(name);
+    assert.match(text, /line range/i, name);
+    assert.match(text, /truncat/i, name);
+    assert.match(text, /none provided/, name);
+  }
+});

@@ -41,7 +41,8 @@ When you execute a plan with the `subagent-driven-development` skill, its tasks 
 - One clear problem domain.
 - All the context needed: the failing test names and the error messages, pasted in.
 - The method you want: understand what each test verifies, find the root cause, fix the cause and not the symptom. Say what not to do, such as "do not just raise the timeouts".
-- The output format: root cause found, files changed, anything unresolved.
+- The output format: root cause found, files changed, anything unresolved, and the files read with the line range actually seen. The file-reading tool truncates a long file, so the agent pages to the end or says where it stopped.
+- Every input stated. An input you have no value for says "none provided" instead of being left out, so the agent does not invent one.
 
 ## Common mistakes
 
