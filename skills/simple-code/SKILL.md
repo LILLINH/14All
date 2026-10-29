@@ -42,3 +42,10 @@ Read only the entries that match the files you are about to touch. A framework e
 - `references/nextjs.md`: a `package.json` that lists `next`, or an `app/` or `pages/` directory with `next.config.*`.
 - `references/nuxt.md`: a `package.json` that lists `nuxt`, or a `nuxt.config.*` file.
 - `references/nodejs-express.md`: a `package.json` that lists `express`, or code that calls `express()`.
+- `references/python.md`: a `.py` file, or a `pyproject.toml`, `requirements.txt` or `setup.py`.
+- `references/django.md`: a `manage.py`, or `django` in the project's dependencies; read it with `python.md`.
+- `references/fastapi.md`: `fastapi` in the project's dependencies, or code that creates a `FastAPI()` app; read it with `python.md`.
+- `references/ruby.md`: a `.rb` file, a `Gemfile` or a `Rakefile`.
+- `references/rails.md`: a `config/routes.rb` or `rails` in the `Gemfile`; read it with `ruby.md`.
+- `references/php.md`: a `.php` file or a `composer.json`.
+- `references/laravel.md`: an `artisan` file or `laravel/framework` in `composer.json`; read it with `php.md`.
