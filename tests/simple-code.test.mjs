@@ -146,10 +146,11 @@ test('vue.md names the excess agents add in Vue', () => {
   for (const pattern of [/composable/i, /wrapper component/i, /Pinia|state library/i]) assert.match(body, pattern);
 });
 
-test('the index lists the 25 first-pass references', () => {
+test('the index lists the 25 first-pass references and the web UI reference', () => {
   const expected = [
     'javascript', 'typescript', 'python', 'go', 'java', 'kotlin', 'csharp', 'php', 'ruby', 'rust', 'swift', 'c-cpp', 'sql', 'shell',
     'react', 'vue', 'nextjs', 'nuxt', 'nodejs-express', 'django', 'fastapi', 'spring-boot', 'laravel', 'rails', 'aspnet-core',
+    'web-ui',
   ];
   assert.deepEqual(indexedNames(), [...expected].sort());
 });
@@ -270,4 +271,11 @@ test('step 5 asks whether anything on the never-trade list was cut', () => {
 test('the precedence sentence is unchanged and the skill stays short', () => {
   assert.match(text(), /Precedence: a written project rule beats these rules\./);
   assert.ok(text().split('\n').length <= 70, 'simple-code stays under 70 lines');
+});
+
+test('the web UI reference puts the project design system first, checks three widths, limits the render loop and says so when there is no browser', () => {
+  const ref = readFileSync(join(dir, 'references', 'web-ui.md'), 'utf8').toLowerCase();
+  for (const part of ['design system', '375', '768', '1440', 'at most three', 'production build', 'contrast', 'no browser']) {
+    assert.ok(ref.includes(part), `web-ui should mention ${part}`);
+  }
 });

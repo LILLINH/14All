@@ -61,5 +61,6 @@ Read only the entries that match the files you are about to touch. A framework e
 - `references/rust.md`: a `.rs` file or a `Cargo.toml`.
 - `references/swift.md`: a `.swift` file or a `Package.swift`.
 - `references/c-cpp.md`: a `.c`, `.h`, `.cc`, `.cpp` or `.hpp` file, a `CMakeLists.txt` or a `Makefile` for C code.
+- `references/web-ui.md`: an `.html`, `.css`, `.scss`, `.vue` or `.svelte` file, or a component that returns markup; read it with the language reference.
 - `references/sql.md`: a `.sql` file, a migration, or SQL text inside application code.
 - `references/shell.md`: a `.sh` or `.bash` file, a shell shebang, or a command script in `package.json`, a `Makefile` or CI configuration.
