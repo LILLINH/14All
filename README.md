@@ -34,6 +34,20 @@ Do not add the GitHub address directly (`codex plugin marketplace add LILLINH/14
 
 The code is at https://github.com/LILLINH/14All. What was tried is in [docs/evidence/claude-code.md](docs/evidence/claude-code.md) and [docs/evidence/codex.md](docs/evidence/codex.md). On Codex the helper agents are not used and the "ask first" rule for linter settings does not apply.
 
+## Update
+
+14All does not update itself. A new release on GitHub reaches you only when you ask for it.
+
+**Claude Code.** Third-party marketplaces such as this one have auto-update off by default. Either update by hand:
+
+```
+claude plugin update 14all@14all
+```
+
+or turn auto-update on once: in a session run `/plugin`, open the Marketplaces tab, choose `14all`, then Enable auto-update. A new version loads in the next session, or after `/reload-plugins`. The release tag and the changes are listed in [CHANGELOG.md](CHANGELOG.md).
+
+**Codex.** Pull in your clone (`git pull` inside the `14All` folder). Whether you must then remove and add the plugin again, or trust the hooks again, was not tried.
+
 ## What you get
 
 ### Working habits (21 skills)
