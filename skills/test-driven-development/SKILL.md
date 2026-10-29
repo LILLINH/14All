@@ -26,7 +26,7 @@ A test verifies behavior through a public interface, not implementation details.
 
 ## Seams: where tests go
 
-A seam is the public boundary you test at, where you observe behavior without reaching inside. Decide the seam before writing the test. For anything non-trivial, say which seams you will test and confirm them with the user; do not spread effort over every edge case. If the interface itself is in question, settle that first.
+A seam is the public boundary you test at, where you observe behavior without reaching inside. Decide the seam before writing the test. For anything non-trivial, say which seams you will test and confirm them with the user. A subagent cannot ask the user: it picks the seams itself and records the choice in its report. Do not spread effort over every edge case. If the interface itself is in question, settle that first.
 
 ## Anti-patterns
 

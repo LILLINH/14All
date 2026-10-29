@@ -17,7 +17,7 @@ Do not pause between tasks to ask "should I continue?". Execute the whole plan. 
 
 ## When to use
 
-Use it when you have a plan whose tasks are mostly independent. If the tasks are tightly coupled, or the user chose to implement inline, or you have no way to dispatch subagents, implement the plan yourself in this session instead, test first, and request one `code-review` at the end.
+Use it when you have a plan whose tasks are mostly independent. If the tasks are tightly coupled, or the user chose to implement inline, or you have no way to dispatch subagents, use the `executing-plans` skill to implement the plan yourself in this session instead.
 
 ## Setup
 

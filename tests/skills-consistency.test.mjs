@@ -28,3 +28,22 @@ test('every skill named as "the `x` skill" exists', () => {
     }
   }
 });
+
+test('writing-plans and subagent-driven-development hand inline execution to the executing-plans skill', () => {
+  assert.ok(existsSync(join(skillsDir, 'executing-plans', 'SKILL.md')));
+  assert.match(read('writing-plans'), /`executing-plans`/);
+  assert.match(read('subagent-driven-development'), /`executing-plans`/);
+});
+
+test('executing-plans keeps a progress file, rules instead of stalling, and ends with verification and finishing', () => {
+  const text = read('executing-plans');
+  assert.match(text, /progress file/i);
+  assert.match(text, /Ruling:/);
+  assert.match(text, /`verification-before-completion`/);
+  assert.match(text, /`finishing-a-development-branch`/);
+  assert.match(text, /`test-driven-development`/);
+});
+
+test('test-driven-development tells a subagent, who cannot ask the user, to record its seam choice in its report', () => {
+  assert.match(read('test-driven-development'), /subagent[^.]*cannot ask[^.]*seams?[^.]*records?[^.]*report/i);
+});

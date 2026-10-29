@@ -6,7 +6,7 @@ sources:
     path: skills/writing-plans/SKILL.md
 changed:
   made: true
-  summary: Condensed, renamed skill references and the plan path to docs/plans/, and replaced the executing-plans handoff with an inline option described in the text because 14All v1 has no executing-plans skill.
+  summary: Condensed, renamed skill references and the plan path to docs/plans/, and pointed the inline handoff at the 14All executing-plans skill.
 maturity: draft
 adapters_tested: []
 owner: OWNER

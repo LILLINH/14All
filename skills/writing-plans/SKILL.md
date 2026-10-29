@@ -70,6 +70,6 @@ Fix what you find inline.
 Link the saved plan and ask the user to review it. Offer two ways to execute it:
 
 - **Subagent-driven:** a fresh subagent implements each task and a fresh reviewer checks it before the next starts, then one review of the whole result. Most thorough; costs a fresh context per task and review. Use the `subagent-driven-development` skill.
-- **Inline:** you implement every task yourself in this session, test first, keep a progress file of finished tasks, then request one fresh review of the whole result with the `code-review` skill. Cheaper and faster; no independent review until the end.
+- **Inline:** you implement every task yourself in this session, test first, then request one fresh review of the whole result. Cheaper and faster; no independent review until the end. Use the `executing-plans` skill.
 
 Recommend one with a single sentence of reasoning drawn from the plan (how much the tasks depend on each other's interfaces, how many there are, what a shipped mistake would cost), and ask which the user wants.
