@@ -120,6 +120,18 @@ test('reads the JSON escapes of a command correctly: tabs separate words, escape
   assert.ok(!denied(bash('echo "rm -rf /" \\n')), 'an escaped backslash followed by n is not a newline');
 });
 
+test('catches a dangerous command at the start or the end whatever the command length, with more JSON fields after it', () => {
+  for (const length of [10, 900, 990, 1000, 1010, 1500, 1990, 2000, 2010, 2100, 5000]) {
+    const filler = `echo "x" `.repeat(Math.ceil(length / 9)).slice(0, length);
+    for (const command of [`${filler}; rm -rf /`, `rm -rf /; ${filler}`]) {
+      const payload = { tool_name: 'Bash', tool_input: { command, description: 'a "quoted" description', timeout: 5000 }, tool_use_id: 'toolu_01' };
+      assert.ok(denied(payload), `length ${length}: ${command.slice(0, 20)}...${command.slice(-20)}`);
+    }
+    const harmless = { tool_name: 'Bash', tool_input: { command: filler, description: 'rm -rf /' } };
+    assert.ok(!denied(harmless), `length ${length}: a harmless command with a scary description`);
+  }
+});
+
 test('denies a force-with-lease push to main as well', () => {
   assert.ok(denied(bash('git push --force-with-lease origin main')));
   assert.ok(denied(bash('git push --force-with-lease=main:abc123 origin main')));
