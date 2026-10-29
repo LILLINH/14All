@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { GRADERS } from './graders.mjs';
 import { parseStream } from './parse-stream.mjs';
+import { invalidReason } from './validity.mjs';
 
 const WEAKENED = 'existing tests were deleted, skipped or weakened';
 
@@ -18,7 +19,8 @@ export function regrade(summary, raw) {
   // The working copy of a past run is gone. Use the recorded flag, or infer it from the old grade.
   const testFilesIntact = summary.testFilesIntact ?? summary.grade.criticalFailure !== WEAKENED;
   const grade = GRADERS[`grade${summary.taskId}`](parseStream(raw), { testFilesIntact });
-  return { ...summary, testFilesIntact, previousGrade: summary.previousGrade ?? summary.grade, grade };
+  const invalid = invalidReason({ exitStatus: summary.exitStatus, raw });
+  return { ...summary, testFilesIntact, invalid, previousGrade: summary.previousGrade ?? summary.grade, grade };
 }
 
 function main(date) {
@@ -33,7 +35,7 @@ function main(date) {
     const updated = regrade(JSON.parse(readFileSync(join(dir, file), 'utf8')), readFileSync(rawPath, 'utf8'));
     writeFileSync(join(dir, file), `${JSON.stringify(updated, null, 2)}\n`);
     const changed = updated.previousGrade.pass !== updated.grade.pass;
-    console.log(`${file}: pass ${updated.previousGrade.pass} -> ${updated.grade.pass}${changed ? '  (changed)' : ''}`);
+    console.log(`${file}: pass ${updated.previousGrade.pass} -> ${updated.grade.pass}${changed ? '  (changed)' : ''}${updated.invalid ? `  INVALID: ${updated.invalid}` : ''}`);
   }
 }
 

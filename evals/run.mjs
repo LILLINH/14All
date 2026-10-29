@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { GRADERS, testsIntact } from './graders.mjs';
 import { parseStream } from './parse-stream.mjs';
+import { invalidReason } from './validity.mjs';
 
 const evalsDir = fileURLToPath(new URL('.', import.meta.url));
 const repoRoot = join(evalsDir, '..');
@@ -82,6 +83,7 @@ function runOnce(task, mode, index, outDir) {
     turns: final?.num_turns ?? null,
     models: final?.modelUsage ? Object.keys(final.modelUsage) : [],
     testFilesIntact,
+    invalid: invalidReason({ exitStatus: proc.status, raw }),
     grade,
   };
   writeFileSync(join(outDir, `${stem}.json`), `${JSON.stringify(summary, null, 2)}\n`);

@@ -113,3 +113,15 @@ test('findMissingNotices ignores original skills', () => {
   writeSkill(root, 'demo');
   assert.deepEqual(findMissingNotices(root, '# Notices\n'), []);
 });
+
+test('an unquoted description with " #" is reported, because YAML cuts it off at the hash', () => {
+  const root = makeRoot();
+  const skill = '---\nname: demo\ndescription: Use when testing # and more words\n---\nbody\n';
+  assert.ok(hasProblem(lintSkillDir(writeSkill(root, 'demo', { skill })), 'comment'));
+});
+
+test('a quoted description may contain a hash', () => {
+  const root = makeRoot();
+  const skill = '---\nname: demo\ndescription: "Use when testing # and more words"\n---\nbody\n';
+  assert.deepEqual(lintSkillDir(writeSkill(root, 'demo', { skill })), []);
+});

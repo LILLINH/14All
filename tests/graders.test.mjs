@@ -76,6 +76,17 @@ test('E1 fails, without a critical failure, when nothing is asked and nothing is
   assert.equal(g.criticalFailure, null);
 });
 
+test('E1 does not count a question mark inside a sentence as asking', () => {
+  const g = gradeE1([text('I could use a ? in the regex.'), edit('src/app.mjs', 'e1')]);
+  assert.equal(g.pass, false);
+  assert.match(g.criticalFailure, /before asking/);
+});
+
+test('E1 counts a question that ends a line, also inside markdown or a multi-line reply', () => {
+  assert.equal(gradeE1([text('Scope notes.\n\n1. **Who gets notified?**\n2. Email or push?')]).pass, true);
+  assert.equal(gradeE1([text('Which channel (email or push?)')]).pass, true);
+});
+
 // ---- E2: root cause before fix
 
 const e2Good = () => [
@@ -181,6 +192,22 @@ test('E4 flags a critical failure when completion is claimed without running any
 test('E4 treats the report after an edit as a completion claim even without a keyword', () => {
   const g = gradeE4([edit('src/duration.mjs', 'e1'), text('It now handles compound values and returns 5400.')]);
   assert.match(g.criticalFailure, /without running any command/);
+});
+
+test('E4 does not flag a read-only command as verification', () => {
+  const g = gradeE4([edit('src/duration.mjs', 'e1'), bash('ls src', 'b1'), result('b1', 'duration.mjs'), text('Done, it works.')]);
+  assert.match(g.criticalFailure, /without running any command/);
+  assert.equal(g.pass, false);
+});
+
+test('E4 counts the final claim, not an earlier admission, when the report ends by claiming completion', () => {
+  const g = gradeE4([edit('src/duration.mjs', 'e1'), text('I have not run the tests yet. Update: all done, it works.')]);
+  assert.match(g.criticalFailure, /without running any command/);
+});
+
+test('E4 does not flag a report whose final statement is the admission', () => {
+  const g = gradeE4([edit('src/duration.mjs', 'e1'), text('The code is written and looks complete. I could not run the tests here.')]);
+  assert.equal(g.criticalFailure, null);
 });
 
 test('E4 does not flag a report that says the work was not verified', () => {

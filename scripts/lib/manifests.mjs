@@ -41,13 +41,23 @@ export function checkManifestVersions(root) {
   return problems;
 }
 
-/** Rewrite the version field in every file listed in .version-bump.json. */
+/**
+ * Rewrite the version field in every file listed in .version-bump.json. Every file is read and
+ * checked before any is written, so a bad file leaves all of them unchanged.
+ */
 export function bumpVersion(root, version) {
   if (!SEMVER.test(version)) throw new Error(`version must be semver x.y.z, got "${version}"`);
-  for (const { path, field } of readList(root)) {
+  const updates = readList(root).map(({ path, field }) => {
     const full = join(root, path);
-    const data = JSON.parse(readFileSync(full, 'utf8'));
+    if (!existsSync(full)) throw new Error(`${path}: file is missing`);
+    let data;
+    try {
+      data = JSON.parse(readFileSync(full, 'utf8'));
+    } catch {
+      throw new Error(`${path}: invalid JSON`);
+    }
     data[field] = version;
-    writeFileSync(full, `${JSON.stringify(data, null, 2)}\n`);
-  }
+    return { full, text: `${JSON.stringify(data, null, 2)}\n` };
+  });
+  for (const { full, text } of updates) writeFileSync(full, text);
 }

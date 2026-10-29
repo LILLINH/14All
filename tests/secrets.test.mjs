@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanText } from '../scripts/lib/secrets.mjs';
@@ -73,4 +73,40 @@ test('cli exits 0 on a clean repository', () => {
 test('cli skips tests/fixtures/secrets', () => {
   const root = repoWith({ 'tests/fixtures/secrets/fake.txt': awsKey() });
   assert.equal(spawnSync('node', [cli], { cwd: root }).status, 0);
+});
+
+// ---- more provider key shapes (assembled at runtime, like the ones above)
+
+const anthropicKey = () => 'sk-ant-' + 'api03-' + 'Ab1Cd2Ef3Gh4Ij5Kl6Mn7Op8';
+const openaiKey = () => 'sk-' + 'Ab1Cd2Ef3Gh4Ij5Kl6Mn7Op8Qr9St0Uv1Wx2Yz3';
+const openaiProjectKey = () => 'sk-proj-' + 'Ab1Cd2Ef3Gh4Ij5Kl6Mn7Op8Qr9St0Uv1Wx2Yz3';
+const slackToken = () => 'xoxb-' + '1234567890-abcdefghijkl';
+const googleKey = () => 'AIza' + 'Sy' + 'A'.repeat(33);
+
+test('finds an Anthropic API key', () => {
+  assert.deepEqual(patterns(`key ${anthropicKey()}`), ['anthropic-api-key']);
+});
+
+test('finds an OpenAI API key, including the project form, without also reporting it as Anthropic', () => {
+  assert.deepEqual(patterns(openaiKey()), ['openai-api-key']);
+  assert.deepEqual(patterns(openaiProjectKey()), ['openai-api-key']);
+});
+
+test('finds a Slack token', () => {
+  assert.deepEqual(patterns(slackToken()), ['slack-token']);
+});
+
+test('finds a Google API key', () => {
+  assert.deepEqual(patterns(googleKey()), ['google-api-key']);
+});
+
+test('does not mistake ordinary hyphenated words for an API key', () => {
+  assert.deepEqual(patterns('see risk-assessment-and-mitigation-planning-document-v2 and task-based-scheduling-with-long-identifiers'), []);
+});
+
+test('cli skips a tracked file that was deleted from the working tree', () => {
+  const root = repoWith({ 'kept.txt': 'fine\n', 'gone.txt': 'fine\n' });
+  rmSync(join(root, 'gone.txt'));
+  const result = spawnSync('node', [cli], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
 });

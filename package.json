@@ -11,6 +11,10 @@
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
     "check:upstream": "node scripts/check-sources.mjs --verify",
+    "check:release": "node scripts/check-release.mjs",
+    "check:drift": "node scripts/check-drift.mjs",
+    "new-skill": "node scripts/new-skill.mjs",
+    "eval:report": "node evals/report.mjs",
     "check": "node scripts/lint-skills.mjs && node scripts/check-notices.mjs && node scripts/check-manifests.mjs && node scripts/check-sources.mjs && node scripts/scan-secrets.mjs"
   },
   "devDependencies": {

@@ -68,3 +68,24 @@ test('bump rejects a version that is not x.y.z', () => {
   assert.throws(() => bumpVersion(root, '1.2'), /semver/);
   assert.equal(readVersion(root, 'package.json'), '0.1.0');
 });
+
+test('bump changes nothing when one listed file cannot be read', () => {
+  const root = project({ 'package.json': json('0.1.0'), 'plugin.json': '{ nope' });
+  assert.throws(() => bumpVersion(root, '0.2.0'));
+  assert.equal(readVersion(root, 'package.json'), '0.1.0');
+});
+
+test('bump changes nothing when a listed file is missing', () => {
+  const root = project({ 'package.json': json('0.1.0') });
+  writeFileSync(
+    join(root, '.version-bump.json'),
+    JSON.stringify({
+      files: [
+        { path: 'package.json', field: 'version' },
+        { path: 'gone.json', field: 'version' },
+      ],
+    }),
+  );
+  assert.throws(() => bumpVersion(root, '0.2.0'));
+  assert.equal(readVersion(root, 'package.json'), '0.1.0');
+});

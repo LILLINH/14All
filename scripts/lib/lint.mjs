@@ -10,6 +10,15 @@ const MAX_NAME = 64;
 const MAX_DESCRIPTION = 1024;
 const ALLOWED_KEYS = ['name', 'description'];
 
+/** True when the description line is a plain (unquoted) scalar that contains " #". */
+function descriptionHasYamlComment(text) {
+  const front = /^---\r?\n([\s\S]*?)\r?\n---/.exec(text.replace(/^\uFEFF/, ''))?.[1] ?? '';
+  const line = front.split(/\r?\n/).find((l) => l.startsWith('description:'));
+  if (line === undefined) return false;
+  const value = line.slice('description:'.length).trim();
+  return !/^["'|>]/.test(value) && /\s#/.test(value);
+}
+
 function symlinkProblems(dir, root) {
   const problems = [];
   const walk = (current) => {
@@ -63,6 +72,9 @@ export function lintSkillDir(skillDir, { sources } = {}) {
     if (lines > MAX_LINES) add(`SKILL.md has ${lines} lines (max ${MAX_LINES})`);
     try {
       const { frontmatter } = parseSkillFile(text);
+      if (descriptionHasYamlComment(text)) {
+        add('description has an unquoted " #", which YAML reads as a comment and cuts the description short; quote it');
+      }
       const { name, description } = frontmatter;
       if (typeof name !== 'string' || name !== dirName) {
         add(`name "${name}" must equal the directory name "${dirName}"`);

@@ -1,12 +1,12 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { scanText } from './lib/secrets.mjs';
 
 const SKIP_PREFIX = 'tests/fixtures/secrets/';
 
 const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
   .split('\0')
-  .filter((f) => f && !f.startsWith(SKIP_PREFIX));
+  .filter((f) => f && !f.startsWith(SKIP_PREFIX) && existsSync(f)); // a tracked file may be deleted but not yet committed
 
 let found = 0;
 for (const file of files) {

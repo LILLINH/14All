@@ -17,6 +17,9 @@ export function validateMeta(meta) {
   if (typeof meta.last_reviewed !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(meta.last_reviewed)) {
     problems.push('last_reviewed must be a YYYY-MM-DD string');
   }
+  if (['tested', 'verified'].includes(meta.maturity) && !isText(meta.evidence)) {
+    problems.push(`evidence is required (a path to a file under docs/evidence/) when maturity is ${meta.maturity}`);
+  }
   if (!Array.isArray(meta.adapters_tested)) problems.push('adapters_tested must be a list');
 
   if (!isObject(meta.changed) || typeof meta.changed.made !== 'boolean' || typeof meta.changed.summary !== 'string') {

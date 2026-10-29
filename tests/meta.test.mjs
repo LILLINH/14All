@@ -58,3 +58,13 @@ test('rejects a source missing a ref', () => {
   delete m.sources[0].ref;
   assert.ok(hasProblem(validateMeta(m), 'ref'));
 });
+
+test('maturity tested or verified requires an evidence path', () => {
+  assert.ok(hasProblem(validateMeta({ ...valid(), maturity: 'tested' }), 'evidence'));
+  assert.ok(hasProblem(validateMeta({ ...valid(), maturity: 'verified', evidence: ' ' }), 'evidence'));
+  assert.deepEqual(validateMeta({ ...valid(), maturity: 'tested', evidence: 'docs/evidence/claude-code.md' }), []);
+});
+
+test('maturity draft or schema-valid needs no evidence', () => {
+  assert.deepEqual(validateMeta({ ...valid(), maturity: 'schema-valid' }), []);
+});
