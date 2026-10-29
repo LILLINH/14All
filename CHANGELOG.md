@@ -6,9 +6,11 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ## 0.1.0 - 2026-10-29
 
-First public pre-release. Only Claude Code has been tried.
+First public pre-release. Claude Code and Codex have been tried.
 
 ### Added
+
+- Codex support: `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` and `skills/using-14all/references/codex-tools.md`. In one Codex CLI 0.165.0 session each, the plugin installed from a local copy, Codex listed all 21 skills, and, once the user trusted the hooks in `/hooks`, the bootstrap reached the model and the guard denied a force push to `main` and a `cat .env`. Helper agents are not used on Codex, and the guard does not see `apply_patch` edits. Evidence in `docs/evidence/codex.md`.
 
 - `simple-code` skill with 25 references (14 languages, 11 frameworks): learn the project's conventions, follow written rules, keep new code simple. Draft and unmeasured.
 - `executing-plans` skill: inline execution of a plan with a progress file and rulings.
@@ -38,7 +40,7 @@ First public pre-release. Only Claude Code has been tried.
 
 ### Changed
 
-- The package and plugin descriptions no longer say "cross-agent" or promise more reliability: they say it is an early release tried with Claude Code only. The planning documents in `docs/plans/` are marked as a historical record.
+- The package and plugin descriptions no longer say "cross-agent" or promise more reliability: they say it is an early release tried with Claude Code and Codex. The planning documents in `docs/plans/` are marked as a historical record.
 - The marketplace install (`/plugin marketplace add`, `/plugin install`) was run once in a clean configuration and worked; see `docs/evidence/claude-code.md`.
 - The `OWNER` placeholder is replaced by `LILLINH` in the manifests, `LICENSE`, every skill's `meta.yaml`, the README and SECURITY.md; the repository URL is `https://github.com/LILLINH/14All`. `npm run check:release` passes.
 - Guard: text inside quotes or a here-document no longer triggers a denial (a commit message that mentions `rm -rf /` was blocked); a quoted argument to `sh -c`, `bash -c` or `eval` and anything inside `$(...)` is still checked. Public SSH keys, `~/.ssh/config` and `known_hosts` are no longer treated as secrets. A command over 2000 characters is scanned at its start and its end only (a long here-document body is skipped), which keeps the hook inside its timeout on macOS bash 3.2.

@@ -2,7 +2,7 @@
 
 14All is an add-on for AI coding assistants. It teaches the assistant better working habits: ask before building, find the real cause before fixing a bug, write the test first, and check that something works before saying it is done. It also adds a few safety rails, a way to keep notes between sessions, and some small helper agents.
 
-**It is early.** This is version 0.1.0, not a finished release. Only Claude Code has been tried so far. A claim that another assistant works is made only when a file in `docs/evidence/` backs it up.
+**It is early.** This is version 0.1.0, not a finished release. Only Claude Code and Codex have been tried so far. A claim that another assistant works is made only when a file in `docs/evidence/` backs it up.
 
 ## Words used here
 
@@ -13,14 +13,23 @@
 
 ## Install
 
-This works for Claude Code only. The two commands below were run once in a clean configuration and installed the plugin; a session after that install was not run.
+This works for Claude Code and Codex. No other assistant has been tried.
+
+**Claude Code.** The two commands below were run once in a clean configuration and installed the plugin; a session after that install was not run.
 
 ```
 /plugin marketplace add LILLINH/14All
 /plugin install 14all@14all
 ```
 
-The code is at https://github.com/LILLINH/14All. What was tried is the install above, and loading the plugin straight from a folder for a session; see [docs/evidence/claude-code.md](docs/evidence/claude-code.md).
+**Codex.** Codex does not run a plugin's hooks until you trust them: start `codex`, type `/hooks`, read each hook and trust it. Without that step the skills load but the start-of-session bootstrap and the guard do not run. These commands were run against a local copy of this repository, not yet against the GitHub address.
+
+```
+codex plugin marketplace add LILLINH/14All
+codex plugin add 14all@14all
+```
+
+The code is at https://github.com/LILLINH/14All. What was tried is in [docs/evidence/claude-code.md](docs/evidence/claude-code.md) and [docs/evidence/codex.md](docs/evidence/codex.md). On Codex the helper agents are not used and the "ask first" rule for linter settings does not apply.
 
 ## What you get
 
@@ -95,7 +104,12 @@ Here is what is known, and what is not.
 - The guard stopped one force push (one run, with an earlier version of the guard).
 - Claude Code listed all 21 skills and the four agents. They were seen listed in one headless session each time, in two separate checks. That shows they load, not that they are chosen or followed.
 
-**What was not tried:** a session after a marketplace install, Windows, interactive sessions, any assistant other than Claude Code, whether the "ask first" prompt appears for a settings edit, and whether a helper agent really keeps to read-only. Those are not verified.
+**What was seen on Codex** (one run each, Codex CLI 0.165.0; see [docs/evidence/codex.md](docs/evidence/codex.md)):
+- The plugin installed from a local copy and Codex listed all 21 skills.
+- With the hooks not trusted, the start-of-session instructions did not reach the model; after trusting them in `/hooks`, they did.
+- With the hooks trusted, the guard stopped a force push to `main` and a `cat .env`, and let a harmless command run.
+
+**What was not tried:** installing on Codex from the GitHub address, a session after a marketplace install, Windows, interactive sessions (apart from the Codex `/hooks` screen), any assistant other than Claude Code and Codex, whether the "ask first" prompt appears for a settings edit, and whether a helper agent really keeps to read-only. Those are not verified.
 
 ## Learn more
 

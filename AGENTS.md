@@ -2,7 +2,7 @@
 
 ## What this is
 
-A plugin of skills, hooks, read-only role agents and evaluations that make AI coding agents more reliable. Pre-release (0.1.0). Only Claude Code has been verified; support for another agent needs a file under `docs/evidence/`.
+A plugin of skills, hooks, read-only role agents and evaluations that make AI coding agents more reliable. Pre-release (0.1.0). Claude Code and Codex have been verified (`docs/evidence/claude-code.md`, `docs/evidence/codex.md`); support for another agent needs a file under `docs/evidence/`.
 
 ## Commands
 

@@ -69,8 +69,13 @@ test('CI pins every action to a commit SHA, runs on Linux and macOS, and shellch
 
 test('the README does not claim more agents than the evidence files back', () => {
   const intro = readme.split('\n').slice(0, 5).join('\n');
-  assert.doesNotMatch(intro, /Codex|Cursor|Gemini/, 'the opening lines must not name agents that have no evidence file');
-  assert.match(intro, /only Claude Code/i);
+  for (const agent of ['Codex', 'Cursor', 'Gemini']) {
+    if (intro.includes(agent)) {
+      assert.ok(existsSync(join(repo, 'docs', 'evidence', `${agent.toLowerCase()}.md`)), `the opening lines name ${agent}, which has no evidence file`);
+    }
+  }
+  assert.match(intro, /Claude Code/);
+  assert.match(intro, /only .*(have|has) been tried/i);
 });
 
 test('README says simple-code exists and is unmeasured', () => {

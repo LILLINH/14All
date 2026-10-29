@@ -7,8 +7,8 @@
     {
       "name": "14all",
       "source": "./",
-      "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code only."
+      "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code and Codex."
     }
   ],
-  "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code only."
+  "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code and Codex."
 }
