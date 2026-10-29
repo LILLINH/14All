@@ -128,3 +128,12 @@ test('secure-code starts from a threat model, has the three tiers, a language-mo
   assert.ok(text.split('\n').length <= 70);
   assert.equal(parse(readFileSync(join(skillsDir, 'secure-code', 'meta.yaml'), 'utf8')).class, 'original');
 });
+
+test('impact-check finds users before the edit, classifies them in four groups and searches again after', () => {
+  const text = read('impact-check').toLowerCase();
+  for (const part of ['changed', 'affected', 'looked at, not affected', 'cannot determine', 'as it is now', 'search again', 'before you edit']) {
+    assert.ok(text.includes(part), `impact-check should mention ${part}`);
+  }
+  assert.ok(read('impact-check').split('\n').length <= 70);
+  assert.equal(parse(readFileSync(join(skillsDir, 'impact-check', 'meta.yaml'), 'utf8')).class, 'original');
+});
