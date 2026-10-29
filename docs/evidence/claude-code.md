@@ -53,6 +53,14 @@ The first `system` message with subtype `init` listed these agents: `14all:debug
 
 This shows that Claude Code reads `agents/` and the new skill directories from the plugin in one headless session. It does not show that a dispatched agent obeys its read-only tool list, that an agent is chosen when it should be, or whether other coding agents read `agents/` (not checked). One run. The session also listed other plugins that were not part of this repository.
 
+## All 21 skills and the four agents, one live listing
+
+Date: 2026-10-29, Claude Code 2.1.312, headless, started from an empty scratch directory outside the repository, with the same command as the previous section (`claude -p "reply with the word ok" --plugin-dir <repo> --setting-sources project,local --no-session-persistence --output-format stream-json --verbose`).
+
+The first `system` message with subtype `init` listed 21 skills with the `14all:` prefix, among them `14all:writing-for-agents`, and the four agents `14all:debugger`, `14all:preship-reviewer`, `14all:reviewer` and `14all:security-auditor`. The run ended with `success`, `is_error: false` and a cost of about 3 cents.
+
+This shows that Claude Code lists the skills and agents of the plugin, including the one added last. It does not show that a skill is chosen when it should be, or followed when it is; that is what evaluations measure, and none has been run for these skills. It does not show whether the `AGENTS.md` and `CLAUDE.md` at the plugin root were loaded as context. One run.
+
 ## What this does not show
 
 - Installing through a marketplace (`/plugin marketplace add`, `/plugin install`). The repository is now published at github.com/LILLINH/14All and the manifests name it, but the install was not tried. Not tested.
