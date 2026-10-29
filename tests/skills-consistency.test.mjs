@@ -47,3 +47,13 @@ test('executing-plans keeps a progress file, rules instead of stalling, and ends
 test('test-driven-development tells a subagent, who cannot ask the user, to record its seam choice in its report', () => {
   assert.match(read('test-driven-development'), /subagent[^.]*cannot ask[^.]*seams?[^.]*records?[^.]*report/i);
 });
+
+test('code-review needs a concrete case, labels findings by evidence, and does not hand the reviewer a conclusion', () => {
+  const text = read('code-review');
+  assert.match(text, /no concrete case, no finding/i);
+  assert.match(text, /`read`[^]*`inferred`[^]*`unverified`/);
+  assert.match(text, /none provided/);
+  assert.match(text, /Reinvented Wheel/);
+  assert.match(text, /never the author's (opinion|conclusion)/i);
+  assert.ok(text.split('\n').length < 400);
+});

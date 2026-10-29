@@ -37,6 +37,7 @@ Collect every document that says how code should be written (for example `CODING
 - **Shotgun Surgery:** one logical change forces scattered edits across many files. Gather what changes together.
 - **Divergent Change:** one module is edited for several unrelated reasons. Split it.
 - **Speculative Generality:** abstraction or parameters for needs the spec does not have. Delete it.
+- **Reinvented Wheel:** new code that does what a helper already in the repo, or the standard library, does. Use the existing one.
 - **Message Chains:** long `a.b().c().d()` navigation. Hide the walk behind one method.
 - **Middle Man:** a class that mostly delegates onward. Call the real target.
 - **Refused Bequest:** a subclass that ignores most of what it inherits. Prefer composition.
@@ -48,11 +49,13 @@ Dispatch two fresh subagents in the same response so they do not pollute each ot
 - **Standards reviewer:** give it the diff command, the commit list, the standards files, and the full smell baseline above. Brief: "Report per file or hunk (a) every violation of a documented standard, citing the file and rule, and (b) any baseline smell, naming it and quoting the hunk. Separate hard violations from judgement calls; baseline smells are always judgement calls. Under 400 words."
 - **Spec reviewer:** give it the diff command, the commit list, and the spec text. Brief: "Report (a) required behavior that is missing or partial, (b) behavior in the diff nobody asked for, (c) requirements that look implemented but look wrong. Quote the spec line for each. Under 400 words."
 
+Each brief carries the artifact and the contract, never the author's opinion of the change or a claim that it is correct. When an input is missing (no spec, no standards file), the brief says "Spec: none provided" instead of leaving the section out, so the reviewer does not invent one. Tell each reviewer: no concrete case, no finding. A finding names an input, a state or a line where it goes wrong.
+
 Without a way to dispatch subagents, do the two passes yourself, one after the other.
 
 ### 5. Report
 
-Present `## Standards` and `## Spec` side by side, lightly cleaned. Do not merge or rerank findings across axes. End with one line: the number of findings per axis and the worst issue within each axis. Grade each finding Critical, Important or Minor.
+Present `## Standards` and `## Spec` side by side, lightly cleaned. Do not merge or rerank findings across axes. End with one line: the number of findings per axis and the worst issue within each axis. Grade each finding Critical, Important or Minor, and label its evidence: `read` (quoted from the diff or the code), `inferred` (reasoned, not run) or `unverified` (could not check).
 
 ## Request a review
 
