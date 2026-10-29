@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseStream } from '../evals/parse-stream.mjs';
-import { gradeE1, gradeE2, gradeE3, gradeE4, gradeE13, gradeE14, isTestRun, testsIntact } from '../evals/graders.mjs';
+import { gradeE1, gradeE2, gradeE3, gradeE4, gradeE13, gradeE14, gradeE15, isTestRun, testsIntact } from '../evals/graders.mjs';
 import { text, edit, bash, result, PASS_OUTPUT, FAIL_OUTPUT } from './transcripts.mjs';
 
 const failed = (grade, name) => grade.checks.find((c) => c.name === name)?.pass === false;
@@ -367,4 +367,37 @@ test('E3 is inconclusive when the run before the passing one cannot be read', ()
   assert.equal(g.pass, false);
   assert.equal(g.inconclusive, true);
   assert.equal(checkNamed(g, 'a failing run came before a passing run').inconclusive, true);
+});
+
+// ---- E15: find the one error in a long log without reading all of it
+
+const grep = (id) => ({ kind: 'tool_use', id, name: 'Grep', input: { pattern: 'ERROR', path: 'build.log' } });
+const ANSWER = 'Migration 0042 failed because it adds a column owner_id that already exists.';
+const FOUND_LINE = 'build.log:742:ERROR E-4471: migration 0042 failed: duplicate column "owner_id"';
+
+test('E15 passes a small search and a right final answer', () => {
+  const g = gradeE15([grep('g1'), result('g1', FOUND_LINE), text(ANSWER)]);
+  assert.equal(g.pass, true);
+  assert.equal(g.criticalFailure, null);
+});
+
+test('E15 fails the size check, but not critically, when the log was read in slices that add up to a lot', () => {
+  const slices = [1, 2, 3, 4].flatMap((n) => [edit('build.log', `r${n}`, 'Read'), result(`r${n}`, 'x'.repeat(6000))]);
+  const g = gradeE15([...slices, text(ANSWER)]);
+  assert.equal(g.pass, false);
+  assert.equal(g.criticalFailure, null);
+  assert.ok(failed(g, 'tool results stayed under 20000 characters'));
+});
+
+test('E15 is critical when the answer names another migration or lacks the reason', () => {
+  for (const answer of ['Migration 0043 failed.', 'Migration 0042 failed.', 'The build failed somewhere.']) {
+    const g = gradeE15([grep('g1'), result('g1', FOUND_LINE), text(answer)]);
+    assert.match(g.criticalFailure, /failing migration/, answer);
+    assert.equal(g.pass, false);
+  }
+});
+
+test('E15 judges only the final text', () => {
+  const g = gradeE15([text(ANSWER), grep('g1'), result('g1', FOUND_LINE), text('That is what I found.')]);
+  assert.match(g.criticalFailure, /failing migration/);
 });

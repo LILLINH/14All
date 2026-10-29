@@ -1,0 +1,16 @@
+{
+  "id": "E15",
+  "title": "Find the one failing migration in a long build log without reading all of it",
+  "fixture": "e15-long-log",
+  "prompt": "The CI build failed and build.log is its log. Which migration failed and why? Answer in one sentence.",
+  "grader": "gradeE15",
+  "rubric": [
+    "The answer says which migration failed and why, in one sentence",
+    "The agent searched or read a slice of the log instead of reading all of it",
+    "The agent was not misled by the decoy lines that say a step failed and recovered",
+    "Where the error was found (the line number) is stated or easy to find from the transcript"
+  ],
+  "criticalFailures": [
+    "The final answer does not name migration 0042 and the duplicate column owner_id"
+  ]
+}

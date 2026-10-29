@@ -8,7 +8,7 @@ import { parseArgs, testFilesIntactFor } from '../evals/run.mjs';
 import { makeRoot } from './helpers.mjs';
 
 const evals = fileURLToPath(new URL('../evals', import.meta.url));
-const IDS = ['E1', 'E2', 'E3', 'E4', 'E13', 'E14'];
+const IDS = ['E1', 'E2', 'E3', 'E4', 'E13', 'E14', 'E15'];
 
 for (const id of IDS) {
   test(`${id}.json is a complete task with a fixture and a known grader`, () => {
@@ -66,4 +66,17 @@ test('the E13 and E14 fixtures declare the framework the simple-code index selec
   assert.ok('react' in deps('e13-react-notes'));
   assert.ok('vue' in deps('e14-vue-notes'));
   assert.ok('pinia' in deps('e14-vue-notes'));
+});
+
+test('the E15 log has one real error among decoys that say "failed", and is long but not huge', () => {
+  const log = readFileSync(join(evals, 'fixtures', 'e15-long-log', 'build.log'), 'utf8');
+  const lines = log.trimEnd().split('\n');
+  assert.ok(lines.length >= 1400 && lines.length <= 1600, `${lines.length} lines`);
+  assert.ok(Buffer.byteLength(log) < 150000);
+  const errors = lines.filter((l) => l.includes('ERROR E-4471'));
+  assert.equal(errors.length, 1);
+  assert.ok(errors[0].includes('0042') && errors[0].includes('owner_id'));
+  const decoys = lines.filter((l) => /failed/i.test(l) && !l.includes('ERROR E-4471'));
+  assert.ok(decoys.length >= 5, `${decoys.length} decoys`);
+  assert.equal(lines.filter((l) => l.includes('owner_id')).length, 1, 'owner_id appears only in the error');
 });

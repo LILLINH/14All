@@ -184,4 +184,22 @@ export const gradeE13 = (events) => gradeSimpleCode(events, REACT_ABSTRACTIONS);
 /** E14: the same task in a Vue project. */
 export const gradeE14 = (events) => gradeSimpleCode(events, VUE_ABSTRACTIONS);
 
-export const GRADERS = { gradeE1, gradeE2, gradeE3, gradeE4, gradeE13, gradeE14 };
+// ---- E15: find the one error in a long log without reading all of it. Deterministic proxies: the final
+// answer names the migration and the reason, and the tools returned little text. Whether the answer reads
+// well, and whether the decoys misled the agent on the way, needs a maintainer's rubric score.
+
+const MAX_TOOL_RESULT_CHARS = 20000;
+const MIGRATION_NOT_FOUND = 'did not find the failing migration';
+
+/** E15: name the failing migration and its reason from a long log, keeping what the tools return small. */
+export function gradeE15(events) {
+  const finalText = events.findLast((e) => e.kind === 'text')?.text ?? '';
+  const found = /\b0042\b/.test(finalText) && /owner_id/.test(finalText);
+  const resultChars = events.filter((e) => e.kind === 'tool_result').reduce((sum, e) => sum + e.text.length, 0);
+  return outcome(found ? null : MIGRATION_NOT_FOUND, [
+    { name: 'the answer names migration 0042 and owner_id', pass: found },
+    { name: `tool results stayed under ${MAX_TOOL_RESULT_CHARS} characters`, pass: resultChars < MAX_TOOL_RESULT_CHARS },
+  ]);
+}
+
+export const GRADERS = { gradeE1, gradeE2, gradeE3, gradeE4, gradeE13, gradeE14, gradeE15 };
