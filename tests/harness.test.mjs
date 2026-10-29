@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { auditHarness } from '../scripts/lib/harness.mjs';
@@ -78,4 +78,12 @@ test('the script exits 0 on a complete repository and says it checks words and f
   assert.equal(run.status, 0);
   assert.match(run.stdout, /8 of 8 present/);
   assert.match(run.stdout, /words and files/);
+});
+
+test('the repository passes its own agent-readiness audit, and its instruction files are small', () => {
+  const result = auditHarness(repoRoot);
+  assert.deepEqual(result.checks.filter((c) => !c.pass && c.critical), []);
+  assert.ok(result.present >= 7, `${result.present} of ${result.total} present`);
+  assert.ok(readFileSync(join(repoRoot, 'AGENTS.md'), 'utf8').split('\n').length <= 80, 'AGENTS.md is at most 80 lines');
+  assert.equal(readFileSync(join(repoRoot, 'CLAUDE.md'), 'utf8').trim(), '@AGENTS.md');
 });
