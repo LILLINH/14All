@@ -34,3 +34,11 @@ Write the code an experienced senior developer would write: plain enough that a 
 ## References
 
 Read only the entries that match the files you are about to touch. A framework entry assumes its language entry is read too. If a language has no reference, use the language-agnostic rules above and say so in your report.
+
+- `references/javascript.md`: a `.js`, `.mjs`, `.cjs` or `.jsx` file, or any `package.json` project.
+- `references/typescript.md`: a `.ts` or `.tsx` file, or a `tsconfig.json`; read it with `javascript.md`.
+- `references/react.md`: a `package.json` that lists `react`, or `.jsx` and `.tsx` files that import it.
+- `references/vue.md`: a `package.json` that lists `vue`, or `.vue` files.
+- `references/nextjs.md`: a `package.json` that lists `next`, or an `app/` or `pages/` directory with `next.config.*`.
+- `references/nuxt.md`: a `package.json` that lists `nuxt`, or a `nuxt.config.*` file.
+- `references/nodejs-express.md`: a `package.json` that lists `express`, or code that calls `express()`.

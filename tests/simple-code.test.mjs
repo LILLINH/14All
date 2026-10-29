@@ -133,3 +133,15 @@ test('no reference names an agent tool', () => {
     assert.doesNotMatch(reference(name), /\b(TodoWrite|Task tool|Skill tool|Bash tool|Read tool|Edit tool|Write tool|Agent tool)\b/, name);
   }
 });
+
+// ---- the owner's stack: the excess named for React and Vue
+
+test('react.md names the excess agents add in React', () => {
+  const body = reference('react');
+  for (const pattern of [/custom hook/i, /context/i, /wrapper component/i, /state (library|management)/i]) assert.match(body, pattern);
+});
+
+test('vue.md names the excess agents add in Vue', () => {
+  const body = reference('vue');
+  for (const pattern of [/composable/i, /wrapper component/i, /Pinia|state library/i]) assert.match(body, pattern);
+});
