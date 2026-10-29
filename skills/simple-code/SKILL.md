@@ -18,16 +18,18 @@ Write the code an experienced senior developer would write: plain enough that a 
    - When existing code is more complicated than the job needs and no written rule asks for it, write the new code the simple way, leave the old code alone, and say so in one sentence in your final report.
    - If there is no linter, no configuration, no written rules and no similar file to learn from, use the defaults in the matching reference. Where the project gives no answer on a point, use the matching reference's default for that point.
 4. **Write the simple version first.** Apply the rules below.
-5. **Check before saying done.** Could this be shorter without losing meaning? Is every new name, file, parameter and dependency needed by the task as asked? Would a new teammate follow it on first read?
+5. **Check before saying done.** Could this be shorter without losing meaning? Is every new name, file, parameter and dependency needed by the task as asked? Would a new teammate follow it on first read? Did I cut anything from the never-trade list in Rules?
 6. **Offer, do not write.** If the conventions were not written down anywhere, offer a short summary the user can save in their project's rule file. Do not save it unasked.
 
 ## Rules
 
 - Use the plain thing: a function before a class, the language or platform feature before a dependency, a direct call before indirection.
+- Look before you write: search the project, then the language's standard library, for an existing function, component or helper that does the job, and use it. Write new code only when nothing fits.
 - No abstraction until a second real use exists. Three similar lines are better than a helper made for one.
 - Names say what a thing is; comments say why, not what.
 - Keep control flow flat: early returns over deep nesting, one level of abstraction per function.
 - No speculative options, flags, configuration or extension points. Do not handle errors that cannot happen.
+- Never trade these for brevity (the never-trade list): validation of input at a trust boundary (user input, network, files, environment); error handling where a failure would lose or corrupt data; security checks; the accessibility basics of anything a person sees. Moved or merged code keeps its error handling.
 - Smallest diff that does the job. Delete what your change makes unused before adding. No unrelated cleanup. Leave existing layers alone.
 - Test at the seam the project already has; do not pull out a helper only to make code testable.
 - Precedence: a written project rule beats these rules. Where there is no written rule, a habit of the project beats them on style, and these rules beat the habit on structure. The references count as these rules. Wrapping or swallowing errors, and adding structure only for tests, are structure. A direct request from the user beats all of these.

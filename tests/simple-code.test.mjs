@@ -247,3 +247,27 @@ test('sql names the dialect forms of LIMIT, and ruby says which version has Data
   assert.match(reference('sql'), /LIMIT[^.]*(dialect|TOP|FETCH)/i);
   assert.match(reference('ruby'), /Ruby 3\.2/);
 });
+
+test('the rules tell the agent to look for an existing helper or standard-library feature before writing one', () => {
+  const rules = text().split('## Rules')[1].split('## References')[0];
+  assert.match(rules, /existing (function|component|helper)/i);
+  assert.match(rules, /standard library/i);
+});
+
+test('the rules name what is never traded for brevity', () => {
+  const rules = text().split('## Rules')[1].split('## References')[0];
+  assert.match(rules, /trust boundary/i);
+  assert.match(rules, /lose or corrupt data/i);
+  assert.match(rules, /accessibility/i);
+  assert.match(rules, /keeps its error handling/i);
+});
+
+test('step 5 asks whether anything on the never-trade list was cut', () => {
+  const step = text().split('\n').find((line) => line.startsWith('5. **Check before saying done.**'));
+  assert.match(step, /never-trade list/i);
+});
+
+test('the precedence sentence is unchanged and the skill stays short', () => {
+  assert.match(text(), /Precedence: a written project rule beats these rules\./);
+  assert.ok(text().split('\n').length <= 70, 'simple-code stays under 70 lines');
+});
