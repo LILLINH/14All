@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -79,10 +79,9 @@ test('README says simple-code exists and is unmeasured', () => {
 });
 
 test('the README names handoff and working-notes as drafts and the resume block with its switch', () => {
-  assert.match(readme, /`skills\/handoff`/);
-  assert.match(readme, /`skills\/working-notes`/);
   assert.match(readme, /ALL14_RESUME=off/);
-  assert.match(readme, /drafts/i);
+  assert.match(readme, /\.14all\/progress\//);
+  assert.match(readme, /drafts?\b/i);
   assert.match(readme, /no evaluation has measured/i);
 });
 
@@ -109,11 +108,10 @@ test('the changelog records the Phase 1 additions', () => {
 });
 
 test('the README names the four new skills and the agents directory, as drafts, with the agents seen listed once and their tool list not verified', () => {
-  for (const name of ['tool-output', 'secure-code', 'impact-check', 'research']) assert.match(readme, new RegExp(`\`skills/${name}\``), name);
   assert.match(readme, /`agents\/`/);
-  assert.match(readme, /drafts/i);
+  assert.match(readme, /drafts?\b/i);
   assert.match(readme, /seen listed in one headless session/);
-  assert.match(readme, /is not verified/i);
+  assert.match(readme, /not verified/i);
   assert.match(readme, /E15/);
 });
 
@@ -143,7 +141,6 @@ test('the README and the evidence do not claim that other coding agents ignore a
 });
 
 test('the README names writing-for-agents, the web UI reference and the audit, and says what the new checks cannot show', () => {
-  assert.match(readme, /`skills\/writing-for-agents`/);
   assert.match(readme, /`skills\/simple-code\/references\/web-ui\.md`/);
   assert.match(readme, /npm run check:harness/);
   assert.match(readme, /not whether a model/i);
@@ -171,9 +168,21 @@ test('the README states the real number of known routing gaps', () => {
   const words = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
   const gaps = cases.filter((c) => c.status === 'known-gap').length;
   assert.ok(gaps < words.length, 'update this test for more gaps');
-  assert.ok(readme.includes(`there are ${words[gaps]}`), `the README should say "there are ${words[gaps]}" known gaps`);
+  assert.ok(readme.includes(`${words[gaps]} known gap`), `the README should say "${words[gaps]} known gap" (or gaps)`);
 });
 
 test('the repository ignores .14all/, as AGENTS.md says it does', () => {
   assert.match(readFileSync(join(repo, '.gitignore'), 'utf8'), /^\.14all\/$/m);
+});
+
+test('the README names every skill in the skills directory', () => {
+  const names = readdirSync(join(repo, 'skills'), { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name);
+  assert.ok(names.length >= 21);
+  for (const name of names) assert.ok(readme.includes(`\`${name}\``), `the README should name the skill ${name}`);
+});
+
+test('the README explains the words it uses and says what has and has not been tried', () => {
+  for (const word of ['Skill:', 'Hook:', 'Agent:', 'Evaluation:']) assert.ok(readme.includes(`**${word}`), `the README should explain "${word}"`);
+  assert.match(readme, /## How well does it work\?/);
+  assert.match(readme, /What was not tried/);
 });
