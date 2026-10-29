@@ -77,3 +77,33 @@ test('README says simple-code exists and is unmeasured', () => {
   assert.match(readme, /`skills\/simple-code`/);
   assert.match(readme, /unmeasured/i);
 });
+
+test('the README names handoff and working-notes as drafts and the resume block with its switch', () => {
+  assert.match(readme, /`skills\/handoff`/);
+  assert.match(readme, /`skills\/working-notes`/);
+  assert.match(readme, /ALL14_RESUME=off/);
+  assert.match(readme, /drafts/i);
+  assert.match(readme, /no evaluation has measured/i);
+});
+
+test('THIRD_PARTY_NOTICES credits ideas without claiming text was copied', () => {
+  const notices = doc('THIRD_PARTY_NOTICES.md');
+  assert.match(notices, /^## Ideas credited \(no text copied\)$/m);
+  const section = notices.split('## Ideas credited (no text copied)')[1];
+  for (const name of ['ponytail', 'planning-with-files', 'learn-harness-engineering', 'agent-skills', 'claude-mem']) {
+    assert.ok(section.includes(name), `the credits should name ${name}`);
+  }
+});
+
+test('the evals README documents the Inconclusive column, the validity rule and eval:compare', () => {
+  const text = readFileSync(join(repo, 'evals', 'README.md'), 'utf8');
+  assert.match(text, /Inconclusive/);
+  assert.match(text, /14ALL-BOOTSTRAP-V1/);
+  assert.match(text, /npm run eval:compare/);
+  assert.ok('eval:compare' in scripts);
+});
+
+test('the changelog records the Phase 1 additions', () => {
+  const text = doc('CHANGELOG.md');
+  for (const part of ['handoff', 'working-notes', 'resume block', 'eval:compare']) assert.ok(text.includes(part), `the changelog should mention ${part}`);
+});

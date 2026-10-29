@@ -137,3 +137,18 @@ Adapted from `skills/engineering/pr/SKILL.md` in mattpocock/skills v1.3.1 (MIT, 
 ## handoff
 
 Adapted from `skills/productivity/handoff/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/handoff/meta.yaml`.
+
+## Ideas credited (no text copied)
+
+These projects gave 14All an idea. The wording in 14All is its own, so no license obligation follows; they are named as a courtesy and so a reader can look at the source. All were read from shallow clones on 2026-10-29.
+
+- ponytail (DietrichGebert, MIT): a floor of things never cut for brevity, looking for an existing helper before writing one, and checking the transcript to prove what a benchmark run loaded.
+- everything-claude-code (affaan-m, MIT): refusing to bypass git hooks with a tokenizer-based check, and asking before a lint configuration is weakened.
+- agent-skills (addyosmani, MIT): the restartable-session list, and a reviewer that never gets the author's conclusion.
+- planning-with-files (OthmanAdi, MIT): the plan on disk, the hook that loads it again, and the warning that a silent hook looks the same as no plan.
+- learn-harness-engineering (walkinglabs, MIT): evidence for every finished step, one active step, stop conditions, and the verified-versus-unverified split of a handoff note.
+- claude-mem (thedotmack, Apache-2.0): "tried and why it failed" in a handoff, and `<private>` text never copied into a note.
+- wshobson/agents (MIT) and ruflo (ruvnet, MIT): the tighten-only idea for guard rules and framing injected text as data.
+- claude-skills (alirezarezvani, MIT): the regression gate that fails on a dropped case.
+- graphify (Graphify-Labs, Apache-2.0): reporting the lines actually read, and labelling a claim read, inferred or unverified.
+- tradingagents (TauricResearch, Apache-2.0): saying "not provided" for a missing input, an inconclusive result instead of a default, and invalidating saved progress when the plan changes.

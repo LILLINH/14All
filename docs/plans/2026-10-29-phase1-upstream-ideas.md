@@ -24,8 +24,8 @@ Inputs the spec implies but a happy-path test would miss; each has a test in the
 
 1. `git commit -mnote` (a message glued to `-m` that contains an `n`), `git log -n 5` and `git push -n` must not trip the hook-bypass rule (Task 1).
 2. An existing file named `eslint.config.notes.md` is not a lint config and must not prompt (Task 2).
-3. A progress file whose content contains the closing tag `</14all-resume>` must not be able to end the data frame early (Task 5).
-4. An empty `.14all/progress/` directory, or one with no `*.md` file, produces no resume block (Task 5).
+3. A progress file whose content contains the closing tag `</14all-resume>` must not be able to end the data frame early (Task 7).
+4. An empty `.14all/progress/` directory, or one with no `*.md` file, produces no resume block (Task 7).
 5. A mode with no valid runs, or a task only the baseline ran, must make the compare gate fail or report undecided, never pass (Task 9).
 
 ---

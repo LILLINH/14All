@@ -37,7 +37,7 @@ An agent is supported only when `docs/evidence/<agent>.md` shows it installed an
 
 ## Evaluations
 
-`node evals/run.mjs <task> --mode baseline|14all --runs <n>` runs a task against Claude Code and grades the transcript; it calls a model and is never part of CI. `npm run eval:report -- <date>` prints the table. Fix a grader test-first, then `node evals/regrade.mjs <date>` to regrade saved runs; the old grade stays in `previousGrade`. A run with `invalid` set never ran the agent and is left out of the table.
+`node evals/run.mjs <task> --mode baseline|14all --runs <n>` runs a task against Claude Code and grades the transcript; it calls a model and is never part of CI. `npm run eval:report -- <date>` prints the table and `npm run eval:compare -- <date>` checks the plugin mode against the baseline. Fix a grader test-first, then `node evals/regrade.mjs <date>` to regrade saved runs; the old grade stays in `previousGrade`. A run with `invalid` set never ran the agent and is left out of the table.
 
 ## Hooks
 

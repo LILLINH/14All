@@ -1,6 +1,6 @@
 # Phase 1: ideas taken from the top Claude Code repos
 
-Date: 2026-10-29. Status: draft, awaiting owner approval. Nothing has been built.
+Date: 2026-10-29. Status: approved by the owner on 2026-10-29 ("ok"); built on the branch `feat/phase1-upstream-ideas`.
 
 ## Intent
 

@@ -16,6 +16,13 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - CI runs on Linux and macOS and shellchecks the guard and the wrapper.
 - Guard: also denies `git push --force-with-lease` to main or master, a force push with no branch named while on main or master, `bash <(curl ...)` and `sh -c "$(curl ...)"` style runs, secret reads through `cat`, `grep`, `tail` and similar, and the Grep tool aimed at a secrets file.
 
+- `handoff` skill (adapted from mattpocock/skills): a note for a fresh agent with what is verified, what is broken, what was tried, and the next steps. Draft.
+- `working-notes` skill: a notes file in `.14all/progress/` for a long task without a written plan. Draft.
+- A resume block in the session-start hook: the newest `.14all/progress/*.md`, at most 3000 characters, framed as data. `ALL14_RESUME=off` leaves it out.
+- Guard: denies `--no-verify` (commit, push, merge, am, cherry-pick), `git commit -n` and a `core.hooksPath` override; asks the user before an existing lint or format configuration is edited (`Edit`, `Write` and `MultiEdit` are now matched). The prompt is not yet verified in a live session.
+- Evals: a run's grade can be `inconclusive` (a test run cut off before its summary) and the report counts those apart; a run must show the bootstrap in 14all mode and not in baseline mode or it is invalid; `npm run eval:compare` gates saved runs (dropped task, more critical failures, fewer passes; no significance test).
+- `THIRD_PARTY_NOTICES.md` credits the ideas taken from ten other repositories (no text copied).
+
 ### Changed
 
 - The `OWNER` placeholder is replaced by `LILLINH` in the manifests, `LICENSE`, every skill's `meta.yaml`, the README and SECURITY.md; the repository URL is `https://github.com/LILLINH/14All`. `npm run check:release` passes.
@@ -23,6 +30,9 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - CI runs on pushes to `main` and on pull requests only, and cancels a superseded run on the same ref.
 - The evaluation runner records `invalid` for a run in which the agent never ran (bad exit status, empty transcript, no result message); reports leave those out of every count.
 - Grader E1 needs the question to end a line. Grader E4 lets the last of "claims done" and "not verified" decide, and a read-only command (`ls`, `cat`) no longer counts as verification. The 24 saved runs regrade to the same outcomes.
+- `simple-code`: a never-trade list (boundary validation, data-protecting error handling, security, accessibility) and a rule to look for an existing helper before writing one.
+- `code-review`: no concrete case, no finding; evidence labels (`read`, `inferred`, `unverified`); the reviewer gets no conclusion and "none provided" for a missing input; a Reinvented Wheel smell.
+- `executing-plans` records a plan hash and rechecks it on resume; subagent briefs ask for the line range actually read.
 - The session-start hook injects the bootstrap skill body without its YAML frontmatter.
 - `bumpVersion` reads and checks every listed file before writing any.
 - README install commands are `/plugin marketplace add` and `/plugin install 14all@14all`.

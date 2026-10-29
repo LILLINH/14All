@@ -32,9 +32,13 @@ Tools are limited to file tools plus `npm test`, `node`, `ls` and `cat` in the t
 | E13 | `e13-react-notes` | defines a new hook, context, reducer or class component, or edits `package.json` |
 | E14 | `e14-vue-notes` | defines a new store, composable or `provide`, or edits `package.json` |
 
+## Inconclusive and invalid
+
+A run is **inconclusive** when a check could not be decided because a test run's output was cut off before its summary: it did not pass, but it is not counted as the agent's failure, and the report shows it in its own column. A run is **invalid** when the agent did not run to completion, or when the transcript does not show the mode: in `14all` mode the SessionStart hook response must carry the bootstrap marker `14ALL-BOOTSTRAP-V1`, and in `baseline` mode it must not. Invalid runs are left out of every count.
+
 ## Comparing modes
 
-Run the same task at least three times per mode, then compare per-task grader results, rubric scores, cost and turns. Report failures and cases where 14All did not beat the baseline. One run per mode is a smoke test, not a result.
+Run the same task at least three times per mode, then compare per-task grader results, rubric scores, cost and turns. Report failures and cases where 14All did not beat the baseline. One run per mode is a smoke test, not a result. `npm run eval:compare -- <date>` applies the rules mechanically: exit 0 when the plugin mode is no worse, 1 when it is (a task the baseline ran has no valid plugin run, more critical failures, or fewer passes), 2 when it cannot decide (fewer than three valid runs in a mode, nothing to compare with). It runs no significance test.
 
 ## Adding a task
 
