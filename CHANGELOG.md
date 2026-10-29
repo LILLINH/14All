@@ -23,7 +23,7 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - Evals: a run's grade can be `inconclusive` (a test run cut off before its summary) and the report counts those apart; a run must show the bootstrap in 14all mode and not in baseline mode or it is invalid; `npm run eval:compare` gates saved runs (dropped task, more critical failures, fewer passes; no significance test).
 - `THIRD_PARTY_NOTICES.md` credits the ideas taken from other repositories (no text copied).
 - Skills `tool-output`, `secure-code`, `impact-check` and `research` (adapted from mattpocock/skills). Drafts.
-- `agents/`: read-only role agents `debugger`, `reviewer`, `preship-reviewer` and `security-auditor`, with `scripts/lint-agents.mjs` in `npm run check`. That Claude Code loads them is not yet verified.
+- `agents/`: read-only role agents `debugger`, `reviewer`, `preship-reviewer` and `security-auditor`, with `scripts/lint-agents.mjs` in `npm run check`. Seen listed in one live Claude Code session; that an agent keeps to its read-only tool list is not verified.
 - Evaluation E15: one error in a long log, with a grader and a fixture; not yet run.
 
 ### Changed

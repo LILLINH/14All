@@ -41,6 +41,18 @@ Date: 2026-10-28, Claude Code 2.1.312, headless, in a scratch git repository on 
 
 This shows the denial JSON is read by Claude Code and stops that tool call. It does not show the other rules (`rm`, pipe-to-shell, raw disk, secret reads) in a live session; those are covered by `tests/guard.test.mjs` only. One run each.
 
+## Role agents and the new skills, one live listing
+
+Date: 2026-10-29, Claude Code 2.1.312, headless, started from an empty scratch directory outside the repository. Command (the plugin directory is this repository):
+
+```
+claude -p "reply with the word ok" --plugin-dir <repo> --setting-sources project,local --no-session-persistence --output-format stream-json --verbose
+```
+
+The first `system` message with subtype `init` listed these agents: `14all:debugger`, `14all:preship-reviewer`, `14all:reviewer`, `14all:security-auditor`, next to Claude Code's own `claude`, `Explore`, `general-purpose`, `Plan` and `statusline-setup`. Its `skills` list included `14all:handoff`, `14all:working-notes`, `14all:tool-output`, `14all:secure-code`, `14all:impact-check` and `14all:research`. The run ended with `success`, `is_error: false`, a one-word reply and a cost of about 4 cents.
+
+This shows that Claude Code reads `agents/` and the new skill directories from the plugin in one headless session. It does not show that a dispatched agent obeys its read-only tool list, that an agent is chosen when it should be, or anything about other coding agents, which do not read `agents/`. One run. The session also listed other plugins that were not part of this repository.
+
 ## What this does not show
 
 - Installing through a marketplace (`/plugin marketplace add`, `/plugin install`). The repository is now published at github.com/LILLINH/14All and the manifests name it, but the install was not tried. Not tested.

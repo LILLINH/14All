@@ -108,11 +108,12 @@ test('the changelog records the Phase 1 additions', () => {
   for (const part of ['handoff', 'working-notes', 'resume block', 'eval:compare']) assert.ok(text.includes(part), `the changelog should mention ${part}`);
 });
 
-test('the README names the four new skills and the agents directory, as drafts, with the agents not yet verified', () => {
+test('the README names the four new skills and the agents directory, as drafts, with the agents seen listed once and their tool list not verified', () => {
   for (const name of ['tool-output', 'secure-code', 'impact-check', 'research']) assert.match(readme, new RegExp(`\`skills/${name}\``), name);
   assert.match(readme, /`agents\/`/);
   assert.match(readme, /drafts/i);
-  assert.match(readme, /not (yet )?verified/i);
+  assert.match(readme, /seen listed in one headless session/);
+  assert.match(readme, /is not verified/i);
   assert.match(readme, /E15/);
 });
 
