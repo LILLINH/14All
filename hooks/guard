@@ -230,6 +230,58 @@ push_defaults_to_trunk() {
   return 1
 }
 
+# True for a git command that skips or redirects git hooks: --no-verify on commit, push, merge, am
+# or cherry-pick; -n on commit (an `n` before any letter that takes an argument, so -mnote is a
+# message); a core.hooksPath override on the command line (-c or --config-env, in any letter case).
+git_bypasses_hooks() {
+  local segment word state sub prev i ch
+  local hooks_path='[Cc][Oo][Rr][Ee].[Hh][Oo][Oo][Kk][Ss][Pp][Aa][Tt][Hh]'
+  while IFS= read -r segment; do
+    state=0 sub="" prev=""
+    set -f
+    for word in $segment; do
+      word=${word//[\"\'\`()]/}
+      case $state in
+        0) [ "$word" = git ] && state=1 ;;
+        1)
+          if [ "$prev" = -c ] || [ "$prev" = -C ]; then
+            # shellcheck disable=SC2254 # hooks_path is a glob on purpose
+            case $word in $hooks_path=*) [ "$prev" = -c ] && { set +f; return 0; } ;; esac
+            prev=""
+            continue
+          fi
+          # shellcheck disable=SC2254
+          case $word in
+            -c | -C) prev=$word ;;
+            --config-env=$hooks_path*) set +f; return 0 ;;
+            -*) ;;
+            *) sub=$word state=2 ;;
+          esac
+          ;;
+        2)
+          case $word in
+            --no-verify)
+              case $sub in commit | push | merge | am | cherry-pick) set +f; return 0 ;; esac
+              ;;
+            -[a-zA-Z]*)
+              [ "$sub" = commit ] || continue
+              for ((i = 1; i < ${#word}; i++)); do
+                ch=${word:i:1}
+                case $ch in
+                  n) set +f; return 0 ;;
+                  m | F | C | c | t | S | u) break ;;
+                esac
+              done
+              ;;
+          esac
+          ;;
+      esac
+    done
+    set +f
+  done <<<"$(split_commands "$1")"
+  return 1
+}
+
 # True for a common read command (cat, grep, tail ...) that is given a secrets file.
 bash_reads_secret() {
   local segment word reads
@@ -272,6 +324,8 @@ case $tool in
         deny "force push to main or master"
       fi
     fi
+
+    git_bypasses_hooks "$scan" && deny "bypassing git hooks (--no-verify or core.hooksPath)"
 
     pipe_re='(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+)?(ba|z|da)?sh([[:space:]]|$)'
     procsub_re='(^|[^[:alnum:]_])((ba|z|da)?sh|source|\.)([[:space:]]+-[a-zA-Z]+)*[[:space:]]+<\([[:space:]]*(curl|wget)'

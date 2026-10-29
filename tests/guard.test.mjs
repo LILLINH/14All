@@ -237,3 +237,37 @@ test('the guard runs with an empty PATH', () => {
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).hookSpecificOutput.permissionDecision, 'deny');
 });
+
+test('denies bypassing git hooks with --no-verify, -n on commit, or core.hooksPath', () => {
+  for (const command of [
+    'git commit --no-verify -m x',
+    'git commit -m x --no-verify',
+    'git push --no-verify',
+    'git merge --no-verify topic',
+    'git commit -n -m x',
+    'git commit -nm "x"',
+    'git -c core.hooksPath=/dev/null commit -m x',
+    'git -c core.hookspath=/dev/null commit -m x',
+    'git --config-env=core.hooksPath=H commit -m x',
+    'cd x && git commit --no-verify',
+  ]) {
+    assert.ok(denied(bash(command)), command);
+  }
+  assert.match(run(bash('git commit --no-verify -m x')).decision.permissionDecisionReason, /bypassing git hooks/);
+});
+
+test('allows commands that only mention or resemble a hook bypass', () => {
+  for (const command of [
+    'git commit -m "skip --no-verify"',
+    'git commit -mnote',
+    'git commit --amend --no-edit',
+    'git push -n',
+    'git push --dry-run',
+    'git log -n 5',
+    'git -c user.name=x commit -m y',
+    'echo --no-verify',
+    'git push origin feature',
+  ]) {
+    assert.ok(!denied(bash(command)), command);
+  }
+});
