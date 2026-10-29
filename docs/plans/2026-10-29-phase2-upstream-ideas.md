@@ -1,6 +1,6 @@
 # Phase 2: skills and role agents from the top repos, Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Historical record.** This plan was used to build the repository. Its checkboxes were not ticked as work went on, so they do not show progress. What shipped is listed in `CHANGELOG.md`.
 
 **Goal:** Build the five items of `docs/specs/2026-10-29-phase2-upstream-ideas-design.md`: four skills (`tool-output`, `secure-code`, `impact-check`, `research`), four read-only role agents with a lint, and the E15 evaluation.
 

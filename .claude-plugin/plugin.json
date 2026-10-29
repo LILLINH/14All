@@ -1,7 +1,7 @@
 {
   "name": "14all",
   "version": "0.1.0",
-  "description": "A curated, cross-agent toolkit of skills, hooks and workflows that makes AI coding agents more reliable.",
+  "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code only.",
   "author": {
     "name": "LILLINH"
   },

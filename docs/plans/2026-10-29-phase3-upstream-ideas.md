@@ -1,6 +1,6 @@
 # Phase 3: writing for agents, UI checks, done criteria and more lints, Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Historical record.** This plan was used to build the repository. Its checkboxes were not ticked as work went on, so they do not show progress. What shipped is listed in `CHANGELOG.md`.
 
 **Goal:** Build the items of `docs/specs/2026-10-29-phase3-upstream-ideas-design.md`: `writing-for-agents` with an `AGENTS.md` template, a web UI reference for `simple-code`, done-criteria text, four deterministic checks, and 14All's own `AGENTS.md`.
 

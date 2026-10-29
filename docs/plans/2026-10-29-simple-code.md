@@ -1,6 +1,6 @@
 # Simple Code Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Historical record.** This plan was used to build the repository. Its checkboxes were not ticked as work went on, so they do not show progress. What shipped is listed in `CHANGELOG.md`.
 
 **Goal:** Add one skill, `simple-code`, with 25 per-language and per-framework references, that makes the agent learn a project's conventions and keep the code it adds simple, plus React and Vue evaluation tasks.
 

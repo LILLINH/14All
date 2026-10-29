@@ -13,14 +13,14 @@
 
 ## Install
 
-This works for Claude Code only. Installing through the marketplace has not been tried yet.
+This works for Claude Code only. The two commands below were run once in a clean configuration and installed the plugin; a session after that install was not run.
 
 ```
 /plugin marketplace add LILLINH/14All
 /plugin install 14all@14all
 ```
 
-The code is at https://github.com/LILLINH/14All. What was tried is loading the plugin straight from a folder for one session; see [docs/evidence/claude-code.md](docs/evidence/claude-code.md).
+The code is at https://github.com/LILLINH/14All. What was tried is the install above, and loading the plugin straight from a folder for a session; see [docs/evidence/claude-code.md](docs/evidence/claude-code.md).
 
 ## What you get
 
@@ -95,7 +95,7 @@ Here is what is known, and what is not.
 - The guard stopped one force push (one run, with an earlier version of the guard).
 - Claude Code listed all 21 skills and the four agents. They were seen listed in one headless session each time, in two separate checks. That shows they load, not that they are chosen or followed.
 
-**What was not tried:** installing through the marketplace, Windows, interactive sessions, any assistant other than Claude Code, whether the "ask first" prompt appears for a settings edit, and whether a helper agent really keeps to read-only. Those are not verified.
+**What was not tried:** a session after a marketplace install, Windows, interactive sessions, any assistant other than Claude Code, whether the "ask first" prompt appears for a settings edit, and whether a helper agent really keeps to read-only. Those are not verified.
 
 ## Learn more
 

@@ -61,9 +61,23 @@ The first `system` message with subtype `init` listed 21 skills with the `14all:
 
 This shows that Claude Code lists the skills and agents of the plugin, including the one added last. It does not show that a skill is chosen when it should be, or followed when it is; that is what evaluations measure, and none has been run for these skills. It does not show whether the `AGENTS.md` and `CLAUDE.md` at the plugin root were loaded as context. One run.
 
+## Marketplace install, one run
+
+Date: 2026-10-29, Claude Code 2.1.312, Linux. A clean configuration directory (`CLAUDE_CONFIG_DIR` set to an empty scratch folder), so no user settings were touched:
+
+```
+claude plugin marketplace add LILLINH/14All
+claude plugin install 14all@14all
+claude plugin list
+```
+
+Result: the repository was cloned from `https://github.com/LILLINH/14All.git`, the marketplace manifest validated, and the plugin installed (scope user). `plugin list` showed `14all@14all`, version 0.1.0, enabled. This was the published `main`, before the manifest wording change of the same day.
+
+This shows that the two install commands in the README work against the public repository. It does not show that a session started after this install receives the bootstrap or the skills: the clean configuration was not logged in, so no session was run.
+
 ## What this does not show
 
-- Installing through a marketplace (`/plugin marketplace add`, `/plugin install`). The repository is now published at github.com/LILLINH/14All and the manifests name it, but the install was not tried. Not tested.
+- A session started after a marketplace install. The install itself is covered by the section above; the bootstrap, skills and guard were only seen through `--plugin-dir`.
 - That the model then invokes 14All skills correctly. That is what evaluations E1 to E4 measure (Task 14 and Task 15).
 - The `compact`, `clear` and `startup` matchers individually. Only the headless startup path was run.
 - Windows. `hooks/run-hook.cmd` has a Windows branch that has never been run.

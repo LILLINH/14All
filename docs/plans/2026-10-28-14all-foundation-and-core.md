@@ -1,6 +1,6 @@
 # 14All Foundation and Core Implementation Plan (Plan 1 of 3)
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Historical record.** This plan was used to build the repository. Its checkboxes were not ticked as work went on, so they do not show progress. What shipped is listed in `CHANGELOG.md`.
 
 **Goal:** Ship the 14All repository foundation (validation tooling, CI, provenance), the session-start bootstrap, the core process, quality and git skills, a Claude Code adapter backed by recorded evidence, and an evaluation harness with tasks E1 to E4.
 

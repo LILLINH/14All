@@ -1,6 +1,6 @@
 # Phase 1: ideas from the top repos, Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Historical record.** This plan was used to build the repository. Its checkboxes were not ticked as work went on, so they do not show progress. What shipped is listed in `CHANGELOG.md`.
 
 **Goal:** Close the eight gaps in `docs/specs/2026-10-29-phase1-upstream-ideas-design.md`: two guard rules, three skill-text changes, two new skills, a session-start resume block, and three eval improvements.
 
