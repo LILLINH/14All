@@ -17,7 +17,7 @@ If a skill applies to your task, you do not have a choice. Use it.
 
 ## The Rule
 
-Invoke relevant or requested skills BEFORE any response or action, including clarifying questions, exploring the codebase, or checking files. If a skill turns out not to fit, you may drop it.
+When a skill might apply to the task, invoking it is your first action: do it before you list a directory, read a file, run a command or ask a question. A small question or a one-line command needs no skill. If a skill turns out not to fit, you may drop it.
 
 Skills are found by name and description; you do not need a list. Check the descriptions you were given, pick the ones that match, and read the current version of each before following it.
 
@@ -27,7 +27,7 @@ After invoking a skill, say "Using [skill] to [purpose]" and follow it exactly. 
 
 When several skills apply, process skills come first. They set the approach; implementation skills then carry it out.
 
-- Building something new or changing behavior: `brainstorming`, then `writing-plans`.
+- Building something new (a game, a page, an app, a script, a feature) or changing behavior: `brainstorming` first, even when the request looks clear, then `writing-plans`. `simple-code` comes later, when you write the code.
 - Fixing a bug or a failing test: `systematic-debugging` first.
 - Writing code: `test-driven-development`.
 - Writing or changing code in a project: `simple-code`.

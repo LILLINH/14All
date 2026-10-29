@@ -4,6 +4,10 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ## Unreleased
 
+### Changed
+
+- The `using-14all` bootstrap now makes invoking a fitting skill the first action, and says that for building something new `brainstorming` comes first even when the request looks clear. On a request to build a small game, the model invoked `brainstorming` in 12 of 12 short runs, against 6 of 13 with the released text, and asked before writing a file in 8 of 12 against 2 of 13; a one-line command still invoked no skill. Cut at 6 turns, one prompt, not re-run on E1 to E4. Evidence in `docs/evidence/bootstrap-trigger.md`.
+
 ## 0.1.0 - 2026-10-29
 
 First public pre-release. Claude Code and Codex have been tried.
