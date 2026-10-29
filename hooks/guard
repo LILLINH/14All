@@ -1,0 +1,271 @@
+#!/usr/bin/env bash
+# PreToolUse hook: refuse a short list of commands that are almost never intended, and reads
+# of secret files. It is a safety net against slips, not a security boundary: a determined
+# agent or a differently spelled command gets past it (a variable, a script, an interpreter).
+#
+# Input: the tool call as JSON on stdin. Output: nothing to allow, or one JSON denial.
+# Set ALL14_GUARD=off to switch it off for a session.
+#
+# Text inside quotes is ignored, so a commit message or an echo that merely mentions a
+# dangerous command is not blocked; a quoted argument to `sh -c`, `bash -c` or `eval`, and
+# anything inside `$(...)`, is still checked because the shell will run it.
+#
+# Only shell built-ins are used (no cat, no grep, no jq): the hook must work with an empty
+# PATH, and it never blocks on a parse problem. Always exits 0.
+
+set -u
+
+[ "${ALL14_GUARD:-}" = off ] && exit 0
+
+IFS= read -r -d '' input || true
+
+tool_re='"tool_name"[[:space:]]*:[[:space:]]*"([A-Za-z_]+)"'
+[[ $input =~ $tool_re ]] || exit 0
+tool=${BASH_REMATCH[1]}
+
+deny() {
+  printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"14All guard: %s. If you really mean it, ask the user to run it themselves, or to set ALL14_GUARD=off for the session."}}\n' "$1"
+  exit 0
+}
+
+# The value of a JSON string field, with the common escapes undone. Empty when absent.
+json_field() {
+  local re="\"$1\"[[:space:]]*:[[:space:]]*\"(([^\"\\\\]|\\\\.)*)\""
+  [[ $input =~ $re ]] || return 0
+  local v=${BASH_REMATCH[1]}
+  v=${v//\\\"/\"}
+  v=${v//\\n/$'\n'}
+  v=${v//\\\\/\\}
+  printf '%s' "$v"
+}
+
+# The command with the text of quoted strings blanked out. A quoted string is kept as it is
+# when the shell will run it (after `-c` or `eval`, or when it holds `$(` or a backtick) or when
+# it is one plain word such as "main"; otherwise it becomes ''. An unterminated quote is kept.
+# It jumps from quote to quote instead of walking characters, which is quadratic in UTF-8.
+strip_quotes() {
+  local rest=$1 out="" span chunk q pre slashes closed keep tail
+  local quotes=$'"\''
+  local runs_re='(^|[[:space:]])(eval|-[a-zA-Z]*c)[[:space:]]*$'
+  while :; do
+    pre=${rest%%[$quotes]*}
+    out+=$pre
+    [ "$pre" = "$rest" ] && break
+    rest=${rest:${#pre}}
+    q=${rest:0:1}
+    rest=${rest:1}
+    keep=0 closed=0 span=""
+    tail=$out
+    [ "${#out}" -gt 30 ] && tail=${out: -30}
+    [[ $tail =~ $runs_re ]] && keep=1
+    while :; do
+      chunk=${rest%%"$q"*}
+      span+=$chunk
+      rest=${rest:${#chunk}}
+      [ -n "$rest" ] || break # no closing quote
+      slashes=${chunk##*[!\\]}
+      if [ "$q" = '"' ] && [ $((${#slashes} % 2)) = 1 ]; then
+        span+=$q
+        rest=${rest:1}
+        continue
+      fi
+      rest=${rest:1}
+      closed=1
+      break
+    done
+    if [ "$closed" = 0 ]; then
+      out+="$q$span"
+      break
+    fi
+    if [ "$keep" = 1 ] || [[ $span == *'$('* || $span == *'`'* || $span != *[[:space:]\;\&\|]* ]]; then
+      out+="$q$span$q"
+    else
+      out+="''"
+    fi
+  done
+  printf '%s' "$out"
+}
+
+# The command without the body of a here-document (the text a command like cat is fed),
+# unless the here-document feeds a shell, which would run it.
+strip_heredocs() {
+  local line out="" end="" shell_re='(^|[^[:alnum:]_])(ba|z|da)?sh([[:space:]]|$)'
+  local open_re='<<-?[[:space:]]*["'"'"']?([A-Za-z_][A-Za-z0-9_]*)["'"'"']?'
+  local skip=0 first=1
+  while IFS= read -r line || [ -n "$line" ]; do
+    if [ "$skip" = 1 ]; then
+      [[ ${line#"${line%%[![:space:]]*}"} == "$end" ]] && skip=0
+      continue
+    fi
+    [ "$first" = 1 ] && first=0 || out+=$'\n'
+    out+=$line
+    if [[ $line =~ $open_re ]]; then
+      end=${BASH_REMATCH[1]} # read before the next =~ overwrites it
+      [[ $line =~ $shell_re ]] || skip=1
+    fi
+  done <<<"$1"
+  printf '%s' "$out"
+}
+
+# One simple command per line: split on && || ; | & and open command substitutions.
+split_commands() {
+  local s=$1
+  s=${s//&&/$'\n'}
+  s=${s//||/$'\n'}
+  s=${s//;/$'\n'}
+  s=${s//|/$'\n'}
+  s=${s//&/$'\n'}
+  s=${s//\$\(/$'\n'}
+  s=${s//\`/$'\n'}
+  printf '%s' "$s"
+}
+
+# True for a path that holds secrets. Public keys, ssh config and known_hosts, and example
+# env files are fine.
+is_secret_path() {
+  local f=$1
+  local example_re='\.(example|sample|template|dist)$'
+  local env_re='(^|/)\.env(\.[A-Za-z0-9_-]+)?$'
+  local key_re='(^|/)(id_(rsa|ed25519|ecdsa|dsa)|\.netrc)$|(^|/)\.aws/credentials$'
+  local ssh_re='(^|/)\.ssh/'
+  local ssh_ok_re='\.pub$|(^|/)\.ssh/(config|known_hosts)$'
+  [[ $f =~ $example_re ]] && return 1
+  [[ $f =~ $env_re || $f =~ $key_re ]] && return 0
+  [[ $f =~ $ssh_re && ! $f =~ $ssh_ok_re ]] && return 0
+  return 1
+}
+
+# True for a recursive rm whose target is the filesystem root or the home directory.
+rm_hits_root_or_home() {
+  local segment word seen_rm recursive target
+  while IFS= read -r segment; do
+    seen_rm=0 recursive=0 target=0
+    set -f # a word like /* must not be expanded into file names
+    for word in $segment; do
+      word=${word//[\"\'\`()]/}
+      if [ "$seen_rm" = 0 ]; then
+        [ "$word" = rm ] && seen_rm=1
+        continue
+      fi
+      if [[ $word == --recursive || $word =~ ^-[a-zA-Z]*[rR][a-zA-Z]*$ ]]; then
+        recursive=1
+        continue
+      fi
+      case $word in
+        / | '/*' | '~' | '~/' | '~/*' | '$HOME' | '$HOME/' | '$HOME/*' | '${HOME}' | '${HOME}/' | '${HOME}/*') target=1 ;;
+      esac
+    done
+    set +f
+    [ "$recursive$target" = 11 ] && return 0
+  done <<<"$(split_commands "$1")"
+  return 1
+}
+
+# True when the working directory's repository is on main or master.
+current_branch_is_trunk() {
+  local dir=$PWD head
+  while :; do
+    if [ -f "$dir/.git/HEAD" ]; then
+      head=$(<"$dir/.git/HEAD")
+      [[ $head == 'ref: refs/heads/main' || $head == 'ref: refs/heads/master' ]]
+      return
+    fi
+    if [ -z "$dir" ] || [ "$dir" = / ]; then return 1; fi
+    dir=${dir%/*}
+  done
+}
+
+# True for a `git push` that names no branch (at most a remote) while on main or master.
+push_defaults_to_trunk() {
+  local segment word state args
+  while IFS= read -r segment; do
+    state=0 args=0
+    set -f
+    for word in $segment; do
+      word=${word//[\"\'\`()]/}
+      case $state in
+        0) [ "$word" = git ] && state=1 ;;
+        1) if [ "$word" = push ]; then state=2; else state=0; fi ;;
+        2) [[ $word == -* ]] || args=$((args + 1)) ;;
+      esac
+    done
+    set +f
+    if [ "$state" = 2 ] && [ "$args" -le 1 ] && current_branch_is_trunk; then return 0; fi
+  done <<<"$(split_commands "$1")"
+  return 1
+}
+
+# True for a common read command (cat, grep, tail ...) that is given a secrets file.
+bash_reads_secret() {
+  local segment word reads
+  while IFS= read -r segment; do
+    reads=0
+    set -f
+    for word in $segment; do
+      word=${word//[\"\'\`()]/}
+      if [ "$reads" = 0 ]; then
+        case $word in
+          cat | less | more | head | tail | bat | batcat | grep | egrep | fgrep | rg | sed | awk | strings | xxd | od | base64 | nl | tac) reads=1 ;;
+        esac
+        continue
+      fi
+      [[ $word == -* ]] && continue
+      if is_secret_path "$word"; then
+        set +f
+        return 0
+      fi
+    done
+    set +f
+  done <<<"$(split_commands "$1")"
+  return 1
+}
+
+case $tool in
+  Bash)
+    cmd=$(json_field command)
+    [ -n "$cmd" ] || exit 0
+    # Stripping copies the string once per quote, so it is skipped for a huge command; the
+    # raw text is then scanned, which can only block more, never less.
+    scan=$cmd
+    [ "${#cmd}" -le 8000 ] && scan=$(strip_quotes "$(strip_heredocs "$cmd")")
+
+    rm_hits_root_or_home "$scan" && deny "recursive remove of the filesystem root or the home directory"
+
+    end='([[:space:]"'"'"';&|)]|$)'
+    push_re='(^|[^[:alnum:]_-])git[[:space:]]+push([[:space:]]|$)'
+    force_re="[[:space:]](--force(-with-lease(=[^[:space:]]*)?|-if-includes)?|-[a-zA-Z]*f[a-zA-Z]*)$end|[[:space:]]\\+(main|master)$end"
+    trunk_re="[[:space:]:+/](main|master)$end"
+    if [[ $scan =~ $push_re && $scan =~ $force_re ]]; then
+      if [[ $scan =~ $trunk_re ]] || push_defaults_to_trunk "$scan"; then
+        deny "force push to main or master"
+      fi
+    fi
+
+    pipe_re='(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+)?(ba|z|da)?sh([[:space:]]|$)'
+    procsub_re='(^|[^[:alnum:]_])((ba|z|da)?sh|source|\.)([[:space:]]+-[a-zA-Z]+)*[[:space:]]+<\([[:space:]]*(curl|wget)'
+    cmdsub_re='(^|[^[:alnum:]_])(eval|(ba|z|da)?sh([[:space:]]+-[a-zA-Z]+)*[[:space:]]+-[a-zA-Z]*c)[[:space:]]+"?\$\([[:space:]]*(curl|wget)'
+    if [[ $scan =~ $pipe_re || $scan =~ $procsub_re || $scan =~ $cmdsub_re ]]; then
+      deny "downloading a script and running it straight in a shell"
+    fi
+
+    dd_re='(^|[^[:alnum:]_])dd[[:space:]].*of=/dev/(sd|hd|vd|nvme|mmcblk|disk)'
+    mkfs_re='(^|[^[:alnum:]_])mkfs(\.[a-z0-9]+)?[[:space:]]'
+    if [[ $scan =~ $dd_re || $scan =~ $mkfs_re ]]; then
+      deny "writing to or formatting a raw disk device"
+    fi
+
+    bash_reads_secret "$scan" && deny "reading a secrets file with a shell command"
+    ;;
+  Read)
+    file=$(json_field file_path)
+    [ -n "$file" ] || exit 0
+    is_secret_path "$file" && deny "reading a secrets file ($file)"
+    ;;
+  Grep)
+    file=$(json_field path)
+    [ -n "$file" ] || exit 0
+    is_secret_path "$file" && deny "searching a secrets file ($file)"
+    ;;
+esac
+
+exit 0

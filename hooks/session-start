@@ -53,6 +53,13 @@ json_escape() {
 
 if [ -r "$bootstrap" ]; then
   content=$(<"$bootstrap")
+  # Inject the skill body only: the YAML frontmatter is for skill discovery and wastes context here.
+  if [[ $content == ---$'\n'* ]]; then
+    rest=${content#---$'\n'}
+    case $rest in
+      *$'\n---\n'*) content=${rest#*$'\n---\n'} ;;
+    esac
+  fi
   context="<EXTREMELY_IMPORTANT>
 You have 14All skills.
 

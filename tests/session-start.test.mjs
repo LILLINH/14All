@@ -144,3 +144,22 @@ test('the missing-bootstrap note names the file it could not read', () => {
   const { json } = run(plugin(makeRoot(), null), { CLAUDE_PLUGIN_ROOT: '/x' });
   assert.match(json.hookSpecificOutput.additionalContext, /skills\/using-14all\/SKILL\.md/);
 });
+
+// ---- the injected bootstrap is the skill body, without its YAML frontmatter
+
+test('the injected bootstrap leaves out the YAML frontmatter but keeps the body', () => {
+  const { json } = run(plugin(makeRoot()), { CLAUDE_PLUGIN_ROOT: '/x' });
+  const context = json.hookSpecificOutput.additionalContext;
+  assert.doesNotMatch(context, /^name: using-14all$/m);
+  assert.doesNotMatch(context, /^description: /m);
+  assert.ok(context.includes(MARKER));
+  assert.ok(context.includes('## The Rule'));
+});
+
+test('a horizontal rule in the body is not mistaken for the end of the frontmatter', () => {
+  const skill = `---\nname: x\ndescription: y\n---\n${MARKER}\n\n---\nafter the rule\n`;
+  const { json } = run(plugin(makeRoot(), skill), { CLAUDE_PLUGIN_ROOT: '/x' });
+  const context = json.hookSpecificOutput.additionalContext;
+  assert.ok(context.includes(`${MARKER}\n\n---\nafter the rule`));
+  assert.ok(!context.includes('name: x'));
+});
