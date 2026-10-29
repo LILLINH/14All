@@ -26,6 +26,12 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - `agents/`: read-only role agents `debugger`, `reviewer`, `preship-reviewer` and `security-auditor`, with `scripts/lint-agents.mjs` in `npm run check`. Seen listed in one live Claude Code session; that an agent keeps to its read-only tool list is not verified.
 - Evaluation E15: one error in a long log, with a grader and a fixture; not yet run.
 
+- `writing-for-agents` skill (adapted from mattpocock/skills) with an `AGENTS.md` template. Draft.
+- `skills/simple-code/references/web-ui.md`: a web UI reference with a priority order of checks and a render-and-look loop. Draft.
+- A Definition of done in `verification-before-completion` and an "If the change reaches users" section in `finishing-a-development-branch`.
+- `scripts/check-text.mjs`, `scripts/check-paths.mjs` and `scripts/check-routing.mjs` (with `evals/routing/cases.json`, three known gaps) in `npm run check`, and `npm run check:harness`, an eight-check audit of any repository.
+- `AGENTS.md` and `CLAUDE.md` for this repository.
+
 ### Changed
 
 - The `OWNER` placeholder is replaced by `LILLINH` in the manifests, `LICENSE`, every skill's `meta.yaml`, the README and SECURITY.md; the repository URL is `https://github.com/LILLINH/14All`. `npm run check:release` passes.

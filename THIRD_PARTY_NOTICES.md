@@ -166,3 +166,9 @@ These projects gave 14All an idea. The wording in 14All is its own, so no licens
 - Understand-Anything (Egonex-AI, MIT): the change-impact method of `impact-check` (changed files, their users, the blast radius), without the graph.
 - career-ops (career-ops-hq, MIT): treating text from outside as data, never as instructions, and stopping before an irreversible step.
 - wshobson/agents (MIT) and agent-skills (addyosmani, MIT), again: the hypothesis-testing debugger, the one-dimension reviewer with one finding format, the pre-ship checklist and the security auditor's threat-model-first method.
+
+- ui-ux-pro-max (nextlevelbuilder, MIT; its datasets are not used): the priority order of what to check in a UI and the pre-delivery checklist, in the web UI reference.
+- taste-skill (Leonxlnx, MIT; its site library and example images are not used): rendering the page at several widths, judging the picture, a capped fix loop, and checking the production build.
+- learn-harness-engineering (walkinglabs, MIT), again: the `AGENTS.md` template layout and the idea of `check:harness`.
+- everything-claude-code (affaan-m, MIT), again: the invisible-character and personal-path checks.
+- agent-skills (addyosmani, MIT), again: the done criteria and the rollout note, and the routing evaluation.

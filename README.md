@@ -33,6 +33,16 @@ A curated toolkit of skills, hooks and workflows that aims to make AI coding age
 
 All of these are drafts and unmeasured. Evaluation E15 (one error in a long log, for `tool-output`) is written and unit-tested but has not been run.
 
+## Writing for agents, UI checks and repository checks
+
+- `skills/writing-for-agents` (adapted from mattpocock/skills): how to write a skill, an `AGENTS.md` or any document an agent reads, with an `AGENTS.md` template. This repository has its own `AGENTS.md`.
+- `skills/simple-code/references/web-ui.md`: for UI files, the project's design system first, a priority order of checks, and a look at the rendered page at three widths. When no browser is available the agent must say it did not look.
+- `verification-before-completion` has a definition of done, and `finishing-a-development-branch` asks how a change reaches users and how it is undone.
+- `npm run check` also refuses invisible and mixed-script characters (`scripts/check-text.mjs`), real people's home paths (`scripts/check-paths.mjs`), and skill descriptions that do not route or that collide (`scripts/check-routing.mjs`, with its cases in `evals/routing/cases.json`). The routing check lists its known gaps (cases that miss the top three); there are three.
+- `npm run check:harness -- <dir>` audits any repository for agent-readiness with eight checks. It measures vocabulary and the presence of files, not whether a model chooses the right skill or whether a harness works; this repository passes its own audit because its `AGENTS.md` was written to.
+
+All of these are drafts, and none has been measured.
+
 ## Evaluation
 
 On four small tasks (ask before building, root cause before fix, test first, verify before claiming done), Claude Code with the plugin loaded passed the deterministic grader in 12 of 12 runs; without it, 2 of 12. Three runs per cell, one model, deterministic graders only, rubric scoring not done, and the graders were corrected after the runs. Read the limits in [docs/evidence/plan-1-acceptance.md](docs/evidence/plan-1-acceptance.md) before relying on these numbers. `npm run eval:report -- <date>` rebuilds the table from the saved runs, with a column for runs whose evidence could not be read. `npm run eval:compare -- <date>` checks that the plugin mode is no worse than the baseline on those runs (a dropped task, more critical failures or fewer passes fail it; too few runs leave it undecided).

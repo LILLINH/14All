@@ -141,3 +141,35 @@ test('the README and the evidence do not claim that other coding agents ignore a
   assert.match(readme, /not known to read this directory/i);
   assert.doesNotMatch(readFileSync(join(repo, 'docs', 'evidence', 'claude-code.md'), 'utf8'), /which do not read/);
 });
+
+test('the README names writing-for-agents, the web UI reference and the audit, and says what the new checks cannot show', () => {
+  assert.match(readme, /`skills\/writing-for-agents`/);
+  assert.match(readme, /`skills\/simple-code\/references\/web-ui\.md`/);
+  assert.match(readme, /npm run check:harness/);
+  assert.match(readme, /not whether a model/i);
+  assert.match(readme, /known gaps?/i);
+});
+
+test('CONTRIBUTING lists the new checks and points to writing-for-agents for writing a skill', () => {
+  const text = doc('CONTRIBUTING.md');
+  for (const part of ['check-text', 'check-paths', 'check-routing', 'check:harness', 'writing-for-agents', 'known-gap']) assert.ok(text.includes(part), `CONTRIBUTING should mention ${part}`);
+});
+
+test('the changelog records the Phase 3 additions', () => {
+  const text = doc('CHANGELOG.md');
+  for (const part of ['writing-for-agents', 'web-ui', 'check:harness', 'check-routing', 'check-text', 'check-paths', 'AGENTS.md', 'Definition of done']) assert.ok(text.includes(part), `the changelog should mention ${part}`);
+});
+
+test('the credits name the Phase 3 sources and still say no text was copied', () => {
+  const section = doc('THIRD_PARTY_NOTICES.md').split('## Ideas credited (no text copied)')[1];
+  for (const name of ['ui-ux-pro-max', 'taste-skill', 'learn-harness-engineering', 'everything-claude-code', 'agent-skills']) assert.ok(section.includes(name), `the credits should name ${name}`);
+  assert.match(section, /The wording in 14All is its own/);
+});
+
+test('the README states the real number of known routing gaps', () => {
+  const cases = JSON.parse(readFileSync(join(repo, 'evals', 'routing', 'cases.json'), 'utf8'));
+  const words = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+  const gaps = cases.filter((c) => c.status === 'known-gap').length;
+  assert.ok(gaps < words.length, 'update this test for more gaps');
+  assert.ok(readme.includes(`there are ${words[gaps]}`), `the README should say "there are ${words[gaps]}" known gaps`);
+});

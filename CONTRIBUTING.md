@@ -7,7 +7,7 @@
 ```
 npm ci
 npm test          # the unit tests
-npm run check     # lint skills, notices, manifests, upstream pins, secret scan
+npm run check     # lint skills and agents, text, paths, routing, notices, manifests, upstream pins, secret scan
 ```
 
 Node 22 or newer. Both must pass before a pull request. CI runs them on Linux and macOS.
@@ -25,6 +25,8 @@ This creates `skills/my-skill/SKILL.md` and `meta.yaml` that already pass the li
 3. Fill in `meta.yaml`. A skill that comes from elsewhere is `class: adapted`: list each source with its pinned ref and license, set `changed.made: true` with a summary, and add a `## my-skill` entry to `THIRD_PARTY_NOTICES.md`. The source must be in `upstream/sources.json` at a commit that has a LICENSE file.
 4. Do not let two skills fire on the same trigger and say different things. `tests/skills-consistency.test.mjs` is where cross-skill rules are checked.
 5. Start at `maturity: draft`. `tested` or `verified` needs an `evidence:` path to a file under `docs/evidence/` that shows what was run and what it does not show.
+
+The checks are `scripts/check-text.mjs` (no invisible or mixed-script characters; write such a character in a test as an escape, never literally), `scripts/check-paths.mjs` (no real person's home path; use a placeholder), and `scripts/check-routing.mjs` (each case in `evals/routing/cases.json` must put its skill in the top three of a plain word-overlap ranking, and no two descriptions may collide). A case that misses is marked `"status": "known-gap"` with a `reason`; do not edit a description or a prompt only to make a case pass. `npm run check:harness -- <dir>` audits any repository and is not part of `npm run check`. For how to write a skill or an `AGENTS.md`, use the `writing-for-agents` skill.
 
 ## Add an agent (Codex, Cursor, Gemini CLI, ...)
 
