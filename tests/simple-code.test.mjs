@@ -153,3 +153,37 @@ test('the index lists the 25 first-pass references', () => {
   ];
   assert.deepEqual(indexedNames(), [...expected].sort());
 });
+
+// ---- fixes from the final review
+
+test('where the project gives no answer on a point, the matching reference supplies the default', () => {
+  assert.match(text(), /no answer on a point[^.]*reference/i);
+});
+
+test('the references count as the generic rules, and wrapping errors or structure only for tests is structure', () => {
+  assert.match(text(), /references count as these rules/i);
+  assert.match(text(), /wrapping or swallowing errors[^.]*are structure/i);
+});
+
+test('the description does not present the references as a last resort', () => {
+  const front = parse(text().replace(/^---\n/, '').split('\n---\n')[0]);
+  assert.doesNotMatch(front.description, /when the project gives no answer/i);
+});
+
+test('the written rules are always read, and only the rest stops early', () => {
+  assert.match(text(), /always read the project's written rules/i);
+});
+
+test('it says to test at the seam the project has and not to extract a helper only for tests', () => {
+  assert.match(text(), /seam the project already has/i);
+  assert.match(text(), /only to make code testable/i);
+});
+
+test('it deletes only what the change makes unused, never the existing layers', () => {
+  assert.match(text(), /Delete what your change makes unused/);
+  assert.doesNotMatch(text(), /Delete before adding/);
+});
+
+test('the interface advice keeps the interface where the project mocks through interfaces', () => {
+  for (const name of ['csharp', 'java', 'php', 'swift']) assert.match(reference(name), /mock through interfaces/i, name);
+});

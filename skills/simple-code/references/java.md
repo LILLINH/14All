@@ -18,7 +18,7 @@ Classes that hold data and the behaviour on it, records for plain data, composit
 
 ## Do not (what agents over-build here)
 
-- An interface and an `Impl` class for one implementation. Instead: the class.
+- An interface and an `Impl` class for one implementation. Instead: the class. Keep the interface where the project's tests mock through interfaces.
 - Builders and factories for an object a constructor or a record creates. Instead: the constructor.
 - A class hierarchy where composition or a record is shorter. Instead: composition.
 - Getters and setters on data that is not hidden. Instead: a record, or the project's own habit for plain data.

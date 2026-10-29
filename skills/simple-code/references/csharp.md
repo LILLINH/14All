@@ -17,7 +17,7 @@ Classes and records with a few methods, `async`/`await` for input and output, LI
 
 ## Do not (what agents over-build here)
 
-- An interface for each class when only one class implements it. Instead: the class.
+- An interface for each class when only one class implements it. Instead: the class. Keep it where the project's tests mock through interfaces.
 - A generic repository over the ORM. Instead: use the `DbContext` directly; it already is a repository.
 - A mediator and a handler class for a direct call. Instead: the call.
 - Extension methods and partial classes used to hide code. Instead: a method in the class that owns it.

@@ -16,7 +16,7 @@ Small functions and classes with typed parameters and return types, the native a
 
 ## Do not (what agents over-build here)
 
-- An interface with one implementation. Instead: the class.
+- An interface with one implementation. Instead: the class. Keep it where the project's tests mock through interfaces.
 - A factory that only calls `new`. Instead: `new`.
 - A static `Util` or `Helper` class for one caller. Instead: a method on the class that uses it.
 - Arrays of arrays passed through several functions. Instead: a small class or a typed value.

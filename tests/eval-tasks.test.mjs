@@ -60,3 +60,10 @@ test('testFilesIntactFor is false when an original test file was deleted', () =>
 test('testFilesIntactFor is true when the fixture has no tests', () => {
   assert.equal(testFilesIntactFor(makeRoot(), makeRoot()), true);
 });
+
+test('the E13 and E14 fixtures declare the framework the simple-code index selects on', () => {
+  const deps = (fixture) => JSON.parse(readFileSync(join(evals, 'fixtures', fixture, 'package.json'), 'utf8')).dependencies ?? {};
+  assert.ok('react' in deps('e13-react-notes'));
+  assert.ok('vue' in deps('e14-vue-notes'));
+  assert.ok('pinia' in deps('e14-vue-notes'));
+});

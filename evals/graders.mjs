@@ -135,17 +135,27 @@ const NEW_ABSTRACTION = 'defined a new abstraction the task did not need';
 const EDITED_PACKAGE_JSON = 'edited package.json';
 const SNAKE_CASE_DECLARATION = /\b(?:const|let|function)\s+[a-z0-9]+_[a-z0-9_]+/;
 
-// A hook or composable definition: `function useX` or `const useX =` (optionally exported).
-const HOOK_DEFINITION = /\bfunction\s+use[A-Z]\w*|\bconst\s+use[A-Z]\w*\s*=/;
+// A hook or composable definition (`function useX` or `const useX =`) whose name the fixture does not
+// already define. Reusing or extending the fixture's own hook, context or store is the point of the task.
+const hookDefinition = (existing) => {
+  const known = `(?!(?:${existing.join('|')})\\b)`;
+  return new RegExp(`\\bfunction\\s+${known}use[A-Z]\\w*|\\bconst\\s+${known}use[A-Z]\\w*\\s*=`);
+};
 
-const REACT_ABSTRACTIONS = [HOOK_DEFINITION, /createContext\(/, /useReducer\(/, /\bclass\s+\w+\s+extends\s+(React\.)?Component/];
-const VUE_ABSTRACTIONS = [/defineStore\(/, /\bprovide\(/, HOOK_DEFINITION];
+const REACT_ABSTRACTIONS = [
+  hookDefinition(['useNotes']),
+  /(?<!\bNotesContext\s*=\s*)createContext\(/,
+  /useReducer\(/,
+  /\bclass\s+\w+\s+extends\s+(React\.)?Component/,
+];
+const VUE_ABSTRACTIONS = [/defineStore\(\s*(?!['"]notes['"])/, /\bprovide\(/, hookDefinition(['useNotes', 'useNotesStore'])];
 
 /** The text an edit adds: a Write's content, an Edit's new_string, or the new_string of each MultiEdit item. */
 const addedText = (e) => e.input?.content ?? e.input?.new_string ?? (e.input?.edits ?? []).map((item) => item.new_string ?? '').join('\n');
 
+// Only source edits count: a test file written first, as the test-first rule asks, is not extra code.
 function gradeSimpleCode(events, abstractions) {
-  const edits = events.filter(isEdit);
+  const edits = events.filter(isSourceEdit);
   const files = new Set(edits.map(editPath));
   const added = edits.map(addedText).join('\n');
   const addedLines = added === '' ? 0 : added.split('\n').length;

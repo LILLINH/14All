@@ -17,7 +17,7 @@ Structs and plain functions, enums with associated values, optionals handled wit
 
 ## Do not (what agents over-build here)
 
-- A protocol with one conforming type. Instead: the concrete type.
+- A protocol with one conforming type. Instead: the concrete type. Keep it where the project's tests mock through interfaces (protocols).
 - Property wrappers and result builders written for one use. Instead: plain properties and code.
 - A `Manager` or `Shared` singleton class for what a function does. Instead: a function or a value passed in.
 - Combine pipelines where `async`/`await` reads better. Instead: `async`/`await`.

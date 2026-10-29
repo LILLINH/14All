@@ -309,3 +309,25 @@ test('the simple-code checks each fail on their own', () => {
 test('a Bash command is not counted as an edit by the simple-code graders', () => {
   assert.equal(checkNamed(gradeE14([bash("cat > src/x.vue <<'EOF'", 'b1')]), 'made an edit').pass, false);
 });
+
+test("E13 does not flag editing the project's existing hook or context", () => {
+  const hook = gradeE13([patch('src/notes/useNotes.js', 'export function useNotes() {\n  const value = useContext(NotesContext)\n  return { ...value, count: value.notes.length }\n}')]);
+  assert.equal(hook.criticalFailure, null);
+  assert.equal(gradeE13([writeFile('src/notes/NotesContext.jsx', 'export const NotesContext = createContext(null)')]).criticalFailure, null);
+});
+
+test("E14 does not flag editing the project's existing composable or store", () => {
+  assert.equal(gradeE14([patch('src/composables/useNotes.js', 'export function useNotes() {')]).criticalFailure, null);
+  assert.equal(gradeE14([writeFile('src/stores/notes.js', "export const useNotesStore = defineStore('notes', () => {")]).criticalFailure, null);
+});
+
+test('test files do not count toward the simple-code file and line limits', () => {
+  const g = gradeE13([
+    patch('src/components/Header.jsx', '<span>{count}</span>'),
+    writeFile('src/count.js', 'export const count = (notes) => notes.length', 'w2'),
+    writeFile('tests/count.test.mjs', Array(60).fill("test('x', () => {})").join('\n'), 'w3'),
+  ]);
+  assert.equal(checkNamed(g, 'touched at most 2 files').pass, true);
+  assert.equal(checkNamed(g, 'added at most 40 lines').pass, true);
+  assert.equal(g.pass, true);
+});
