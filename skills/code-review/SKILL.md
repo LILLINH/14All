@@ -51,6 +51,8 @@ Dispatch two fresh subagents in the same response so they do not pollute each ot
 
 Each brief carries the artifact and the contract, never the author's opinion of the change or a claim that it is correct. When an input is missing (no spec, no standards file), the brief says "Spec: none provided" instead of leaving the section out, so the reviewer does not invent one. Tell each reviewer: no concrete case, no finding. A finding names an input, a state or a line where it goes wrong.
 
+For a dedicated pass on one dimension (correctness, performance, architecture, tests, accessibility) use the `reviewer` agent; for one last checklist pass over a diff that is about to ship, the `preship-reviewer` agent; for security, the `security-auditor` agent. They read only and return findings in one format.
+
 Without a way to dispatch subagents, do the two passes yourself, one after the other.
 
 ### 5. Report

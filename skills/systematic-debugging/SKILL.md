@@ -37,7 +37,7 @@ Run the loop and watch it fail. Confirm it shows the failure the user described,
 
 ## Phase 3: hypothesise and compare
 
-Find similar working code and list every difference from the broken code, however small. Then write three to five ranked hypotheses before testing any, each falsifiable: "If X is the cause, changing Y will make the bug disappear." If you cannot state the prediction, discard or sharpen the hypothesis. Show the ranked list to the user; they often know something that re-ranks it instantly. Do not block on an answer.
+Find similar working code and list every difference from the broken code, however small. Then write three to five ranked hypotheses before testing any, each falsifiable: "If X is the cause, changing Y will make the bug disappear." If you cannot state the prediction, discard or sharpen the hypothesis. Show the ranked list to the user; they often know something that re-ranks it instantly. Do not block on an answer. When several hypotheses compete and you can dispatch agents, give each one to its own `debugger` agent: it tests that one hypothesis, reads only, and reports confirmed, falsified or inconclusive with evidence. Without a way to dispatch agents, test them one at a time yourself.
 
 ## Phase 4: instrument
 

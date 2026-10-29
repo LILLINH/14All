@@ -101,3 +101,11 @@ test('working-notes keeps one notes file in the progress directory with evidence
   const meta = parse(readFileSync(join(skillsDir, 'working-notes', 'meta.yaml'), 'utf8'));
   assert.equal(meta.class, 'original');
 });
+
+test('systematic-debugging names the debugger agent for competing hypotheses and code-review names the three review agents', () => {
+  const debugging = read('systematic-debugging');
+  assert.match(debugging, /`debugger` agent/);
+  const review = read('code-review');
+  for (const agent of ['reviewer', 'preship-reviewer', 'security-auditor']) assert.match(review, new RegExp(`\`${agent}\` agent`), agent);
+  assert.ok(debugging.split('\n').length < 400 && review.split('\n').length < 400);
+});
