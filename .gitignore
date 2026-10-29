@@ -2,3 +2,4 @@ node_modules/
 .upstream/
 .superpowers/
 evals/runs/*/raw/
+.14all/

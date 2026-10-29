@@ -36,3 +36,20 @@ test('the line number is right on a multi-line text, and the finding never holds
 test('a line with several paths is one finding', () => {
   assert.deepEqual(lines(`${linux('alice')} and ${linux('bob')}`), [1]);
 });
+
+const BS = String.fromCharCode(92);
+
+test('paths in other spellings are found: JSON-escaped, lowercase, a file URL, under WSL, after other punctuation', () => {
+  assert.deepEqual(lines(`C:${BS}${BS}Users${BS}${BS}carol${BS}${BS}x`), [1]);
+  assert.deepEqual(lines(`c:${BS}users${BS}alice`), [1]);
+  assert.deepEqual(lines(linux('alice').toUpperCase()), [1]);
+  assert.deepEqual(lines(`file://${linux('alice')}`), [1]);
+  assert.deepEqual(lines(`/mnt/c/${'Users'}/${'alice'}/x`), [1]);
+  for (const before of [',', ';', '|', '>', '{', '<', '[']) assert.deepEqual(lines(`x${before}${linux('alice')}`), [1], before);
+});
+
+test('shared folders and the usual container and CI users are not a person', () => {
+  for (const text of ['/Users/Shared/x', '/Users/Public', linux('ubuntu'), linux('node'), linux('vscode'), linux('root'), linux('ec2-user'), linux('vagrant')]) {
+    assert.deepEqual(lines(text), [], text);
+  }
+});

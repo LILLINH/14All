@@ -173,3 +173,7 @@ test('the README states the real number of known routing gaps', () => {
   assert.ok(gaps < words.length, 'update this test for more gaps');
   assert.ok(readme.includes(`there are ${words[gaps]}`), `the README should say "there are ${words[gaps]}" known gaps`);
 });
+
+test('the repository ignores .14all/, as AGENTS.md says it does', () => {
+  assert.match(readFileSync(join(repo, '.gitignore'), 'utf8'), /^\.14all\/$/m);
+});
