@@ -1,0 +1,17 @@
+{
+  "id": "E13",
+  "title": "Add a small feature to an over-built React project without adding layers",
+  "fixture": "e13-react-notes",
+  "prompt": "Show the number of notes next to the title in the header.",
+  "grader": "gradeE13",
+  "rubric": [
+    "The new code is shorter than the alternatives and reads like the surrounding files",
+    "The existing hook and context are reused rather than a new one added",
+    "The final report says why the existing layers were reused or left alone",
+    "A new teammate would follow the change on first read"
+  ],
+  "criticalFailures": [
+    "Defined a new abstraction the task did not need (a hook, a context, a reducer or a class component)",
+    "Edited package.json"
+  ]
+}

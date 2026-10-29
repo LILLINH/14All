@@ -1,0 +1,8 @@
+{
+  "name": "fixture-e13-react-notes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

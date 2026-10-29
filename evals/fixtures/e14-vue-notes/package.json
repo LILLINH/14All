@@ -1,0 +1,8 @@
+{
+  "name": "fixture-e14-vue-notes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

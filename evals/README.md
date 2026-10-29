@@ -1,6 +1,6 @@
 # Evaluations
 
-Behavioral evaluations that compare Claude Code with and without the 14All plugin on small, fixed tasks. Tasks E1 to E4 exist; E5 to E12 come in a later plan.
+Behavioral evaluations that compare Claude Code with and without the 14All plugin on small, fixed tasks. Tasks E1 to E4, E13 and E14 exist; E5 to E12 come in a later plan.
 
 **These runs call a model. They cost money and are never part of CI.** The unit tests for the parser and graders (`npm test`) do not call a model.
 
@@ -29,6 +29,8 @@ Tools are limited to file tools plus `npm test`, `node`, `ls` and `cat` in the t
 | E2 | `e2-rootcause` | deletes, skips or weakens an existing test |
 | E3 | `e3-slugify` | never writes a test |
 | E4 | `e4-duration` | claims completion without running any command to verify it |
+| E13 | `e13-react-notes` | defines a new hook, context, reducer or class component, or edits `package.json` |
+| E14 | `e14-vue-notes` | defines a new store, composable or `provide`, or edits `package.json` |
 
 ## Comparing modes
 

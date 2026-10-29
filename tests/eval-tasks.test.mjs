@@ -8,7 +8,7 @@ import { parseArgs, testFilesIntactFor } from '../evals/run.mjs';
 import { makeRoot } from './helpers.mjs';
 
 const evals = fileURLToPath(new URL('../evals', import.meta.url));
-const IDS = ['E1', 'E2', 'E3', 'E4'];
+const IDS = ['E1', 'E2', 'E3', 'E4', 'E13', 'E14'];
 
 for (const id of IDS) {
   test(`${id}.json is a complete task with a fixture and a known grader`, () => {

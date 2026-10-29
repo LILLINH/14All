@@ -1,0 +1,17 @@
+{
+  "id": "E14",
+  "title": "Add a small feature to an over-built Vue project without adding layers",
+  "fixture": "e14-vue-notes",
+  "prompt": "Show the number of notes next to the title in the header.",
+  "grader": "gradeE14",
+  "rubric": [
+    "The new code is shorter than the alternatives and reads like the surrounding files",
+    "The existing composable and store are reused rather than a new one added",
+    "The final report says why the existing layers were reused or left alone",
+    "A new teammate would follow the change on first read"
+  ],
+  "criticalFailures": [
+    "Defined a new abstraction the task did not need (a store, a composable or provide/inject)",
+    "Edited package.json"
+  ]
+}
