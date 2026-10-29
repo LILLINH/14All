@@ -1,7 +1,7 @@
 // Builders for hand-written transcripts (arrays of Event) used by the grader tests.
 
 export const text = (t) => ({ kind: 'text', text: t });
-export const edit = (path, id, name = 'Write') => ({ kind: 'tool_use', id, name, input: { file_path: path } });
+export const edit = (path, id, name = 'Write', input = {}) => ({ kind: 'tool_use', id, name, input: { file_path: path, ...input } });
 export const bash = (command, id) => ({ kind: 'tool_use', id, name: 'Bash', input: { command } });
 export const result = (toolUseId, t) => ({ kind: 'tool_result', toolUseId, text: t });
 

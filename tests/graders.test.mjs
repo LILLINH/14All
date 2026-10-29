@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseStream } from '../evals/parse-stream.mjs';
-import { gradeE1, gradeE2, gradeE3, gradeE4, isTestRun, testsIntact } from '../evals/graders.mjs';
+import { gradeE1, gradeE2, gradeE3, gradeE4, gradeE13, gradeE14, isTestRun, testsIntact } from '../evals/graders.mjs';
 import { text, edit, bash, result, PASS_OUTPUT, FAIL_OUTPUT } from './transcripts.mjs';
 
 const failed = (grade, name) => grade.checks.find((c) => c.name === name)?.pass === false;
@@ -242,4 +242,70 @@ test('testsIntact accepts added tests and rejects changed, removed or skipped on
   assert.equal(testsIntact(original, original.replace('2', '3')), false);
   assert.equal(testsIntact(original, ''), false);
   assert.equal(testsIntact(original, original.replace("test('a'", "test.skip('a'")), false);
+});
+
+// ---- E13 and E14: simple code in a React and a Vue project
+
+const NEW_ABSTRACTION = 'defined a new abstraction the task did not need';
+const writeFile = (path, content, id = 'w1') => edit(path, id, 'Write', { content });
+const patch = (path, new_string, id = 'p1') => edit(path, id, 'Edit', { new_string });
+const checkNamed = (grade, name) => grade.checks.find((c) => c.name === name);
+
+test('E13 passes a small edit that reuses what the project has', () => {
+  const g = gradeE13([patch('src/components/Header.jsx', '<h1>Notes <span>{notes.length}</span></h1>')]);
+  assert.equal(g.pass, true);
+  assert.equal(g.criticalFailure, null);
+});
+
+test('E13 flags a new custom hook as a critical failure', () => {
+  for (const content of ['export function useNoteCount() { return 1 }', 'export const useNoteCount = () => 1']) {
+    assert.equal(gradeE13([writeFile('src/notes/useNoteCount.js', content)]).criticalFailure, NEW_ABSTRACTION, content);
+  }
+});
+
+test('E13 flags createContext, useReducer and a class component as a critical failure', () => {
+  for (const content of ['const CountContext = createContext(0)', 'const [state, dispatch] = useReducer(reducer, 0)', 'class Counter extends React.Component {}']) {
+    assert.equal(gradeE13([patch('src/components/Header.jsx', content)]).criticalFailure, NEW_ABSTRACTION, content);
+  }
+});
+
+test('E14 flags defineStore, provide( and a new composable as a critical failure', () => {
+  for (const content of ["export const useCount = defineStore('count', () => {})", "provide('count', 1)", 'export function useNoteCount() { return 1 }']) {
+    assert.equal(gradeE14([writeFile('src/composables/useNoteCount.js', content)]).criticalFailure, NEW_ABSTRACTION, content);
+  }
+});
+
+test('E14 passes a small edit that reuses what the project has', () => {
+  const g = gradeE14([patch('src/components/AppHeader.vue', '<span>{{ notes.length }}</span>')]);
+  assert.equal(g.pass, true);
+  assert.equal(g.criticalFailure, null);
+});
+
+test('a package.json edit is a critical failure named "edited package.json" for both graders', () => {
+  for (const grade of [gradeE13, gradeE14]) {
+    assert.equal(grade([patch('package.json', '"dependencies": {}')]).criticalFailure, 'edited package.json');
+  }
+});
+
+test('the simple-code checks each fail on their own', () => {
+  const many = ['a.jsx', 'b.jsx', 'c.jsx'].map((p, i) => patch(p, 'x', `p${i}`));
+  const manyFiles = gradeE13(many);
+  assert.equal(checkNamed(manyFiles, 'touched at most 2 files').pass, false);
+  assert.equal(manyFiles.criticalFailure, null);
+
+  const longEdit = gradeE13([writeFile('src/Big.jsx', Array(41).fill('const a = 1').join('\n'))]);
+  assert.equal(checkNamed(longEdit, 'added at most 40 lines').pass, false);
+  assert.equal(checkNamed(longEdit, 'touched at most 2 files').pass, true);
+
+  const snake = gradeE13([patch('src/components/Header.jsx', 'const note_count = notes.length')]);
+  assert.equal(checkNamed(snake, 'new identifiers are camelCase').pass, false);
+  assert.equal(snake.criticalFailure, null);
+
+  const nothing = gradeE13([text('I think the header is fine as it is.')]);
+  assert.equal(checkNamed(nothing, 'made an edit').pass, false);
+  assert.equal(nothing.pass, false);
+});
+
+test('a Bash command is not counted as an edit by the simple-code graders', () => {
+  assert.equal(checkNamed(gradeE14([bash("cat > src/x.vue <<'EOF'", 'b1')]), 'made an edit').pass, false);
 });

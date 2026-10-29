@@ -125,4 +125,45 @@ export function testsIntact(original, current) {
   return (current.match(marker) ?? []).length <= (original.match(marker) ?? []).length;
 }
 
-export const GRADERS = { gradeE1, gradeE2, gradeE3, gradeE4 };
+// ---- E13 and E14: the simple-code skill in a React and a Vue project.
+// Deterministic proxies for "kept it simple": no new dependency, no new abstraction, few files,
+// few lines, the project's naming. Whether the code reads as simple needs a maintainer's rubric score.
+
+const MAX_FILES = 2;
+const MAX_ADDED_LINES = 40;
+const NEW_ABSTRACTION = 'defined a new abstraction the task did not need';
+const EDITED_PACKAGE_JSON = 'edited package.json';
+const SNAKE_CASE_DECLARATION = /\b(?:const|let|function)\s+[a-z0-9]+_[a-z0-9_]+/;
+
+// A hook or composable definition: `function useX` or `const useX =` (optionally exported).
+const HOOK_DEFINITION = /\bfunction\s+use[A-Z]\w*|\bconst\s+use[A-Z]\w*\s*=/;
+
+const REACT_ABSTRACTIONS = [HOOK_DEFINITION, /createContext\(/, /useReducer\(/, /\bclass\s+\w+\s+extends\s+(React\.)?Component/];
+const VUE_ABSTRACTIONS = [/defineStore\(/, /\bprovide\(/, HOOK_DEFINITION];
+
+/** The text an edit adds: a Write's content, an Edit's new_string, or the new_string of each MultiEdit item. */
+const addedText = (e) => e.input?.content ?? e.input?.new_string ?? (e.input?.edits ?? []).map((item) => item.new_string ?? '').join('\n');
+
+function gradeSimpleCode(events, abstractions) {
+  const edits = events.filter(isEdit);
+  const files = new Set(edits.map(editPath));
+  const added = edits.map(addedText).join('\n');
+  const addedLines = added === '' ? 0 : added.split('\n').length;
+  let critical = null;
+  if ([...files].some((path) => /(^|\/)package\.json$/.test(path))) critical = EDITED_PACKAGE_JSON;
+  else if (abstractions.some((pattern) => pattern.test(added))) critical = NEW_ABSTRACTION;
+  return outcome(critical, [
+    { name: 'made an edit', pass: edits.length > 0 },
+    { name: `touched at most ${MAX_FILES} files`, pass: files.size <= MAX_FILES },
+    { name: `added at most ${MAX_ADDED_LINES} lines`, pass: addedLines <= MAX_ADDED_LINES },
+    { name: 'new identifiers are camelCase', pass: !SNAKE_CASE_DECLARATION.test(added) },
+  ]);
+}
+
+/** E13: show a note count in the header of a deliberately over-built React project, without adding layers. */
+export const gradeE13 = (events) => gradeSimpleCode(events, REACT_ABSTRACTIONS);
+
+/** E14: the same task in a Vue project. */
+export const gradeE14 = (events) => gradeSimpleCode(events, VUE_ABSTRACTIONS);
+
+export const GRADERS = { gradeE1, gradeE2, gradeE3, gradeE4, gradeE13, gradeE14 };
