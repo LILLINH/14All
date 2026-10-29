@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: mattpocock/skills
+    ref: v1.3.1
+    license: MIT
+    path: skills/productivity/writing-for-agents/SKILL.md
+changed:
+  made: true
+  summary: Condensed the upstream document to its working core (context pointers, the two loads, the information hierarchy, completion criteria, saying what to do instead of prohibiting, pruning). Left out the long treatments of leading words and of splitting a document, and the invocation choices of SKILL-MECHANICS.md (14All skills are all model-invoked and carry only name and description). Added the 14All skill rules (a description that starts "Use when", under 400 lines, detail in references), the 32 KiB limit for an AGENTS.md and the AGENTS.md template in references/.
+maturity: draft
+adapters_tested: []
+owner: LILLINH
+last_reviewed: 2026-10-29

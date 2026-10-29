@@ -38,5 +38,7 @@
   {"skill": "working-notes", "prompt": "This migration will take several sessions, keep notes on disk so we don't lose progress after a clear"},
   {"skill": "working-notes", "prompt": "We are exploring a big refactor with no plan yet, track findings in a file as we go"},
   {"skill": "writing-plans", "prompt": "I have a spec for the export feature, turn it into a step-by-step implementation plan"},
-  {"skill": "writing-plans", "prompt": "Write the plan for this multi-step change before anyone touches the code"}
+  {"skill": "writing-plans", "prompt": "Write the plan for this multi-step change before anyone touches the code"},
+  {"skill": "writing-for-agents", "prompt": "Help me write an AGENTS.md for this repository"},
+  {"skill": "writing-for-agents", "prompt": "I want to create a new skill, how should I write its description so it triggers at the right time?", "status": "known-gap", "reason": "the prompt says 'create' and 'description' where the description says 'creating'; the check does not stem words, and 'skill' and 'description' appear in many descriptions"}
 ]

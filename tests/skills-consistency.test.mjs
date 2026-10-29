@@ -4,6 +4,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
+import { lintSkillDir } from '../scripts/lib/lint.mjs';
 
 const skillsDir = fileURLToPath(new URL('../skills', import.meta.url));
 const read = (name) => readFileSync(join(skillsDir, name, 'SKILL.md'), 'utf8');
@@ -160,4 +161,33 @@ test('impact-check always reports before the edit and waits for the user only wh
   const text = read('impact-check');
   assert.match(text, /report this before you edit/i);
   assert.match(text, /wait for the user/i);
+});
+
+test('writing-for-agents is adapted from the pinned mattpocock source and has a notice entry', () => {
+  const meta = parse(readFileSync(join(skillsDir, 'writing-for-agents', 'meta.yaml'), 'utf8'));
+  assert.equal(meta.class, 'adapted');
+  const source = meta.sources.find((s) => s.repo === 'mattpocock/skills');
+  assert.equal(source?.path, 'skills/productivity/writing-for-agents/SKILL.md');
+  assert.match(readFileSync(join(skillsDir, '..', 'THIRD_PARTY_NOTICES.md'), 'utf8'), /^## writing-for-agents$/m);
+  const clone = join(skillsDir, '..', '.upstream', 'mattpocock-skills');
+  if (existsSync(clone)) assert.ok(existsSync(join(clone, source.path)), 'the source path exists in the pinned clone');
+  assert.deepEqual(lintSkillDir(join(skillsDir, 'writing-for-agents')), []);
+});
+
+test('writing-for-agents keeps the working core and points at the AGENTS.md template', () => {
+  const text = read('writing-for-agents').toLowerCase();
+  for (const part of ['context pointer', 'two loads', 'information hierarchy', 'completion criteri', 'state the behaviour you want', 'single source of truth', 'description starts', '400 lines', 'references/agents-md-template.md', '32 kib']) {
+    assert.ok(text.includes(part), `writing-for-agents should mention ${part}`);
+  }
+  assert.ok(read('writing-for-agents').split('\n').length <= 70);
+});
+
+test('the AGENTS.md template is small and has every section', () => {
+  const path = join(skillsDir, 'writing-for-agents', 'references', 'agents-md-template.md');
+  const text = readFileSync(path, 'utf8');
+  assert.ok(Buffer.byteLength(text) < 32768);
+  assert.ok(text.split('\n').length <= 100);
+  for (const heading of ['What this is', 'Commands', 'Layout', 'Conventions', 'Verify before you say done', 'Do not touch', 'Where more is written']) {
+    assert.match(text, new RegExp(`^## ${heading}$`, 'm'), heading);
+  }
 });
