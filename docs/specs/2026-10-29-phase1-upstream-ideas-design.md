@@ -109,7 +109,7 @@ Tests: lint, notices and sources checks, plus a consistency test for the section
 
 **Gap.** `executing-plans` already keeps a progress file at `.14all/progress/<plan>.md` and says to trust it after compaction, but nothing loads it: the agent has to know to look. And a long task without a written plan has no home.
 
-**Hook.** After the bootstrap, when `$PWD/.14all/progress/` holds `*.md` files and `ALL14_RESUME` is not `off`, `session-start` appends one block with the newest file (chosen with the built-in `-nt` test): its path, its first line, and its tail, at most 3000 bytes in total (first 600 bytes, a marker, last 2400, when it is longer). The block is framed as data:
+**Hook.** After the bootstrap, when `$PWD/.14all/progress/` holds `*.md` files and `ALL14_RESUME` is not `off`, `session-start` appends one block with the newest file (chosen with the built-in `-nt` test): its path, its first line, and its tail, at most 3000 characters in total (first 600 bytes, a marker, last 2400, when it is longer). The block is framed as data:
 
 ```
 <14all-resume>
@@ -155,7 +155,7 @@ One branch, `feat/phase1-upstream-ideas`, from `main` (the working tree is clean
 2. Config edits get `ask`, not `deny`, and the list above, without `tsconfig.json`, `pyproject.toml` or `package.json`.
 3. `handoff` writes to `.14all/handoff/`, not the OS temp directory, and is never auto-injected.
 4. One notes file, not three, sharing `.14all/progress/` with `executing-plans`.
-5. The resume block is on `startup|clear|compact`, capped at 3000 bytes, off with `ALL14_RESUME=off`.
+5. The resume block is on `startup|clear|compact`, capped at 3000 characters, off with `ALL14_RESUME=off`.
 6. No Stop gate and no statistical test in Phase 1.
 7. Ideas are credited in `THIRD_PARTY_NOTICES.md` although their licenses would not require it.
 8. Skill and doc text is English.
