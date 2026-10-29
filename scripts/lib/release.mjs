@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { listSkillDirs } from './skills.mjs';
 
 const PLACEHOLDER = /\bOWNER\b/;
-const FILES = ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', 'README.md'];
+const FILES = ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json', 'README.md'];
 
 /**
  * Files that still carry the `OWNER` placeholder. Not part of `npm run check`, because the

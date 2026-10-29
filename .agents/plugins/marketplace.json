@@ -1,0 +1,20 @@
+{
+  "name": "14all",
+  "interface": {
+    "displayName": "14All"
+  },
+  "plugins": [
+    {
+      "name": "14all",
+      "source": {
+        "source": "url",
+        "url": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

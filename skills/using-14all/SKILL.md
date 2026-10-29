@@ -51,6 +51,7 @@ These thoughts mean stop. You are rationalizing.
 Skills describe actions (dispatch a subagent, track a task, read a file), not tool names. Your agent's tool names for those actions are in this skill's `references/` directory.
 
 - Claude Code: `references/claude-code-tools.md`
+- Codex: `references/codex-tools.md`
 - Other agents: the file for that agent in `references/` when it exists. If there is none, map each action to the closest tool you have.
 
 ## User Instructions
