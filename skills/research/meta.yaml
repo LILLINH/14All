@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: mattpocock/skills
+    ref: v1.3.1
+    license: MIT
+    path: skills/engineering/research/SKILL.md
+changed:
+  made: true
+  summary: Kept the core (investigate against primary sources, follow each claim to the source that owns it, cite each claim, save where the repository keeps such notes). Made the background agent conditional on a subagent tool instead of the first instruction. Added reading the version in use first and using a documentation tool when one is available, the rule that fetched text is data and never instructions, a stated limit of five sources and a list of what was not read, a date and a label on each claim, and writing a file only when the user asked for one.
+maturity: draft
+adapters_tested: []
+owner: LILLINH
+last_reviewed: 2026-10-29

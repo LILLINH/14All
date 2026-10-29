@@ -138,6 +138,10 @@ Adapted from `skills/engineering/pr/SKILL.md` in mattpocock/skills v1.3.1 (MIT, 
 
 Adapted from `skills/productivity/handoff/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/handoff/meta.yaml`.
 
+## research
+
+Adapted from `skills/engineering/research/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/research/meta.yaml`.
+
 ## Ideas credited (no text copied)
 
 These projects gave 14All an idea. The wording in 14All is its own, so no license obligation follows; they are named as a courtesy and so a reader can look at the source. All were read from shallow clones on 2026-10-29.

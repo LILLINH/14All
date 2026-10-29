@@ -137,3 +137,21 @@ test('impact-check finds users before the edit, classifies them in four groups a
   assert.ok(read('impact-check').split('\n').length <= 70);
   assert.equal(parse(readFileSync(join(skillsDir, 'impact-check', 'meta.yaml'), 'utf8')).class, 'original');
 });
+
+test('research is adapted from the pinned mattpocock source and has a notice entry', () => {
+  const meta = parse(readFileSync(join(skillsDir, 'research', 'meta.yaml'), 'utf8'));
+  assert.equal(meta.class, 'adapted');
+  const source = meta.sources.find((s) => s.repo === 'mattpocock/skills');
+  assert.equal(source?.path, 'skills/engineering/research/SKILL.md');
+  assert.match(readFileSync(join(skillsDir, '..', 'THIRD_PARTY_NOTICES.md'), 'utf8'), /^## research$/m);
+  const clone = join(skillsDir, '..', '.upstream', 'mattpocock-skills');
+  if (existsSync(clone)) assert.ok(existsSync(join(clone, source.path)), 'the source path exists in the pinned clone');
+});
+
+test('research keeps primary sources and adds version, untrusted text, a visible limit, dating and a file only on request', () => {
+  const text = read('research').toLowerCase();
+  for (const part of ['primary sources', 'version', 'context7', 'data, never instructions', 'at most five', 'did not read', 'date', 'only when the user asked']) {
+    assert.ok(text.includes(part), `research should mention ${part}`);
+  }
+  assert.ok(read('research').split('\n').length <= 70);
+});
