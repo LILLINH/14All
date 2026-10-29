@@ -1,7 +1,7 @@
 // Characters that change what a reader sees without being visible, and words that borrow a look-alike
 // letter from another alphabet. Both are used to hide text in a document an agent will read.
 
-const INVISIBLE = /[​-‏‪-‮⁠-⁤⁦-⁩﻿]/u;
+const INVISIBLE = /[\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/u;
 const PICTOGRAPHIC = /\p{Extended_Pictographic}/u;
 const VARIATION_SELECTOR = '️';
 const WORD = /[\p{L}\p{M}\p{N}_]+/gu;
@@ -33,7 +33,7 @@ export function findUnsafeText(text) {
     const chars = Array.from(line);
     chars.forEach((ch, i) => {
       if (!INVISIBLE.test(ch)) return;
-      if (ch === '‍' && joinsEmoji(chars, i)) return;
+      if (ch === '\u200D' && joinsEmoji(chars, i)) return;
       findings.push({ line: index + 1, kind: 'invisible', detail: codePoint(ch) });
     });
     for (const [word] of line.matchAll(WORD)) {
