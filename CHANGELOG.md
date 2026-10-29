@@ -10,7 +10,7 @@ First public pre-release. Claude Code and Codex have been tried.
 
 ### Added
 
-- Codex support: `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` and `skills/using-14all/references/codex-tools.md`. In one Codex CLI 0.165.0 session each, the plugin installed from a local copy, Codex listed all 21 skills, and, once the user trusted the hooks in `/hooks`, the bootstrap reached the model and the guard denied a force push to `main` and a `cat .env`. Helper agents are not used on Codex, and the guard does not see `apply_patch` edits. Evidence in `docs/evidence/codex.md`.
+- Codex support: `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` and `skills/using-14all/references/codex-tools.md`. In one Codex CLI 0.165.0 session each, the plugin installed from a local copy, Codex listed all 21 skills, and, once the user trusted the hooks in `/hooks`, the bootstrap reached the model and the guard denied a force push to `main` and a `cat .env`. Helper agents are not used on Codex, and the guard does not see `apply_patch` edits. On Codex 0.165.0, a plugin added from the GitHub address (`git` source) had its hooks reported as failed, so the README tells Codex users to clone the repository and add the clone. Evidence in `docs/evidence/codex.md`.
 
 - `simple-code` skill with 25 references (14 languages, 11 frameworks): learn the project's conventions, follow written rules, keep new code simple. Draft and unmeasured.
 - `executing-plans` skill: inline execution of a plan with a progress file and rulings.

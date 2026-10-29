@@ -46,9 +46,22 @@ In a scratch git repository on `main` with no remote, `codex exec` with the work
 
 One run each. This shows that Codex reads the guard's denial and stops the call for shell commands.
 
+## Installing from the GitHub address, and from a clone of it
+
+After the Codex files were pushed (commit `1fd257f`), the same checks were run twice more with new clean Codex homes. Both homes had both hooks reviewed and trusted in `/hooks` in the same way, and the installed files were the same commit.
+
+| Home | Marketplace added with | `source_type` in `config.toml` | Skills | Bootstrap | Guard |
+|---|---|---|---|---|---|
+| A | `codex plugin marketplace add LILLINH/14All` | `git` | 21 listed | `NONE`; log line `hook: SessionStart Failed` | did not block `git push --force origin main` (it failed on its own, no remote) and `cat .env` printed the file |
+| B | `codex plugin marketplace add <clone of the GitHub repository>` | `local` | not repeated | `14ALL-BOOTSTRAP-V1`; `hook: SessionStart Completed` | blocked the force push and `cat .env`; the control command ran |
+
+Home A had been checked against the earlier install (`187cd88`, local source), which worked in a controlled re-run in the same directory, and the hook script gave byte-identical output in both installs. A process trace of `codex exec` showed Codex running `/bin/bash -c ".../run-hook.cmd session-start"` for the local install and never starting the hook for the `git` one: Codex reports the hook as failed before it runs it. Both homes read the same marketplace file (`.agents/plugins/marketplace.json`). The difference seen is the marketplace source. Why Codex does this was not found; no error message names a cause, and Codex's plugin documentation says only that hooks are supported for manually installed plugins. One run each.
+
+The README therefore tells Codex users to clone the repository and add the clone.
+
 ## What this does not show
 
-- Installing from GitHub (`codex plugin marketplace add LILLINH/14All`). The Codex files were tried from a local clone only.
+- Why Codex fails the hooks of a plugin added from a `git` source, or whether a later Codex version does the same.
 - That a skill is chosen when it should be, or followed. No evaluation was run on Codex, and the evaluation runner calls Claude Code only.
 - The `clear`, `compact` and `resume` starts. Only a fresh headless start was run.
 - Edits. Codex edits files with `apply_patch`, and the guard does not handle that tool, so the "ask before a lint or format configuration is edited" rule does not apply on Codex. Codex does not support an "ask" answer from a hook yet (its documentation). Also, Codex has no separate `Read` or `Grep` tool, so those two matchers never fire; secret reads are caught only through shell commands.

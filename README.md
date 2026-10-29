@@ -22,12 +22,15 @@ This works for Claude Code and Codex. No other assistant has been tried.
 /plugin install 14all@14all
 ```
 
-**Codex.** Codex does not run a plugin's hooks until you trust them: start `codex`, type `/hooks`, read each hook and trust it. Without that step the skills load but the start-of-session bootstrap and the guard do not run. These commands were run against a local copy of this repository, not yet against the GitHub address.
+**Codex.** Clone the repository and add the clone as the marketplace. Then start `codex`, type `/hooks`, read each hook and trust it: Codex does not run a plugin's hooks until you do.
 
 ```
-codex plugin marketplace add LILLINH/14All
+git clone https://github.com/LILLINH/14All.git
+codex plugin marketplace add ./14All
 codex plugin add 14all@14all
 ```
+
+Do not add the GitHub address directly (`codex plugin marketplace add LILLINH/14All`) if you want the hooks. In one run that way, Codex installed the plugin and listed all 21 skills, but the start-of-session hook was reported as failed and the guard did not stop anything. The same commit installed from a local clone worked. Without trusted hooks the skills still load; the start-of-session bootstrap and the guard do not run.
 
 The code is at https://github.com/LILLINH/14All. What was tried is in [docs/evidence/claude-code.md](docs/evidence/claude-code.md) and [docs/evidence/codex.md](docs/evidence/codex.md). On Codex the helper agents are not used and the "ask first" rule for linter settings does not apply.
 
@@ -105,11 +108,12 @@ Here is what is known, and what is not.
 - Claude Code listed all 21 skills and the four agents. They were seen listed in one headless session each time, in two separate checks. That shows they load, not that they are chosen or followed.
 
 **What was seen on Codex** (one run each, Codex CLI 0.165.0; see [docs/evidence/codex.md](docs/evidence/codex.md)):
-- The plugin installed from a local copy and Codex listed all 21 skills.
+- The plugin installed from a local clone and Codex listed all 21 skills.
 - With the hooks not trusted, the start-of-session instructions did not reach the model; after trusting them in `/hooks`, they did.
 - With the hooks trusted, the guard stopped a force push to `main` and a `cat .env`, and let a harmless command run.
+- Installed from the GitHub address instead, the skills loaded but the hooks failed (see Install).
 
-**What was not tried:** installing on Codex from the GitHub address, a session after a marketplace install, Windows, interactive sessions (apart from the Codex `/hooks` screen), any assistant other than Claude Code and Codex, whether the "ask first" prompt appears for a settings edit, and whether a helper agent really keeps to read-only. Those are not verified.
+**What was not tried:** why Codex fails the hooks of a plugin added from the GitHub address, a session after a marketplace install, Windows, interactive sessions (apart from the Codex `/hooks` screen), any assistant other than Claude Code and Codex, whether the "ask first" prompt appears for a settings edit, and whether a helper agent really keeps to read-only. Those are not verified.
 
 ## Learn more
 
