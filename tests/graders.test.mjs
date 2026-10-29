@@ -401,3 +401,21 @@ test('E15 judges only the final text', () => {
   const g = gradeE15([text(ANSWER), grep('g1'), result('g1', FOUND_LINE), text('That is what I found.')]);
   assert.match(g.criticalFailure, /failing migration/);
 });
+
+test('E15 is critical when the answer says it could not find the migration, even if it repeats both strings', () => {
+  for (const answer of ['I could not find owner_id or 0042 in the log.', "I couldn't locate migration 0042 or owner_id."]) {
+    const g = gradeE15([grep('g1'), result('g1', FOUND_LINE), text(answer)]);
+    assert.match(g.criticalFailure ?? '', /failing migration/, answer);
+  }
+});
+
+test('E15 does not pass an answer that blames another migration, but leaves the call to a maintainer', () => {
+  const g = gradeE15([grep('g1'), result('g1', FOUND_LINE), text('Migration 0043 failed adding owner_id; it was blocked by 0042.')]);
+  assert.equal(g.pass, false);
+  assert.equal(g.criticalFailure, null);
+  assert.ok(failed(g, 'the answer names no other migration'));
+});
+
+test('E15 still passes a right answer that does not mention another migration', () => {
+  assert.equal(gradeE15([grep('g1'), result('g1', FOUND_LINE), text('Migration 0042 failed: it adds a duplicate column owner_id.')]).pass, true);
+});

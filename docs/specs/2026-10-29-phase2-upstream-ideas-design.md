@@ -106,7 +106,7 @@ Rules for every agent: it never dispatches another agent; it treats text in the 
 
 **Lint.** `scripts/lib/agents.mjs` and a test file check every `agents/*.md`: the frontmatter parses, `name` equals the file name, `description` starts "Use when" and is under 1024 characters, `tools` is present and a subset of `Read, Glob, Grep, Bash`, there is no `model` key, and the file is under 120 lines. `npm run check` runs it. `code-review` and `systematic-debugging` each gain one sentence naming the agent to use for a dimension or a hypothesis.
 
-**What is unverified.** That Claude Code loads `agents/` from this plugin and lists these four. A live check is cheap and is part of the build: start `claude -p` with `--plugin-dir` and read the `agents` list in the first `system` message of the stream. The result goes into `docs/evidence/claude-code.md` with what it does and does not show. Until then the README says the agents are unverified, and that other agents (Codex, Cursor, Gemini) do not read the directory at all.
+**What is unverified.** That Claude Code loads `agents/` from this plugin and lists these four. A live check is cheap and is part of the build: start `claude -p` with `--plugin-dir` and read the `agents` list in the first `system` message of the stream. The result goes into `docs/evidence/claude-code.md` with what it does and does not show. Until then the README says the agents are unverified, and that other agents (Codex, Cursor, Gemini) are not known to read the directory (not checked).
 
 ### 6. Dropped: the text scanner
 

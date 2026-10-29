@@ -19,7 +19,7 @@ Find out who depends on a thing before you change it, not after a test or a user
    - **Looked at, not affected:** users you read and found unaffected, with the reason in a few words.
    - **Cannot determine:** dynamic, generated or outside the repository.
 6. **State the risk:** high for an exported interface, a stored data format or a migration, or when many files are affected; and which tests cover the users you found.
-7. Report this to the user before you edit when the risk is high or the "Cannot determine" group is not empty. Otherwise go on and mention it in your final report.
+7. Report this before you edit, in a few lines in your reply, so the user can stop you. Wait for the user's answer only when the risk is high or the "Cannot determine" group is not empty; otherwise go on.
 
 ## After you edit
 

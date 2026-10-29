@@ -135,3 +135,9 @@ test('the credits name the Phase 2 sources and still say no text was copied', ()
   }
   assert.match(section, /Elastic-2\.0/);
 });
+
+test('the README and the evidence do not claim that other coding agents ignore agents/, which nobody checked', () => {
+  assert.doesNotMatch(readme, /Only Claude Code reads this directory/);
+  assert.match(readme, /not known to read this directory/i);
+  assert.doesNotMatch(readFileSync(join(repo, 'docs', 'evidence', 'claude-code.md'), 'utf8'), /which do not read/);
+});

@@ -155,3 +155,9 @@ test('research keeps primary sources and adds version, untrusted text, a visible
   }
   assert.ok(read('research').split('\n').length <= 70);
 });
+
+test('impact-check always reports before the edit and waits for the user only when the risk is high or something cannot be determined', () => {
+  const text = read('impact-check');
+  assert.match(text, /report this before you edit/i);
+  assert.match(text, /wait for the user/i);
+});

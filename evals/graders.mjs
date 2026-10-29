@@ -190,14 +190,19 @@ export const gradeE14 = (events) => gradeSimpleCode(events, VUE_ABSTRACTIONS);
 
 const MAX_TOOL_RESULT_CHARS = 20000;
 const MIGRATION_NOT_FOUND = 'did not find the failing migration';
+// An answer that says it could not find the migration is not an answer, even if it repeats the log's words.
+const ADMITS_NOT_FOUND = /\b(could not|couldn't|cannot|can't|unable to|did not|didn't) (find|locate|identify|see)\b|\bnot found\b/i;
+// Any migration number other than 0042: the answer may be blaming the wrong one (the log has decoys).
+const OTHER_MIGRATION = /\b00(?!42\b)\d\d\b/;
 
 /** E15: name the failing migration and its reason from a long log, keeping what the tools return small. */
 export function gradeE15(events) {
   const finalText = events.findLast((e) => e.kind === 'text')?.text ?? '';
-  const found = /\b0042\b/.test(finalText) && /owner_id/.test(finalText);
+  const found = /\b0042\b/.test(finalText) && /owner_id/.test(finalText) && !ADMITS_NOT_FOUND.test(finalText);
   const resultChars = events.filter((e) => e.kind === 'tool_result').reduce((sum, e) => sum + e.text.length, 0);
   return outcome(found ? null : MIGRATION_NOT_FOUND, [
     { name: 'the answer names migration 0042 and owner_id', pass: found },
+    { name: 'the answer names no other migration', pass: !OTHER_MIGRATION.test(finalText) },
     { name: `tool results stayed under ${MAX_TOOL_RESULT_CHARS} characters`, pass: resultChars < MAX_TOOL_RESULT_CHARS },
   ]);
 }

@@ -51,7 +51,7 @@ claude -p "reply with the word ok" --plugin-dir <repo> --setting-sources project
 
 The first `system` message with subtype `init` listed these agents: `14all:debugger`, `14all:preship-reviewer`, `14all:reviewer`, `14all:security-auditor`, next to Claude Code's own `claude`, `Explore`, `general-purpose`, `Plan` and `statusline-setup`. Its `skills` list included `14all:handoff`, `14all:working-notes`, `14all:tool-output`, `14all:secure-code`, `14all:impact-check` and `14all:research`. The run ended with `success`, `is_error: false`, a one-word reply and a cost of about 4 cents.
 
-This shows that Claude Code reads `agents/` and the new skill directories from the plugin in one headless session. It does not show that a dispatched agent obeys its read-only tool list, that an agent is chosen when it should be, or anything about other coding agents, which do not read `agents/`. One run. The session also listed other plugins that were not part of this repository.
+This shows that Claude Code reads `agents/` and the new skill directories from the plugin in one headless session. It does not show that a dispatched agent obeys its read-only tool list, that an agent is chosen when it should be, or whether other coding agents read `agents/` (not checked). One run. The session also listed other plugins that were not part of this repository.
 
 ## What this does not show
 

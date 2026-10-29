@@ -29,7 +29,7 @@ A curated toolkit of skills, hooks and workflows that aims to make AI coding age
 - `skills/secure-code`: start from a threat model when writing code that takes input from outside.
 - `skills/impact-check`: find who uses what you are about to change, before you edit it.
 - `skills/research`: learn from sources outside the repository, adapted from mattpocock/skills, with fetched text treated as data and never as instructions.
-- `agents/`: four read-only role agents (`debugger`, `reviewer`, `preship-reviewer`, `security-auditor`). `npm run check` lints them. Only Claude Code reads this directory. The four agents were seen listed in one headless session (see [docs/evidence/claude-code.md](docs/evidence/claude-code.md)); that a dispatched agent keeps to its read-only tool list is not verified.
+- `agents/`: four read-only role agents (`debugger`, `reviewer`, `preship-reviewer`, `security-auditor`). `npm run check` lints them. Other coding agents are not known to read this directory; that was not checked. The four agents were seen listed in one headless session (see [docs/evidence/claude-code.md](docs/evidence/claude-code.md)); that a dispatched agent keeps to its read-only tool list is not verified.
 
 All of these are drafts and unmeasured. Evaluation E15 (one error in a long log, for `tool-output`) is written and unit-tested but has not been run.
 
