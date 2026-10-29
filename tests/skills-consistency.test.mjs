@@ -118,3 +118,13 @@ test('tool-output states its four trimming rules, the never-shorten list, and po
   assert.ok(text.split('\n').length <= 70);
   assert.equal(parse(readFileSync(join(skillsDir, 'tool-output', 'meta.yaml'), 'utf8')).class, 'original');
 });
+
+test('secure-code starts from a threat model, has the three tiers, a language-model section and points to the security-auditor agent', () => {
+  assert.ok(!names.includes('security-review'), 'security-review is a built-in command; the skill is secure-code');
+  const text = read('secure-code');
+  for (const part of ['threat model', 'Always', 'Ask first', 'Never', 'untrusted', 'language model', '`security-auditor`', '`code-review`']) {
+    assert.ok(text.toLowerCase().includes(part.toLowerCase()), `secure-code should mention ${part}`);
+  }
+  assert.ok(text.split('\n').length <= 70);
+  assert.equal(parse(readFileSync(join(skillsDir, 'secure-code', 'meta.yaml'), 'utf8')).class, 'original');
+});
