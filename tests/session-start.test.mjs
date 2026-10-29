@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makeRoot } from './helpers.mjs';
+import { makeRoot, runWrapper } from './helpers.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const hookSrc = join(repo, 'hooks', 'session-start');
@@ -106,9 +106,8 @@ test('hooks.json registers one SessionStart command with a matcher and a timeout
 test('run-hook.cmd is executable and forwards to the named script', () => {
   const wrapper = join(repo, 'hooks', 'run-hook.cmd');
   assert.ok(statSync(wrapper).mode & 0o111, 'run-hook.cmd must be executable');
-  const result = spawnSync(wrapper, ['session-start'], {
+  const result = runWrapper(wrapper, 'session-start', {
     env: { PATH: process.env.PATH, CLAUDE_PLUGIN_ROOT: '/x' },
-    encoding: 'utf8',
   });
   assert.equal(result.status, 0);
   assert.ok(JSON.parse(result.stdout).hookSpecificOutput.additionalContext.includes(MARKER));
@@ -131,9 +130,8 @@ test('the wrapper still runs the hook when PATH is empty', () => {
   plugin(dir);
   copyFileSync(join(repo, 'hooks', 'run-hook.cmd'), join(dir, 'hooks', 'run-hook.cmd'));
   chmodSync(join(dir, 'hooks', 'run-hook.cmd'), 0o755);
-  const result = spawnSync(join(dir, 'hooks', 'run-hook.cmd'), ['session-start'], {
+  const result = runWrapper(join(dir, 'hooks', 'run-hook.cmd'), 'session-start', {
     env: { PATH: '/nonexistent', CLAUDE_PLUGIN_ROOT: '/x' },
-    encoding: 'utf8',
     cwd: makeRoot(),
   });
   assert.equal(result.status, 0, result.stderr);

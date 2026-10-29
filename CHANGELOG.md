@@ -17,7 +17,7 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
-- Guard: text inside quotes or a here-document no longer triggers a denial (a commit message that mentions `rm -rf /` was blocked); a quoted argument to `sh -c`, `bash -c` or `eval` and anything inside `$(...)` is still checked. Public SSH keys, `~/.ssh/config` and `known_hosts` are no longer treated as secrets. A command over 8000 characters is scanned as it is, without quote handling.
+- Guard: text inside quotes or a here-document no longer triggers a denial (a commit message that mentions `rm -rf /` was blocked); a quoted argument to `sh -c`, `bash -c` or `eval` and anything inside `$(...)` is still checked. Public SSH keys, `~/.ssh/config` and `known_hosts` are no longer treated as secrets. A command over 3000 characters is scanned at its start and its end only (a long here-document body is skipped), which keeps the hook inside its timeout on macOS bash 3.2.
 - CI runs on pushes to `main` and on pull requests only, and cancels a superseded run on the same ref.
 - The evaluation runner records `invalid` for a run in which the agent never ran (bad exit status, empty transcript, no result message); reports leave those out of every count.
 - Grader E1 needs the question to end a line. Grader E4 lets the last of "claims done" and "not verified" decide, and a read-only command (`ls`, `cat`) no longer counts as verification. The 24 saved runs regrade to the same outcomes.

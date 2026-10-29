@@ -5,6 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync }
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { runWrapper } from './helpers.mjs';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const guard = join(repo, 'hooks', 'guard');
@@ -98,11 +99,18 @@ test('does not block text written through a here-document, but blocks one fed to
   assert.ok(denied(bash('cat <<EOF\nok\nEOF\nrm -rf /')), 'a command after the here-document is still checked');
 });
 
-test('a very long command is still checked and answered quickly', () => {
-  const command = `${Array(2000).fill('echo "hello world"').join(' ')}; rm -rf /`;
+test('a very long command has its start and its end checked, and is answered quickly', () => {
+  const padding = Array(2000).fill('echo "hello world"').join(' ');
   const started = Date.now();
-  assert.ok(denied(bash(command)));
-  assert.ok(Date.now() - started < 3000, 'the hook timeout is 5 seconds');
+  assert.ok(denied(bash(`${padding}; rm -rf /`)), 'dangerous at the end');
+  assert.ok(denied(bash(`rm -rf /; ${padding}`)), 'dangerous at the start');
+  assert.ok(!denied(bash(`${padding} ; echo done`)), 'a long harmless command is allowed');
+  assert.ok(Date.now() - started < 3000, 'three runs must stay well inside the 5 second hook timeout');
+});
+
+test('only the start and the end of a very long command are scanned, so a long here-document body is skipped', () => {
+  const body = `${'harmless line\n'.repeat(1000)}rm -rf /\n${'harmless line\n'.repeat(1000)}`;
+  assert.ok(!denied(bash(`cat > notes.txt <<'EOF'\n${body}EOF`)));
 });
 
 test('denies a force-with-lease push to main as well', () => {
@@ -200,7 +208,7 @@ test('hooks.json registers the guard on Bash, Read and Grep tool calls through t
 test('the wrapper forwards the tool call on stdin to the guard', () => {
   const wrapper = join(repo, 'hooks', 'run-hook.cmd');
   assert.ok(statSync(guard).mode & 0o111, 'guard must be executable');
-  const result = spawnSync(wrapper, ['guard'], { input: JSON.stringify(bash('rm -rf /')), env: { PATH: process.env.PATH }, encoding: 'utf8' });
+  const result = runWrapper(wrapper, 'guard', { input: JSON.stringify(bash('rm -rf /')), env: { PATH: process.env.PATH } });
   assert.equal(result.status, 0);
   assert.equal(JSON.parse(result.stdout).hookSpecificOutput.permissionDecision, 'deny');
 });

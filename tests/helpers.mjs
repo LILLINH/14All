@@ -1,9 +1,18 @@
+import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 export function makeRoot() {
   return mkdtempSync(join(tmpdir(), '14all-test-'));
+}
+
+/**
+ * Run a hook wrapper the way Claude Code does: through a shell, as `"<wrapper>" <script>`.
+ * run-hook.cmd has no shebang (it is also a Windows batch file), so spawning it directly fails on macOS.
+ */
+export function runWrapper(wrapper, script, options = {}) {
+  return spawnSync(`"${wrapper}" ${script}`, { shell: true, encoding: 'utf8', ...options });
 }
 
 export const VALID_META_YAML = `class: original

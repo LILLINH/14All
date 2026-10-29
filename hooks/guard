@@ -10,6 +10,8 @@
 # dangerous command is not blocked; a quoted argument to `sh -c`, `bash -c` or `eval`, and
 # anything inside `$(...)`, is still checked because the shell will run it.
 #
+# A command over 3000 characters is scanned at its start and its end only.
+#
 # Only shell built-ins are used (no cat, no grep, no jq): the hook must work with an empty
 # PATH, and it never blocks on a parse problem. Always exits 0.
 
@@ -48,7 +50,7 @@ strip_quotes() {
   local quotes=$'"\''
   local runs_re='(^|[[:space:]])(eval|-[a-zA-Z]*c)[[:space:]]*$'
   while :; do
-    pre=${rest%%[$quotes]*}
+    pre=${rest%%["$quotes"]*}
     out+=$pre
     [ "$pre" = "$rest" ] && break
     rest=${rest:${#pre}}
@@ -77,6 +79,7 @@ strip_quotes() {
       out+="$q$span"
       break
     fi
+    # shellcheck disable=SC2016 # '$(' is the literal text of a command substitution
     if [ "$keep" = 1 ] || [[ $span == *'$('* || $span == *'`'* || $span != *[[:space:]\;\&\|]* ]]; then
       out+="$q$span$q"
     else
@@ -151,6 +154,7 @@ rm_hits_root_or_home() {
         recursive=1
         continue
       fi
+      # shellcheck disable=SC2016,SC2088 # these are the literal words the user typed, not expansions
       case $word in
         / | '/*' | '~' | '~/' | '~/*' | '$HOME' | '$HOME/' | '$HOME/*' | '${HOME}' | '${HOME}/' | '${HOME}/*') target=1 ;;
       esac
@@ -220,14 +224,19 @@ bash_reads_secret() {
   return 1
 }
 
+max_scan=3000 # characters of a Bash command that are scanned
+
 case $tool in
   Bash)
     cmd=$(json_field command)
     [ -n "$cmd" ] || exit 0
-    # Stripping copies the string once per quote, so it is skipped for a huge command; the
-    # raw text is then scanned, which can only block more, never less.
-    scan=$cmd
-    [ "${#cmd}" -le 8000 ] && scan=$(strip_quotes "$(strip_heredocs "$cmd")")
+    # A very long command is usually a here-document. Only its start and its end are scanned,
+    # so the cost stays bounded: old bash (macOS has 3.2) is slow here, and the hook has a timeout.
+    if [ "${#cmd}" -gt "$max_scan" ]; then
+      half=$((max_scan / 2))
+      cmd=${cmd:0:half}$'\n'${cmd: -half}
+    fi
+    scan=$(strip_quotes "$(strip_heredocs "$cmd")")
 
     rm_hits_root_or_home "$scan" && deny "recursive remove of the filesystem root or the home directory"
 
