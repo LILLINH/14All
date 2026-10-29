@@ -16,7 +16,7 @@
     "new-skill": "node scripts/new-skill.mjs",
     "eval:report": "node evals/report.mjs",
     "eval:compare": "node evals/compare.mjs",
-    "check": "node scripts/lint-skills.mjs && node scripts/lint-agents.mjs && node scripts/check-text.mjs && node scripts/check-notices.mjs && node scripts/check-manifests.mjs && node scripts/check-sources.mjs && node scripts/scan-secrets.mjs"
+    "check": "node scripts/lint-skills.mjs && node scripts/lint-agents.mjs && node scripts/check-text.mjs && node scripts/check-paths.mjs && node scripts/check-notices.mjs && node scripts/check-manifests.mjs && node scripts/check-sources.mjs && node scripts/scan-secrets.mjs"
   },
   "devDependencies": {
     "yaml": "2.9.1"

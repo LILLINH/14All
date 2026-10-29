@@ -24,7 +24,7 @@
 Inputs the spec implies that a happy-path test would miss; each has a test in the task that owns the code.
 
 1. Text check: Vietnamese and other Latin text with diacritics is clean; a word mixing Latin and Cyrillic or Greek letters is flagged; a byte-order mark at the start of a file is flagged; a zero-width joiner inside an emoji sequence is not flagged but a lone zero-width space is (Task 1).
-2. Path check: `/home/runner/`, `/Users/you/`, `~/` and `$HOME` are clean; `C:\Users\alice\` and `/home/alice/` are flagged; a path inside a URL (`https://example.com/home/alice/page`) is not (Task 2).
+2. Path check: `/home/runner/`, `/Users/you/`, `~/` and `$HOME` are clean; a home path under a made-up person's name, on Linux, macOS and Windows, is flagged; a path inside a URL is not (Task 2).
 3. Routing check: a case naming a skill that does not exist fails; a `known-gap` case without a reason fails; a known gap is reported but does not fail; two identical descriptions are a collision; a prompt sharing no word with any description does not crash (Task 3).
 4. Harness audit: `CLAUDE.md` containing only `@AGENTS.md` is followed to `AGENTS.md`; a 33 KiB instruction file is a critical failure and exit status 1; an empty directory is 0 of 8 with a critical failure; a nested `tests/` directory counts (Task 4).
 5. `writing-for-agents` keeps the upstream core, its `meta.yaml` source path exists in the pinned clone, the template is under 32 KiB, and the skill does not contradict the size limits other skills and the harness audit state (Task 5).
@@ -57,7 +57,7 @@ Inputs the spec implies that a happy-path test would miss; each has a test in th
 **Interfaces:**
 - Produces: `findPersonalPaths(text) -> { line: number }[]` (never the path itself). A path is `/home/<name>/`, `/Users/<name>/` or `C:\Users\<name>\` at the start of a line or after whitespace, a quote, a backtick, `(`, `=` or `:`; clean when `<name>` is one of `user`, `you`, `me`, `name`, `username`, `example`, `runner`. Same file set and exit rule as Task 1.
 
-- [ ] **Step 1: Write the failing tests**: flagged are `cd /home/alice/work`, `"/Users/bob/x"`, `C:\Users\carol\Desktop`; clean are `/home/runner/work`, `/Users/you/project`, `~/work`, `$HOME/work`, `/home/user/x`, `https://example.com/home/alice/page`, and text with no path; the line number is right on a multi-line text.
+- [ ] **Step 1: Write the failing tests**: a home path under a made-up name is flagged on Linux, macOS and Windows, after a space, a quote, a backtick or `=`; `runner`, `you`, `user`, `name`, `username`, `example`, a one-letter name, `~/` and `$HOME` are clean; a path inside a URL or after `/usr` is clean; the line number is right on a multi-line text; a line with several paths is one finding. The test file builds its paths from parts so it holds no such path itself.
 - [ ] **Step 2: Run** `node --test tests/personal-paths.test.mjs`. Expected: FAIL.
 - [ ] **Step 3: Implement** `findPersonalPaths` and `scripts/check-paths.mjs`; add it to `check`. Run `node scripts/check-paths.mjs`, and for each flagged tracked file replace the path with a placeholder (`<repo>`, `/home/user/...`) keeping the meaning of the sentence.
 - [ ] **Step 4: Run** `npm test && npm run check`. Expected: PASS with no flagged file.
