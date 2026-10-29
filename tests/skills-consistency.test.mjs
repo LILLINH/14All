@@ -109,3 +109,12 @@ test('systematic-debugging names the debugger agent for competing hypotheses and
   for (const agent of ['reviewer', 'preship-reviewer', 'security-auditor']) assert.match(review, new RegExp(`\`${agent}\` agent`), agent);
   assert.ok(debugging.split('\n').length < 400 && review.split('\n').length < 400);
 });
+
+test('tool-output states its four trimming rules, the never-shorten list, and points at a file for long output', () => {
+  const text = read('tool-output');
+  for (const part of ['explicit request for detail', 'shorter version of the real output', 'never lose the failure', 'a way back', 'exit status', 'path:line', 'negation', 'irreversible']) {
+    assert.ok(text.toLowerCase().includes(part), `tool-output should mention ${part}`);
+  }
+  assert.ok(text.split('\n').length <= 70);
+  assert.equal(parse(readFileSync(join(skillsDir, 'tool-output', 'meta.yaml'), 'utf8')).class, 'original');
+});
