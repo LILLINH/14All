@@ -10,7 +10,7 @@ test('parses name and description', () => {
 });
 
 test('handles CRLF and BOM', () => {
-  const text = '﻿---\r\nname: demo\r\ndescription: Use when testing.\r\n---\r\n# Body\r\n';
+  const text = '\uFEFF---\r\nname: demo\r\ndescription: Use when testing.\r\n---\r\n# Body\r\n';
   const { frontmatter, body } = parseSkillFile(text);
   assert.equal(frontmatter.name, 'demo');
   assert.equal(frontmatter.description, 'Use when testing.');

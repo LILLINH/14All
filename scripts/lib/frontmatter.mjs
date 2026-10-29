@@ -6,7 +6,7 @@ import { parse } from 'yaml';
  * Strips a leading BOM and normalizes CRLF to LF first.
  */
 export function parseSkillFile(text) {
-  const normalized = text.replace(/^﻿/, '').replace(/\r\n/g, '\n');
+  const normalized = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
   const match = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(normalized);
   if (!match) throw new Error('missing frontmatter');
   let frontmatter;
