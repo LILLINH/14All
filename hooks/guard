@@ -10,7 +10,8 @@
 # dangerous command is not blocked; a quoted argument to `sh -c`, `bash -c` or `eval`, and
 # anything inside `$(...)`, is still checked because the shell will run it.
 #
-# A command over 3000 characters is scanned at its start and its end only.
+# A command over 3000 characters is scanned at its start and its end only (a long here-document
+# is usually the rest).
 #
 # Only shell built-ins are used (no cat, no grep, no jq): the hook must work with an empty
 # PATH, and it never blocks on a parse problem. Always exits 0.
@@ -19,27 +20,50 @@ set -u
 
 [ "${ALL14_GUARD:-}" = off ] && exit 0
 
-IFS= read -r -d '' input || true
+# Bytes, not characters: bash measures and slices a string in a UTF-8 locale one character at a
+# time, which is quadratic on a long command.
+LC_ALL=C
 
-tool_re='"tool_name"[[:space:]]*:[[:space:]]*"([A-Za-z_]+)"'
-[[ $input =~ $tool_re ]] || exit 0
-tool=${BASH_REMATCH[1]}
+max_scan=3000 # characters of a field that are scanned
+
+IFS= read -r -d '' input || true
 
 deny() {
   printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"14All guard: %s. If you really mean it, ask the user to run it themselves, or to set ALL14_GUARD=off for the session."}}\n' "$1"
   exit 0
 }
 
-# The value of a JSON string field, with the common escapes undone. Empty when absent.
+# The value of a JSON string field, with the common escapes undone. Empty when absent or not a
+# string. A value over max_scan characters keeps its start and its end. Plain string operations
+# only, never a regular expression over the whole input: one with a nested repeat takes tens of
+# seconds on a large input in the bash 3.2 that macOS ships.
 json_field() {
-  local re="\"$1\"[[:space:]]*:[[:space:]]*\"(([^\"\\\\]|\\\\.)*)\""
-  [[ $input =~ $re ]] || return 0
-  local v=${BASH_REMATCH[1]}
-  v=${v//\\\"/\"}
+  local rest=${input#*\""$1"\"} v ws half
+  [ "$rest" != "$input" ] || return 0
+  ws=${rest%%[![:space:]]*}
+  rest=${rest#"$ws"}
+  [ "${rest:0:1}" = : ] || return 0
+  rest=${rest:1}
+  ws=${rest%%[![:space:]]*}
+  rest=${rest#"$ws"}
+  [ "${rest:0:1}" = '"' ] || return 0
+  rest=${rest:1}
+  rest=${rest//\\\\/$'\001'} # an escaped backslash and an escaped quote become placeholders,
+  rest=${rest//\\\"/$'\002'}  # so the first quote left is the closing one
+  v=${rest%%\"*}
+  [ "$v" != "$rest" ] || return 0
+  if [ "${#v}" -gt "$max_scan" ]; then
+    half=$((max_scan / 2))
+    v=${v:0:half}\\n${v: -half}
+  fi
   v=${v//\\n/$'\n'}
-  v=${v//\\\\/\\}
+  v=${v//\\t/$'\t'}
+  v=${v//$'\002'/\"}
+  v=${v//$'\001'/\\}
   printf '%s' "$v"
 }
+
+tool=$(json_field tool_name)
 
 # The command with the text of quoted strings blanked out. A quoted string is kept as it is
 # when the shell will run it (after `-c` or `eval`, or when it holds `$(` or a backtick) or when
@@ -224,18 +248,10 @@ bash_reads_secret() {
   return 1
 }
 
-max_scan=3000 # characters of a Bash command that are scanned
-
 case $tool in
   Bash)
     cmd=$(json_field command)
     [ -n "$cmd" ] || exit 0
-    # A very long command is usually a here-document. Only its start and its end are scanned,
-    # so the cost stays bounded: old bash (macOS has 3.2) is slow here, and the hook has a timeout.
-    if [ "${#cmd}" -gt "$max_scan" ]; then
-      half=$((max_scan / 2))
-      cmd=${cmd:0:half}$'\n'${cmd: -half}
-    fi
     scan=$(strip_quotes "$(strip_heredocs "$cmd")")
 
     rm_hits_root_or_home "$scan" && deny "recursive remove of the filesystem root or the home directory"

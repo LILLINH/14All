@@ -29,6 +29,9 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ### Fixed
 
+- Guard: a tab between words (`rm<TAB>-rf<TAB>/`) is now read as a separator, so it is no longer missed.
+- Guard: the JSON input is read with plain string operations and `LC_ALL=C` instead of a regular expression over the whole input. The regex took about 35 s for a 38 KB command in the bash 3.2 that macOS ships, past the hook's 5 s timeout.
+
 - `scan-secrets` no longer crashes on a tracked file that was deleted from the working tree and not yet committed.
 - Eval runs delete their temporary working copy when they finish.
 

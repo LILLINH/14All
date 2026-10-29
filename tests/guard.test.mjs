@@ -113,6 +113,13 @@ test('only the start and the end of a very long command are scanned, so a long h
   assert.ok(!denied(bash(`cat > notes.txt <<'EOF'\n${body}EOF`)));
 });
 
+test('reads the JSON escapes of a command correctly: tabs separate words, escaped backslashes and quotes are literal', () => {
+  assert.ok(denied(bash('rm\t-rf\t/')), 'tab-separated rm -rf /');
+  assert.ok(denied(bash('git\tpush\t--force\torigin\tmain')), 'tab-separated force push');
+  assert.ok(denied(bash('echo "a\\" ; rm -rf /')), 'a backslash before the closing quote does not hide what follows');
+  assert.ok(!denied(bash('echo "rm -rf /" \\n')), 'an escaped backslash followed by n is not a newline');
+});
+
 test('denies a force-with-lease push to main as well', () => {
   assert.ok(denied(bash('git push --force-with-lease origin main')));
   assert.ok(denied(bash('git push --force-with-lease=main:abc123 origin main')));
