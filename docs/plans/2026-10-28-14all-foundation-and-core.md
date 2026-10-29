@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node 22 or later (ESM, `node --test`), bash, one pinned dev dependency (`yaml`), GitHub Actions.
 
-**Spec:** `docs/superpowers/specs/2026-10-28-14all-design.md`
+**Spec:** `docs/specs/2026-10-28-14all-design.md`
 
 ## Global Constraints
 

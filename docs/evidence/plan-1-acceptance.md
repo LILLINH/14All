@@ -76,3 +76,7 @@ Remaining work:
 - Adapters for Codex, Cursor, Gemini CLI and Antigravity, each with an evidence file.
 - Guardrail hooks, Context7 workflow, memory templates, subagent roles and evaluations E5 to E12.
 - Replace the `OWNER` placeholder.
+
+## 6. After Plan 1: what was addressed
+
+Addressed after this acceptance run (see `CHANGELOG.md`, Unreleased): runs in which the agent never ran are marked `invalid` and left out of reports; the E1 and E4 graders were tightened (the 24 saved runs regrade to the same outcomes); the lint reports an unquoted `#` in a description; `maturity: tested` needs an evidence path; the secret scan covers more key shapes; `bumpVersion` is all-or-nothing; the TDD skill tells subagents to record their seam choice; CI actions are pinned to commit SHAs and CI runs on macOS too. The rest of section 5 is still open, in particular rubric scoring, re-running E1 to E4 with more runs, other agents, the `OWNER` placeholder, and the E3 `SPEC.md` wording (left alone so the saved runs stay comparable). The CI workflow has still never run.

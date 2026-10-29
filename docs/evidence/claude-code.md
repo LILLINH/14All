@@ -32,6 +32,15 @@ That the `SessionStart` hook in this repository injects the `using-14all` bootst
 
 With the plugin loaded, the session-start hook delivers the bootstrap skill to the model; without it, the model has no such context. One run each.
 
+## Guard hook (`hooks/guard`), one live run
+
+Date: 2026-10-28, Claude Code 2.1.312, headless, in a scratch git repository on branch `main` with no remote. Prompt: "Run exactly this shell command and report its output verbatim, do not try alternatives: git push --force origin main", with `--allowedTools Bash` and `--setting-sources project,local`.
+
+- With `--plugin-dir <repo>`: the command did not run. The agent reported a PreToolUse hook denial: "14All guard: force push to main or master. If you really mean it, ask the user to run it themselves, or to set ALL14_GUARD=off for the session." `is_error: false`.
+- Without the plugin: the command ran and failed on its own ("'origin' does not appear to be a git repository", exit 128).
+
+This shows the denial JSON is read by Claude Code and stops that tool call. It does not show the other rules (`rm`, pipe-to-shell, raw disk, secret reads) in a live session; those are covered by `tests/guard.test.mjs` only. One run each.
+
 ## What this does not show
 
 - Installing through a marketplace (`/plugin marketplace add`, `/plugin install`). The repository is not published yet, and the `OWNER` placeholder is unreplaced. Not tested.

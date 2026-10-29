@@ -94,6 +94,10 @@ Adapted from `skills/brainstorming/SKILL.md` in obra/superpowers v7.0.1 (MIT, Co
 
 Adapted from `skills/writing-plans/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/writing-plans/meta.yaml`.
 
+## executing-plans
+
+Adapted from `skills/executing-plans/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/executing-plans/meta.yaml`.
+
 ## subagent-driven-development
 
 Adapted from `skills/subagent-driven-development/SKILL.md` in obra/superpowers v7.0.1 (MIT, Copyright (c) 2025 Jesse Vincent). Changed: see `skills/subagent-driven-development/meta.yaml`.
