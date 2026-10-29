@@ -15,6 +15,7 @@
     "check:drift": "node scripts/check-drift.mjs",
     "new-skill": "node scripts/new-skill.mjs",
     "eval:report": "node evals/report.mjs",
+    "eval:compare": "node evals/compare.mjs",
     "check": "node scripts/lint-skills.mjs && node scripts/check-notices.mjs && node scripts/check-manifests.mjs && node scripts/check-sources.mjs && node scripts/scan-secrets.mjs"
   },
   "devDependencies": {
