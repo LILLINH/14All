@@ -73,3 +73,20 @@ test('the report names the gate result, lists the problems and says no significa
   assert.match(text, /\| E1 \| 14all \| 3 \| 1 \|/);
   assert.match(text, /no significance test/i);
 });
+
+const inconclusive = (taskId, mode) => ({ taskId, mode, invalid: null, grade: { pass: false, criticalFailure: null, inconclusive: true, checks: [] } });
+
+test('runs whose evidence could not be read are not counted as the agent failing: the gate does not pass on them', () => {
+  const result = compareRuns([...cell('E1', '14all', 1, 3), ...times(3, () => inconclusive('E1', 'baseline'))]);
+  assert.equal(result.status, 'undecided');
+  assert.ok(result.problems.some((p) => /baseline/.test(p)));
+});
+
+test('an inconclusive run leaves the valid runs short of the minimum, and the table shows how many there were', () => {
+  const runs = [...cell('E1', '14all', 3, 3), ...cell('E1', 'baseline', 2, 2), inconclusive('E1', 'baseline')];
+  const result = compareRuns(runs);
+  assert.equal(result.status, 'undecided');
+  assert.equal(row(result, 'E1', 'baseline').inconclusive, 1);
+  assert.equal(compareRuns(runs, { minRuns: 2 }).status, 'pass');
+  assert.match(renderCompare(result), /Inconclusive/);
+});

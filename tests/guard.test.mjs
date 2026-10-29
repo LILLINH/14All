@@ -307,3 +307,21 @@ test('ALL14_GUARD=off allows an edit of an existing config', () => {
   assert.ok(asked(edit('Edit', join(dir, '.eslintrc.json'))));
   assert.equal(run(edit('Edit', join(dir, '.eslintrc.json')), { ALL14_GUARD: 'off' }).decision, null);
 });
+
+test('denies a hook-bypass flag that follows a command substitution or a line continuation', () => {
+  for (const command of [
+    `git commit -m "$(cat <<'EOF'\nfix the thing\nEOF\n)" --no-verify`,
+    'git commit -a -m "x $(date)" -n',
+    'git commit -m x \\\n  --no-verify',
+    'git commit -m x \\\n  -n',
+    'git commit -m `date` --no-verify',
+  ]) {
+    assert.ok(denied(bash(command)), command);
+  }
+});
+
+test('allows a commit whose message is a command substitution, even when the message mentions the flag', () => {
+  for (const command of [`git commit -m "$(cat <<'EOF'\nfix --no-verify handling\nEOF\n)"`, 'git commit -m "$(date)"', 'echo $(date) --no-verify']) {
+    assert.ok(!denied(bash(command)), command);
+  }
+});

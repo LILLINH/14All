@@ -246,6 +246,39 @@ push_defaults_to_trunk() {
   return 1
 }
 
+# The command with each $(...) and each backtick pair replaced by one word, and each backslash-newline
+# joined into a space, so what follows a command substitution (the usual place of a flag after a commit
+# message) or a continuation line stays in the same command. An unterminated substitution leaves the
+# command as it was.
+flatten_substitutions() {
+  local s=$1 out="" depth=0 bt=0 i ch n
+  s=${s//\\$'\n'/ }
+  n=${#s}
+  for ((i = 0; i < n; i++)); do
+    ch=${s:i:1}
+    if [ "$ch" = '$' ] && [ "${s:i+1:1}" = '(' ]; then
+      [ "$depth$bt" = 00 ] && out+=SUBST
+      depth=$((depth + 1))
+      i=$((i + 1))
+      continue
+    fi
+    if [ "$depth" -gt 0 ]; then
+      case $ch in
+        '(') depth=$((depth + 1)) ;;
+        ')') depth=$((depth - 1)) ;;
+      esac
+      continue
+    fi
+    if [ "$ch" = '`' ]; then
+      [ "$bt" = 0 ] && out+=SUBST
+      bt=$((1 - bt))
+      continue
+    fi
+    [ "$bt" = 1 ] || out+=$ch
+  done
+  if [ "$depth$bt" = 00 ]; then printf '%s' "$out"; else printf '%s' "$s"; fi
+}
+
 # True for a git command that skips or redirects git hooks: --no-verify on commit, push, merge, am
 # or cherry-pick; -n on commit (an `n` before any letter that takes an argument, so -mnote is a
 # message); a core.hooksPath override on the command line (-c or --config-env, in any letter case).
@@ -341,7 +374,9 @@ case $tool in
       fi
     fi
 
-    git_bypasses_hooks "$scan" && deny "bypassing git hooks (--no-verify or core.hooksPath)"
+    if git_bypasses_hooks "$scan" || git_bypasses_hooks "$(flatten_substitutions "$scan")"; then
+      deny "bypassing git hooks (--no-verify or core.hooksPath)"
+    fi
 
     pipe_re='(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+)?(ba|z|da)?sh([[:space:]]|$)'
     procsub_re='(^|[^[:alnum:]_])((ba|z|da)?sh|source|\.)([[:space:]]+-[a-zA-Z]+)*[[:space:]]+<\([[:space:]]*(curl|wget)'

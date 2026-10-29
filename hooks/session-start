@@ -62,7 +62,8 @@ resume_block() {
   [ "${ALL14_RESUME:-}" = off ] && return 0
   local f newest="" body first last close='</14all-resume>'
   for f in "$PWD"/.14all/progress/*.md; do
-    [ -f "$f" ] && [ -r "$f" ] || continue
+    # A symlink could point at any file on the machine, so it is never read.
+    [ -f "$f" ] && [ ! -L "$f" ] && [ -r "$f" ] || continue
     if [ -z "$newest" ] || [ "$f" -nt "$newest" ]; then newest=$f; fi
   done
   [ -n "$newest" ] || return 0

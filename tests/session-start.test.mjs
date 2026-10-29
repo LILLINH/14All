@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, statSync, utimesSync, writeFileSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, statSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeRoot, runWrapper } from './helpers.mjs';
@@ -237,4 +237,25 @@ test('the resume block works with an empty PATH and skips an unreadable file', (
   const unreadable = run(script, { CLAUDE_PLUGIN_ROOT: '/x' }, cwd);
   assert.equal(unreadable.status, 0);
   assert.ok(!contextOf(unreadable).includes(OPEN));
+});
+
+test('a symlink in the progress directory is never read: it could point at any file on the machine', () => {
+  const outside = join(makeRoot(), 'elsewhere.md');
+  writeFileSync(outside, 'SECRET-TARGET');
+  const cwd = projectWithNotes({});
+  symlinkSync(outside, join(cwd, '.14all', 'progress', 's.md'));
+  const context = contextOf(run(plugin(makeRoot()), { CLAUDE_PLUGIN_ROOT: '/x' }, cwd));
+  assert.ok(!context.includes('SECRET-TARGET'));
+  assert.ok(!context.includes(OPEN));
+});
+
+test('a real note is still used when a newer symlink sits next to it', () => {
+  const outside = join(makeRoot(), 'elsewhere.md');
+  writeFileSync(outside, 'SECRET-TARGET');
+  const cwd = projectWithNotes({ 'real.md': 'REAL-NOTE' });
+  utimesSync(join(cwd, '.14all', 'progress', 'real.md'), new Date(2020, 0, 1), new Date(2020, 0, 1));
+  symlinkSync(outside, join(cwd, '.14all', 'progress', 'z.md'));
+  const context = contextOf(run(plugin(makeRoot()), { CLAUDE_PLUGIN_ROOT: '/x' }, cwd));
+  assert.ok(context.includes('REAL-NOTE'));
+  assert.ok(!context.includes('SECRET-TARGET'));
 });

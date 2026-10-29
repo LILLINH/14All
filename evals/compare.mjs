@@ -5,7 +5,8 @@
 // Exit status: 0 the gate passes, 1 it fails, 2 it cannot decide (too few valid runs, nothing to
 // compare with, or no runs for that date). It runs no significance test: with a handful of tasks and
 // a few runs each, a p-value would look more certain than the data is. Invalid runs (the agent never
-// ran) are left out, so they count against neither mode.
+// ran) and inconclusive runs (the evidence could not be read) are left out, so they count against
+// neither mode; too many of them leave the gate undecided.
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -15,13 +16,14 @@ import { existingRunsDir } from './runs-dir.mjs';
 const EXIT_STATUS = { pass: 0, fail: 1, undecided: 2 };
 const MODES = ['14all', 'baseline'];
 
-function statsFor(valid, taskId, mode) {
+function statsFor(valid, taskId, mode, unreadable = 0) {
   const runs = valid.filter((s) => s.taskId === taskId && s.mode === mode);
   const passing = runs.filter((s) => s.grade.pass).length;
   return {
     taskId,
     mode,
     valid: runs.length,
+    inconclusive: unreadable,
     passing,
     critical: runs.filter((s) => s.grade.criticalFailure).length,
     passAtK: passing > 0, // at least one run passed
@@ -38,15 +40,19 @@ const lowerRate = (a, b, field) => a[field] * b.valid < b[field] * a.valid;
  * 'undecided'), the problems found (failures first) and one row of numbers per task and mode.
  */
 export function compareRuns(summaries, { minRuns = 3 } = {}) {
-  const valid = summaries.filter((s) => !s.invalid);
+  // An inconclusive run (its evidence could not be read) says nothing about the agent, so it is counted
+  // in neither direction: it is left out of the valid runs and shown in its own column.
+  const valid = summaries.filter((s) => !s.invalid && !s.grade.inconclusive);
+  const unreadable = (taskId, mode) => summaries.filter((s) => !s.invalid && s.grade.inconclusive && s.taskId === taskId && s.mode === mode).length;
+  const stats = (taskId, mode) => statsFor(valid, taskId, mode, unreadable(taskId, mode));
   const tasks = [...new Set(summaries.map((s) => s.taskId))].sort();
-  const rows = tasks.flatMap((taskId) => MODES.map((mode) => statsFor(valid, taskId, mode)));
+  const rows = tasks.flatMap((taskId) => MODES.map((mode) => stats(taskId, mode)));
   const failures = [];
   const undecided = [];
 
   for (const taskId of tasks) {
-    const a = statsFor(valid, taskId, '14all');
-    const b = statsFor(valid, taskId, 'baseline');
+    const a = stats(taskId, '14all');
+    const b = stats(taskId, 'baseline');
     if (b.valid > 0 && a.valid === 0) {
       failures.push(`${taskId}: dropped: the baseline has ${b.valid} valid runs and 14all has none`);
     } else if (a.valid === 0 && b.valid === 0) {
@@ -68,8 +74,8 @@ export function compareRuns(summaries, { minRuns = 3 } = {}) {
 
 /** Markdown for the result of compareRuns. */
 export function renderCompare({ status, problems, rows }) {
-  const lines = ['| Task | Mode | Valid runs | Passing | pass@k | pass^k | Critical failures |', '|---|---|---|---|---|---|---|'];
-  for (const r of rows) lines.push(`| ${r.taskId} | ${r.mode} | ${r.valid} | ${r.passing} | ${r.passAtK ? 'yes' : 'no'} | ${r.passPowK ? 'yes' : 'no'} | ${r.critical} |`);
+  const lines = ['| Task | Mode | Valid runs | Passing | pass@k | pass^k | Critical failures | Inconclusive |', '|---|---|---|---|---|---|---|---|'];
+  for (const r of rows) lines.push(`| ${r.taskId} | ${r.mode} | ${r.valid} | ${r.passing} | ${r.passAtK ? 'yes' : 'no'} | ${r.passPowK ? 'yes' : 'no'} | ${r.critical} | ${r.inconclusive} |`);
   lines.push('', `Gate: ${status.toUpperCase()}`);
   for (const problem of problems) lines.push(`- ${problem}`);
   lines.push('', 'pass@k: at least one run passed. pass^k: every run passed. No significance test is run: a few tasks and a few runs each cannot support one.');
