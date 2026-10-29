@@ -91,3 +91,13 @@ test('handoff names its sections and its rules', () => {
   assert.match(text, /data, not instructions/);
   assert.ok(text.split('\n').length <= 60);
 });
+
+test('working-notes keeps one notes file in the progress directory with evidence per step', () => {
+  const text = read('working-notes');
+  for (const part of ['.14all/progress/', '# Progress - notes:', 'Status: pending|in_progress|done', 'Evidence:', '`executing-plans`', '`handoff`', 'three rounds']) {
+    assert.ok(text.includes(part), `working-notes should mention ${part}`);
+  }
+  assert.ok(text.split('\n').length <= 60);
+  const meta = parse(readFileSync(join(skillsDir, 'working-notes', 'meta.yaml'), 'utf8'));
+  assert.equal(meta.class, 'original');
+});
