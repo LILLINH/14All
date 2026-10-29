@@ -12,7 +12,7 @@ const flatten = (content) => {
 };
 
 /** The JSON objects of a JSON-lines transcript; blank and unparsable lines are skipped. */
-function parseJsonLines(raw) {
+export function parseJsonLines(raw) {
   return raw.split('\n').flatMap((line) => {
     try {
       return [JSON.parse(line)];

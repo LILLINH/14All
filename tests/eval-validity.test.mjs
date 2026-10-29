@@ -39,3 +39,31 @@ test('regrade records the validity of the saved run', () => {
   assert.match(regrade({ ...summary, exitStatus: 1 }, goodRaw()).invalid, /exit/);
   assert.match(regrade(summary, '').invalid, /transcript|events/);
 });
+
+// ---- the mode check: the transcript proves what was loaded
+
+const hookResponse = (event, output) => line({ type: 'system', subtype: 'hook_response', hook_event: event, output });
+const withBootstrap = (event = 'SessionStart') => [hookResponse(event, 'You have 14All skills. 14ALL-BOOTSTRAP-V1 ...'), goodRaw()].join('\n');
+
+test('a 14all run whose transcript shows no bootstrap is invalid: the plugin did not load', () => {
+  assert.match(invalidReason({ exitStatus: 0, raw: goodRaw(), mode: '14all' }), /plugin/);
+});
+
+test('a 14all run whose transcript shows the bootstrap from SessionStart is valid', () => {
+  assert.equal(invalidReason({ exitStatus: 0, raw: withBootstrap(), mode: '14all' }), null);
+});
+
+test('a baseline run that shows the bootstrap is invalid, and one that does not is valid', () => {
+  assert.match(invalidReason({ exitStatus: 0, raw: withBootstrap(), mode: 'baseline' }), /baseline/);
+  assert.equal(invalidReason({ exitStatus: 0, raw: goodRaw(), mode: 'baseline' }), null);
+});
+
+test('the marker in the response of another hook event does not count as the bootstrap', () => {
+  assert.match(invalidReason({ exitStatus: 0, raw: withBootstrap('PreToolUse'), mode: '14all' }), /plugin/);
+});
+
+test('regrade checks the mode recorded in the summary', () => {
+  const summary = { taskId: 'E1', mode: '14all', run: 1, exitStatus: 0, grade: { pass: true, criticalFailure: null, checks: [] } };
+  assert.match(regrade(summary, goodRaw()).invalid, /plugin/);
+  assert.equal(regrade(summary, withBootstrap()).invalid, null);
+});

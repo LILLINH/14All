@@ -18,7 +18,7 @@ export function regrade(summary, raw) {
   // The working copy of a past run is gone. Use the recorded flag, or infer it from the old grade.
   const testFilesIntact = summary.testFilesIntact ?? summary.grade.criticalFailure !== WEAKENED_TESTS;
   const grade = GRADERS[`grade${summary.taskId}`](parseStream(raw), { testFilesIntact });
-  const invalid = invalidReason({ exitStatus: summary.exitStatus, raw });
+  const invalid = invalidReason({ exitStatus: summary.exitStatus, raw, mode: summary.mode });
   return { ...summary, testFilesIntact, invalid, previousGrade: summary.previousGrade ?? summary.grade, grade };
 }
 

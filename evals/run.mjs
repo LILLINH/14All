@@ -72,7 +72,7 @@ function summarize({ task, mode, index, proc, raw, durationMs, testFilesIntact }
     turns: final?.num_turns ?? null,
     models: final?.modelUsage ? Object.keys(final.modelUsage) : [],
     testFilesIntact,
-    invalid: invalidReason({ exitStatus: proc.status, raw }),
+    invalid: invalidReason({ exitStatus: proc.status, raw, mode }),
     grade: GRADERS[task.grader](parseStream(raw), { testFilesIntact }),
   };
 }
