@@ -41,7 +41,7 @@ An agent is supported only when `docs/evidence/<agent>.md` shows it installed an
 
 ## Hooks
 
-`hooks/session-start` and `hooks/guard` use only shell built-ins (no `cat`, `grep`, `jq`), print JSON, never block on an error, and are covered by `tests/session-start.test.mjs` and `tests/guard.test.mjs`. The guard's deny list is deliberately short: add a pattern only for something almost never intended, with a test for what it blocks and one for the near miss it must allow.
+`hooks/session-start` and `hooks/guard` use only shell built-ins (no `cat`, `grep`, `jq`), print JSON, never block on an error, and are covered by `tests/session-start.test.mjs` and `tests/guard.test.mjs`. The guard's deny list is deliberately short: add a pattern only for something almost never intended, with a test for what it blocks and one for the near miss it must allow. Something that is sometimes intended (editing a lint config) asks the user instead of denying.
 
 ## Before a release
 

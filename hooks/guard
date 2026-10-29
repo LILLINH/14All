@@ -3,7 +3,7 @@
 # of secret files. It is a safety net against slips, not a security boundary: a determined
 # agent or a differently spelled command gets past it (a variable, a script, an interpreter).
 #
-# Input: the tool call as JSON on stdin. Output: nothing to allow, or one JSON denial.
+# Input: the tool call as JSON on stdin. Output: nothing to allow, or one JSON denial or question.
 # Set ALL14_GUARD=off to switch it off for a session.
 #
 # Text inside quotes is ignored, so a commit message or an echo that merely mentions a
@@ -30,6 +30,13 @@ IFS= read -r -d '' input || true
 
 deny() {
   printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"14All guard: %s. If you really mean it, ask the user to run it themselves, or to set ALL14_GUARD=off for the session."}}\n' "$1"
+  exit 0
+}
+
+# Ask the user instead of deciding: the edit is not refused, but it waits for an answer. The reason
+# never names the path, which could hold a character that is not valid inside a JSON string.
+ask() {
+  printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"ask","permissionDecisionReason":"14All guard: %s. Set ALL14_GUARD=off to stop these prompts for the session."}}\n' "$1"
   exit 0
 }
 
@@ -167,6 +174,15 @@ is_secret_path() {
   [[ $f =~ $env_re || $f =~ $key_re ]] && return 0
   [[ $f =~ $ssh_re && ! $f =~ $ssh_ok_re ]] && return 0
   return 1
+}
+
+# True for the file name of a lint or format configuration: an edit that loosens one can hide a
+# problem instead of fixing it. A tsconfig, pyproject.toml or package.json holds far more than lint
+# rules and is edited all the time, so none of them is listed.
+is_lint_config() {
+  local name=${1##*/}
+  local re='^(\.eslintrc(\.(js|cjs|json|yaml|yml))?|eslint\.config\.(js|cjs|mjs|ts|cts|mts)|\.prettierrc(\.(json|json5|yaml|yml|toml|js|cjs|mjs|ts))?|prettier\.config\.(js|cjs|mjs|ts|cts|mts)|biome\.jsonc?|\.stylelintrc(\.(json|yaml|yml|js|cjs|mjs))?|stylelint\.config\.(js|cjs|mjs|ts)|\.?ruff\.toml|\.flake8|\.golangci\.(yml|yaml|toml|json)|\.rubocop\.yml|\.editorconfig|\.clang-format|\.clang-tidy|\.?rustfmt\.toml|clippy\.toml)$'
+  [[ $name =~ $re ]]
 }
 
 # True for a recursive rm whose target is the filesystem root or the home directory.
@@ -351,6 +367,14 @@ case $tool in
     file=$(json_field path)
     [ -n "$file" ] || exit 0
     is_secret_path "$file" && deny "searching a secrets file ($file)"
+    ;;
+  Edit | Write | MultiEdit)
+    file=$(json_field file_path)
+    [ -n "$file" ] || exit 0
+    # A file that does not exist yet is allowed: creating a configuration is normal.
+    if is_lint_config "$file" && [ -f "$file" ]; then
+      ask "this is an existing lint or format configuration file. Changing it can hide a problem instead of fixing it, so confirm with the user first"
+    fi
     ;;
 esac
 

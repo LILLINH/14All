@@ -215,11 +215,11 @@ test('empty, malformed or unrelated input never blocks', () => {
   }
 });
 
-test('hooks.json registers the guard on Bash, Read and Grep tool calls through the wrapper', () => {
+test('hooks.json registers the guard on Bash, Read, Grep, Edit, Write and MultiEdit tool calls through the wrapper', () => {
   const config = JSON.parse(readFileSync(join(repo, 'hooks', 'hooks.json'), 'utf8'));
   const [entry, ...rest] = config.hooks.PreToolUse;
   assert.equal(rest.length, 0);
-  assert.equal(entry.matcher, 'Bash|Read|Grep');
+  assert.equal(entry.matcher, 'Bash|Read|Grep|Edit|Write|MultiEdit');
   assert.match(entry.hooks[0].command, /run-hook\.cmd.* guard/);
   assert.equal(typeof entry.hooks[0].timeout, 'number');
 });
@@ -270,4 +270,40 @@ test('allows commands that only mention or resemble a hook bypass', () => {
   ]) {
     assert.ok(!denied(bash(command)), command);
   }
+});
+
+const edit = (tool_name, file_path) => ({ tool_name, tool_input: { file_path } });
+const asked = (payload, env) => run(payload, env).decision?.permissionDecision === 'ask';
+
+/** A throwaway directory holding the named (empty) files. */
+function dirWith(...names) {
+  const dir = mkdtempSync(join(tmpdir(), 'guard-cfg-'));
+  for (const name of names) writeFileSync(join(dir, name), '');
+  return dir;
+}
+
+test('asks before editing an existing lint or format configuration', () => {
+  const names = ['.eslintrc.json', 'eslint.config.mjs', '.prettierrc', 'prettier.config.js', 'biome.json', 'ruff.toml', '.flake8', '.golangci.yml', '.rubocop.yml', '.editorconfig', 'rustfmt.toml'];
+  const dir = dirWith(...names);
+  for (const name of names) {
+    for (const tool of ['Edit', 'Write', 'MultiEdit']) {
+      const result = run(edit(tool, join(dir, name)));
+      assert.equal(result.decision?.permissionDecision, 'ask', `${tool} ${name}`);
+      assert.match(result.decision.permissionDecisionReason, /lint or format configuration/);
+    }
+  }
+});
+
+test('allows creating a configuration and editing files that only look like one', () => {
+  const dir = dirWith('eslint.config.notes.md', 'tsconfig.json', 'package.json', 'pyproject.toml');
+  assert.equal(run(edit('Write', join(dir, '.eslintrc.json'))).decision, null);
+  for (const name of ['eslint.config.notes.md', 'tsconfig.json', 'package.json', 'pyproject.toml']) {
+    assert.equal(run(edit('Edit', join(dir, name))).decision, null, name);
+  }
+});
+
+test('ALL14_GUARD=off allows an edit of an existing config', () => {
+  const dir = dirWith('.eslintrc.json');
+  assert.ok(asked(edit('Edit', join(dir, '.eslintrc.json'))));
+  assert.equal(run(edit('Edit', join(dir, '.eslintrc.json')), { ALL14_GUARD: 'off' }).decision, null);
 });
