@@ -35,6 +35,10 @@ An agent is supported only when `docs/evidence/<agent>.md` shows it installed an
 - `skills/using-14all/references/<agent>-tools.md`, mapping the actions skills name to that agent's tools;
 - the evidence file.
 
+## Add a role agent
+
+A role agent is a Markdown file `agents/<name>.md` with the frontmatter `name` (equal to the file name), `description` (starting "Use when") and `tools` (only `Read`, `Glob`, `Grep` and `Bash`), and no `model`: the dispatcher sets that. It reads only: Bash is for `git diff`, `git log` and test runs, never for writing, and the agent never dispatches another agent. Give it one role, a method and one output format, in under 120 lines. `scripts/lint-agents.mjs` (part of `npm run check`) enforces the frontmatter and the length; the read-only rule is the tool list and the text, not a sandbox.
+
 ## Evaluations
 
 `node evals/run.mjs <task> --mode baseline|14all --runs <n>` runs a task against Claude Code and grades the transcript; it calls a model and is never part of CI. `npm run eval:report -- <date>` prints the table and `npm run eval:compare -- <date>` checks the plugin mode against the baseline. Fix a grader test-first, then `node evals/regrade.mjs <date>` to regrade saved runs; the old grade stays in `previousGrade`. A run with `invalid` set never ran the agent and is left out of the table.

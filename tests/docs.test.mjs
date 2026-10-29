@@ -107,3 +107,30 @@ test('the changelog records the Phase 1 additions', () => {
   const text = doc('CHANGELOG.md');
   for (const part of ['handoff', 'working-notes', 'resume block', 'eval:compare']) assert.ok(text.includes(part), `the changelog should mention ${part}`);
 });
+
+test('the README names the four new skills and the agents directory, as drafts, with the agents not yet verified', () => {
+  for (const name of ['tool-output', 'secure-code', 'impact-check', 'research']) assert.match(readme, new RegExp(`\`skills/${name}\``), name);
+  assert.match(readme, /`agents\/`/);
+  assert.match(readme, /drafts/i);
+  assert.match(readme, /not (yet )?verified/i);
+  assert.match(readme, /E15/);
+});
+
+test('CONTRIBUTING explains how to add a role agent and names its lint', () => {
+  const text = doc('CONTRIBUTING.md');
+  assert.match(text, /## Add a role agent/);
+  assert.match(text, /lint-agents/);
+});
+
+test('the changelog records the four skills, the agents and E15', () => {
+  const text = doc('CHANGELOG.md');
+  for (const part of ['tool-output', 'secure-code', 'impact-check', '`research`', 'agents/', 'E15']) assert.ok(text.includes(part), `the changelog should mention ${part}`);
+});
+
+test('the credits name the Phase 2 sources and still say no text was copied', () => {
+  const section = doc('THIRD_PARTY_NOTICES.md').split('## Ideas credited (no text copied)')[1];
+  for (const name of ['rtk', 'headroom', 'context-mode', 'Understand-Anything', 'career-ops', 'wshobson/agents', 'agent-skills']) {
+    assert.ok(section.includes(name), `the credits should name ${name}`);
+  }
+  assert.match(section, /Elastic-2\.0/);
+});

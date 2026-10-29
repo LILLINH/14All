@@ -21,7 +21,10 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - A resume block in the session-start hook: the newest `.14all/progress/*.md`, at most 3000 characters, framed as data. `ALL14_RESUME=off` leaves it out.
 - Guard: denies `--no-verify` (commit, push, merge, am, cherry-pick), `git commit -n` and a `core.hooksPath` override; asks the user before an existing lint or format configuration is edited (`Edit`, `Write` and `MultiEdit` are now matched). The prompt is not yet verified in a live session.
 - Evals: a run's grade can be `inconclusive` (a test run cut off before its summary) and the report counts those apart; a run must show the bootstrap in 14all mode and not in baseline mode or it is invalid; `npm run eval:compare` gates saved runs (dropped task, more critical failures, fewer passes; no significance test).
-- `THIRD_PARTY_NOTICES.md` credits the ideas taken from ten other repositories (no text copied).
+- `THIRD_PARTY_NOTICES.md` credits the ideas taken from other repositories (no text copied).
+- Skills `tool-output`, `secure-code`, `impact-check` and `research` (adapted from mattpocock/skills). Drafts.
+- `agents/`: read-only role agents `debugger`, `reviewer`, `preship-reviewer` and `security-auditor`, with `scripts/lint-agents.mjs` in `npm run check`. That Claude Code loads them is not yet verified.
+- Evaluation E15: one error in a long log, with a grader and a fixture; not yet run.
 
 ### Changed
 
@@ -32,6 +35,7 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - Grader E1 needs the question to end a line. Grader E4 lets the last of "claims done" and "not verified" decide, and a read-only command (`ls`, `cat`) no longer counts as verification. The 24 saved runs regrade to the same outcomes.
 - `simple-code`: a never-trade list (boundary validation, data-protecting error handling, security, accessibility) and a rule to look for an existing helper before writing one.
 - `code-review`: no concrete case, no finding; evidence labels (`read`, `inferred`, `unverified`); the reviewer gets no conclusion and "none provided" for a missing input; a Reinvented Wheel smell.
+- `systematic-debugging` and `code-review` name the role agents to use for competing hypotheses and for a dedicated review.
 - `executing-plans` records a plan hash and rechecks it on resume; subagent briefs ask for the line range actually read.
 - The session-start hook injects the bootstrap skill body without its YAML frontmatter.
 - `bumpVersion` reads and checks every listed file before writing any.

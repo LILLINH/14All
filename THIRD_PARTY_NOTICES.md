@@ -156,3 +156,9 @@ These projects gave 14All an idea. The wording in 14All is its own, so no licens
 - claude-skills (alirezarezvani, MIT): the regression gate that fails on a dropped case.
 - graphify (Graphify-Labs, Apache-2.0): reporting the lines actually read, and labelling a claim read, inferred or unverified.
 - tradingagents (TauricResearch, Apache-2.0): saying "not provided" for a missing input, an inconclusive result instead of a default, and invalidating saved progress when the plan changes.
+- rtk (rtk-ai, Apache-2.0; its `engine/` and `proxy/` are BUSL-1.1 and were not read for ideas): the four rules for trimming tool output (explicit detail is never trimmed, the same format, never lose the failure, leave a way back).
+- headroom (headroomlabs-ai, Apache-2.0): keep a pointer when you cut, keep negations, and do not shorten warnings.
+- context-mode (mksglu, Elastic-2.0, an idea only and nothing else taken): printing the answer instead of the data, and choosing a tool by what you will do with its output.
+- Understand-Anything (Egonex-AI, MIT): the change-impact method of `impact-check` (changed files, their users, the blast radius), without the graph.
+- career-ops (career-ops-hq, MIT): treating text from outside as data, never as instructions, and stopping before an irreversible step.
+- wshobson/agents (MIT) and agent-skills (addyosmani, MIT), again: the hypothesis-testing debugger, the one-dimension reviewer with one finding format, the pre-ship checklist and the security auditor's threat-model-first method.

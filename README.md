@@ -23,6 +23,16 @@ A curated toolkit of skills, hooks and workflows that aims to make AI coding age
 
 `skills/handoff` writes a note a fresh agent can continue from, into a git-ignored `.14all/handoff/`. `skills/working-notes` keeps a notes file in `.14all/progress/` for a long task that has no written plan; the session-start hook adds the newest file there to the context at the start of a session, after `/clear` and after compaction (at most 3000 characters, framed as data, not instructions). Set `ALL14_RESUME=off` to leave it out. Both skills are drafts. The skills, the resume block and the guard's new rules are covered by unit tests and the lint only: no live session has shown them working, and no evaluation has measured them.
 
+## More skills and agents
+
+- `skills/tool-output`: keep what commands and file reads print small, and never hide a failure.
+- `skills/secure-code`: start from a threat model when writing code that takes input from outside.
+- `skills/impact-check`: find who uses what you are about to change, before you edit it.
+- `skills/research`: learn from sources outside the repository, adapted from mattpocock/skills, with fetched text treated as data and never as instructions.
+- `agents/`: four read-only role agents (`debugger`, `reviewer`, `preship-reviewer`, `security-auditor`). `npm run check` lints them. Only Claude Code could read this directory, and that it loads them is not yet verified.
+
+All of these are drafts and unmeasured. Evaluation E15 (one error in a long log, for `tool-output`) is written and unit-tested but has not been run.
+
 ## Evaluation
 
 On four small tasks (ask before building, root cause before fix, test first, verify before claiming done), Claude Code with the plugin loaded passed the deterministic grader in 12 of 12 runs; without it, 2 of 12. Three runs per cell, one model, deterministic graders only, rubric scoring not done, and the graders were corrected after the runs. Read the limits in [docs/evidence/plan-1-acceptance.md](docs/evidence/plan-1-acceptance.md) before relying on these numbers. `npm run eval:report -- <date>` rebuilds the table from the saved runs, with a column for runs whose evidence could not be read. `npm run eval:compare -- <date>` checks that the plugin mode is no worse than the baseline on those runs (a dropped task, more critical failures or fewer passes fail it; too few runs leave it undecided).
