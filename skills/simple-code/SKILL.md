@@ -49,3 +49,12 @@ Read only the entries that match the files you are about to touch. A framework e
 - `references/rails.md`: a `config/routes.rb` or `rails` in the `Gemfile`; read it with `ruby.md`.
 - `references/php.md`: a `.php` file or a `composer.json`.
 - `references/laravel.md`: an `artisan` file or `laravel/framework` in `composer.json`; read it with `php.md`.
+- `references/go.md`: a `.go` file or a `go.mod`.
+- `references/java.md`: a `.java` file, a `pom.xml` or a `build.gradle`.
+- `references/kotlin.md`: a `.kt` or `.kts` file.
+- `references/spring-boot.md`: `spring-boot` in `pom.xml` or `build.gradle`, or a `@SpringBootApplication` class; read it with `java.md`.
+- `references/csharp.md`: a `.cs` file, a `.csproj` or a `.sln`.
+- `references/aspnet-core.md`: a `.csproj` that uses `Microsoft.NET.Sdk.Web`, or a `Program.cs` that builds a web application; read it with `csharp.md`.
+- `references/rust.md`: a `.rs` file or a `Cargo.toml`.
+- `references/swift.md`: a `.swift` file or a `Package.swift`.
+- `references/c-cpp.md`: a `.c`, `.h`, `.cc`, `.cpp` or `.hpp` file, a `CMakeLists.txt` or a `Makefile` for C code.
