@@ -187,3 +187,63 @@ test('it deletes only what the change makes unused, never the existing layers', 
 test('the interface advice keeps the interface where the project mocks through interfaces', () => {
   for (const name of ['csharp', 'java', 'php', 'swift']) assert.match(reference(name), /mock through interfaces/i, name);
 });
+
+// ---- the minor findings of the final review
+
+const indexLine = (name) => text().split('\n').find((l) => l.startsWith(`- \`references/${name}.md\`:`));
+
+test('a framework with no reference is covered by the "say so" line, not only a language', () => {
+  assert.match(text(), /a language or framework has no reference/i);
+});
+
+test('the precedence line says a direct request beats all of these rules', () => {
+  assert.match(text(), /Precedence:[^\n]*direct request/i);
+});
+
+test('the JavaScript entries select on the nearest package.json to the files touched, not any in the repository', () => {
+  for (const name of ['javascript', 'react', 'vue', 'nextjs', 'nuxt', 'nodejs-express']) {
+    assert.match(indexLine(name), /nearest `package\.json` above the files you touch/, name);
+  }
+});
+
+test('Spring Boot with Kotlin is selected and sent to kotlin.md', () => {
+  assert.match(indexLine('spring-boot'), /build\.gradle\.kts/);
+  assert.match(indexLine('spring-boot'), /kotlin\.md/);
+  assert.match(reference('spring-boot'), /`kotlin\.md`/);
+});
+
+test('step 0 regenerates a generated or lock file with its tool instead of editing it by hand', () => {
+  assert.match(text().split('\n').find((l) => l.startsWith('0. ')), /regenerate/i);
+});
+
+test('aspnet-core separates controllers from minimal APIs for validation and injection', () => {
+  assert.match(reference('aspnet-core'), /in controllers/i);
+  assert.match(reference('aspnet-core'), /handler parameter/i);
+});
+
+test('c-cpp says RAII and constexpr are C++ only', () => {
+  const lines = reference('c-cpp').split('\n');
+  for (const line of lines.filter((l) => /RAII/.test(l))) assert.match(line, /In C\+\+/, line);
+  for (const line of lines.filter((l) => /constexpr/.test(l))) assert.match(line, /C\+\+/, line);
+});
+
+test('kotlin keeps a sealed hierarchy when the cases carry different data', () => {
+  assert.match(reference('kotlin'), /carry no data/i);
+});
+
+test('rust allows expect with a message for an invariant', () => {
+  assert.match(reference('rust'), /expect[^.]*invariant|invariant[^.]*expect/i);
+});
+
+test('nuxt lists a database and server-only code, not only secrets, as reasons for a server route', () => {
+  assert.match(reference('nuxt'), /database/i);
+});
+
+test('typescript follows the project when it says to use a type, not always type', () => {
+  assert.match(reference('typescript'), /project's usual declaration/i);
+});
+
+test('sql names the dialect forms of LIMIT, and ruby says which version has Data', () => {
+  assert.match(reference('sql'), /LIMIT[^.]*(dialect|TOP|FETCH)/i);
+  assert.match(reference('ruby'), /Ruby 3\.2/);
+});

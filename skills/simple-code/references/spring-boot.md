@@ -4,7 +4,7 @@ Status: draft, not measured.
 
 ## Simple here looks like
 
-A controller method that calls a Spring Data repository or a service that holds real logic, constructor injection, records for request and response bodies, and settings in `application.yml`. Read `java.md` first. If the project's written rules ask for a service layer, follow them.
+A controller method that calls a Spring Data repository or a service that holds real logic, constructor injection, records for request and response bodies, and settings in `application.yml`. Read `java.md` first, or `kotlin.md` in a Kotlin project, where data classes take the place of records. If the project's written rules ask for a service layer, follow them.
 
 ## Do
 

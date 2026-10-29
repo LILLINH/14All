@@ -19,7 +19,7 @@ Pages in `pages/`, data loaded in the page with `useFetch` or `useAsyncData`, sm
 - A plugin or module for one use. Instead: code in the component, or one composable on the second use.
 - A composable that wraps `useFetch` and changes nothing. Instead: call `useFetch` where it is needed.
 - A Pinia store where `useState` or a `ref` is enough. Instead: `useState` or a `ref`.
-- A server route that returns data a page could load directly. Instead: load it in the page, unless the work needs server secrets.
+- A server route that returns data a page could load directly. Instead: load it in the page, unless the work needs secrets, a database or another server-only library.
 - A layer of services between a page and its data call. Instead: the call in the page.
 
 ## Check before finishing

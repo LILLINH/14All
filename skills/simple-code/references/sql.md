@@ -11,7 +11,7 @@ One readable query per question: explicit columns, joins that follow the foreign
 - Name the columns you need. Qualify them with a table alias when a query has more than one table.
 - Use `JOIN ... ON` for related tables and a CTE (`WITH`) to name a stage that would otherwise be a nested subquery.
 - Pass values as bound parameters through the project's database library.
-- Add `ORDER BY` whenever the result order matters, and `LIMIT` when you want a few rows.
+- Add `ORDER BY` whenever the result order matters, and `LIMIT` (or the dialect's form, such as `TOP` or `FETCH FIRST`) when you want a few rows.
 - Check the plan (`EXPLAIN`) before adding an index, and add one only for a query that is slow.
 - Follow the project's naming for tables and columns and its migration tool.
 

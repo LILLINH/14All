@@ -18,7 +18,7 @@ Types that describe the data and then get out of the way: inferred types for loc
 
 - Generics, conditional types or mapped types where a plain type does the job. Instead: the plain type; add a generic on the second real use.
 - `any`, `as` casts and `!` assertions to silence an error. Instead: fix the type, or narrow the value.
-- An interface for every small object that is used once. Instead: an inline type or a `type` next to its use.
+- An interface for every small object that is used once. Instead: an inline type, or the project's usual declaration (`type` or `interface`) next to its use.
 - An `enum` for a few values. Instead: a union of string literals, unless the project uses enums.
 - An abstract class or an interface with one implementation. Instead: the concrete function or class.
 - Type-level puzzles that need a comment to explain. Instead: a simpler shape, or a runtime check.

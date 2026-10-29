@@ -10,7 +10,7 @@ Small methods on plain objects, blocks and `Enumerable` for collections, guard c
 
 - Write short methods with one job. Return early for the unusual case.
 - Use `Enumerable` (`map`, `select`, `sum`, `each_with_object`) for collections.
-- Use a `Struct` or a `Data` class for a plain record, and keyword arguments when a method takes several values.
+- Use a `Struct`, or `Data` on Ruby 3.2 and later, for a plain record, and keyword arguments when a method takes several values.
 - Raise and rescue specific exceptions where you can handle them.
 - Follow the project's RuboCop settings and its naming and file layout.
 

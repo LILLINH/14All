@@ -9,8 +9,8 @@ A minimal API endpoint or a controller action that calls the `DbContext` or one 
 ## Do
 
 - Use minimal APIs or controllers, whichever the project uses.
-- Inject the `DbContext` or a service through the constructor.
-- Validate with `[ApiController]` and data annotations, and return `ProblemDetails` for errors.
+- Inject the `DbContext` or a service through the constructor in a controller, or as a handler parameter in a minimal API.
+- In controllers, validate with `[ApiController]` and data annotations; in minimal APIs, use the project's validation. Return `ProblemDetails` for errors.
 - Read settings with `appsettings.json` and the options pattern.
 - Use the built-in middleware (authentication, CORS, exception handling) before writing your own.
 - Map a few fields by hand in an endpoint when that is shorter than a mapping library.

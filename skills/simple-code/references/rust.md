@@ -22,7 +22,7 @@ Structs, enums and functions, owned values, `Result` and the `?` operator, itera
 - A `macro_rules!` macro for what a function does. Instead: the function.
 - `Rc<RefCell<_>>` or `unsafe` to get around the borrow checker. Instead: change how the data is shared.
 - A builder type for a plain struct. Instead: a struct literal, with `..Default::default()` when needed.
-- `unwrap()` and `expect()` in non-test code. Instead: `?`, or handle the case.
+- `unwrap()` and `expect()` in non-test code, except for an invariant, where `expect` with a message saying why is fine. Instead: `?`, or handle the case.
 
 ## Check before finishing
 
