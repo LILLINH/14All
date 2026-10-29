@@ -145,3 +145,11 @@ test('vue.md names the excess agents add in Vue', () => {
   const body = reference('vue');
   for (const pattern of [/composable/i, /wrapper component/i, /Pinia|state library/i]) assert.match(body, pattern);
 });
+
+test('the index lists the 25 first-pass references', () => {
+  const expected = [
+    'javascript', 'typescript', 'python', 'go', 'java', 'kotlin', 'csharp', 'php', 'ruby', 'rust', 'swift', 'c-cpp', 'sql', 'shell',
+    'react', 'vue', 'nextjs', 'nuxt', 'nodejs-express', 'django', 'fastapi', 'spring-boot', 'laravel', 'rails', 'aspnet-core',
+  ];
+  assert.deepEqual(indexedNames(), [...expected].sort());
+});
