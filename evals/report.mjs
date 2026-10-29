@@ -5,12 +5,41 @@
 // Runs marked invalid (the agent never ran: not signed in, out of quota, timeout) are left out
 // of every count and reported separately, so they cannot count against either mode.
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { runIfMain } from './cli.mjs';
+import { existingRunsDir } from './runs-dir.mjs';
 
 const MODE_ORDER = { '14all': 0, baseline: 1 };
+const UNKNOWN_MODE_RANK = 9;
 const mean = (values) => values.reduce((a, b) => a + b, 0) / values.length;
+
+/** Runs grouped by task and mode, ordered by task, then 14all before baseline. */
+function groupByTaskAndMode(summaries) {
+  const groups = new Map();
+  for (const s of summaries) {
+    const key = `${s.taskId}\u0000${s.mode}`;
+    if (groups.has(key)) groups.get(key).push(s);
+    else groups.set(key, [s]);
+  }
+  const rank = ([run]) => MODE_ORDER[run.mode] ?? UNKNOWN_MODE_RANK;
+  return [...groups.values()].sort((a, b) => a[0].taskId.localeCompare(b[0].taskId) || rank(a) - rank(b));
+}
+
+/** The numbers that exist, averaged to the given decimals, or "n/a" when no run recorded one. */
+function average(runs, field, format) {
+  const values = runs.map((r) => r[field]).filter((v) => typeof v === 'number');
+  return values.length ? format(mean(values)) : 'n/a';
+}
+
+function row(runs) {
+  const { taskId, mode } = runs[0];
+  const passing = runs.filter((r) => r.grade.pass).length;
+  const critical = runs.filter((r) => r.grade.criticalFailure).length;
+  const cost = average(runs, 'costUsd', (v) => `$${v.toFixed(3)}`);
+  const turns = average(runs, 'turns', (v) => v.toFixed(1));
+  return `| ${taskId} | ${mode} | ${passing} of ${runs.length} | ${critical} | ${cost} | ${turns} |`;
+}
 
 /** Markdown for a list of run summaries (as written by run.mjs and regrade.mjs). */
 export function renderReport(summaries) {
@@ -18,32 +47,14 @@ export function renderReport(summaries) {
   const valid = summaries.filter((s) => !s.invalid);
   const invalid = summaries.length - valid.length;
 
-  const groups = new Map();
-  for (const s of valid) {
-    const key = `${s.taskId}\u0000${s.mode}`;
-    groups.set(key, [...(groups.get(key) ?? []), s]);
-  }
-  const rows = [...groups.values()].sort(
-    (a, b) => a[0].taskId.localeCompare(b[0].taskId) || (MODE_ORDER[a[0].mode] ?? 9) - (MODE_ORDER[b[0].mode] ?? 9),
-  );
-
   const lines = ['| Task | Mode | Passing | Critical failures | Avg cost | Avg turns |', '|---|---|---|---|---|---|'];
-  for (const runs of rows) {
-    const passing = runs.filter((r) => r.grade.pass).length;
-    const critical = runs.filter((r) => r.grade.criticalFailure).length;
-    const costs = runs.map((r) => r.costUsd).filter((c) => typeof c === 'number');
-    const turns = runs.map((r) => r.turns).filter((t) => typeof t === 'number');
-    lines.push(
-      `| ${runs[0].taskId} | ${runs[0].mode} | ${passing} of ${runs.length} | ${critical} | ${costs.length ? `$${mean(costs).toFixed(3)}` : 'n/a'} | ${turns.length ? mean(turns).toFixed(1) : 'n/a'} |`,
-    );
-  }
+  for (const runs of groupByTaskAndMode(valid)) lines.push(row(runs));
   if (invalid > 0) lines.push('', `${invalid} invalid run${invalid === 1 ? '' : 's'} left out (the agent did not run to completion).`);
   return `${lines.join('\n')}\n`;
 }
 
-function main(date) {
-  const dir = join(fileURLToPath(new URL('.', import.meta.url)), 'runs', date);
-  if (!existsSync(dir)) throw new Error(`no runs for ${date}`);
+function main([date = '']) {
+  const dir = existingRunsDir(date);
   const summaries = readdirSync(dir)
     .filter((f) => f.endsWith('.json'))
     .sort()
@@ -51,11 +62,4 @@ function main(date) {
   process.stdout.write(renderReport(summaries));
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try {
-    main(process.argv[2] ?? '');
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
-}
+runIfMain(import.meta.url, main);

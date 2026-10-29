@@ -2,19 +2,7 @@
 // anything (not signed in, out of quota, timeout, no `claude` binary) must not be graded as a
 // failure: it would count against the baseline and flatter the plugin.
 
-import { parseStream } from './parse-stream.mjs';
-
-function resultMessage(raw) {
-  for (const line of raw.split('\n').reverse()) {
-    try {
-      const message = JSON.parse(line);
-      if (message?.type === 'result') return message;
-    } catch {
-      // not a JSON line
-    }
-  }
-  return undefined;
-}
+import { parseStream, resultMessage } from './parse-stream.mjs';
 
 /** Why the run is not valid, or null when it is. */
 export function invalidReason({ exitStatus, raw }) {

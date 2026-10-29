@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { lintSkillDir } from '../scripts/lib/lint.mjs';
-import { findMissingNotices } from '../scripts/check-notices.mjs';
+import { findMissingNotices } from '../scripts/lib/notices.mjs';
 import { makeRoot, writeSkill, validSkillMd, ADAPTED_META_YAML } from './helpers.mjs';
 
 const hasProblem = (problems, word) => problems.some((p) => p.includes(word));

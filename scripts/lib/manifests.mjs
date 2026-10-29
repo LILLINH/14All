@@ -7,6 +7,17 @@ function readList(root) {
   return JSON.parse(readFileSync(join(root, '.version-bump.json'), 'utf8')).files;
 }
 
+/** The parsed JSON of root/path. Throws "<path>: file is missing" or "<path>: invalid JSON". */
+function readJson(root, path) {
+  const full = join(root, path);
+  if (!existsSync(full)) throw new Error(`${path}: file is missing`);
+  try {
+    return JSON.parse(readFileSync(full, 'utf8'));
+  } catch {
+    throw new Error(`${path}: invalid JSON`);
+  }
+}
+
 /** Check that every file in .version-bump.json is valid JSON with the package.json version. */
 export function checkManifestVersions(root) {
   const problems = [];
@@ -22,16 +33,11 @@ export function checkManifestVersions(root) {
   }
 
   for (const { path, field } of files) {
-    const full = join(root, path);
-    if (!existsSync(full)) {
-      problems.push(`${path}: file is missing`);
-      continue;
-    }
     let data;
     try {
-      data = JSON.parse(readFileSync(full, 'utf8'));
-    } catch {
-      problems.push(`${path}: invalid JSON`);
+      data = readJson(root, path);
+    } catch (err) {
+      problems.push(err.message);
       continue;
     }
     if (data[field] !== expected) {
@@ -48,16 +54,9 @@ export function checkManifestVersions(root) {
 export function bumpVersion(root, version) {
   if (!SEMVER.test(version)) throw new Error(`version must be semver x.y.z, got "${version}"`);
   const updates = readList(root).map(({ path, field }) => {
-    const full = join(root, path);
-    if (!existsSync(full)) throw new Error(`${path}: file is missing`);
-    let data;
-    try {
-      data = JSON.parse(readFileSync(full, 'utf8'));
-    } catch {
-      throw new Error(`${path}: invalid JSON`);
-    }
+    const data = readJson(root, path);
     data[field] = version;
-    return { full, text: `${JSON.stringify(data, null, 2)}\n` };
+    return { full: join(root, path), text: `${JSON.stringify(data, null, 2)}\n` };
   });
   for (const { full, text } of updates) writeFileSync(full, text);
 }

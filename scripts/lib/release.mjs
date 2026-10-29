@@ -1,5 +1,6 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { listSkillDirs } from './skills.mjs';
 
 const PLACEHOLDER = /\bOWNER\b/;
 const FILES = ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', 'README.md'];
@@ -9,13 +10,7 @@ const FILES = ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', 
  * placeholder is expected until the repository is published; run `npm run check:release` first.
  */
 export function findPlaceholders(root) {
-  const files = [...FILES];
-  const skillsDir = join(root, 'skills');
-  if (existsSync(skillsDir)) {
-    for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
-      if (entry.isDirectory()) files.push(`skills/${entry.name}/meta.yaml`);
-    }
-  }
+  const files = [...FILES, ...listSkillDirs(join(root, 'skills')).map((name) => `skills/${name}/meta.yaml`)];
   const problems = [];
   for (const file of files) {
     const full = join(root, file);

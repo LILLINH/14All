@@ -1,10 +1,8 @@
+import { isObject, isText, LICENSES } from './shared.mjs';
+
 const CLASSES = ['original', 'adapted', 'referenced'];
 const MATURITY = ['draft', 'schema-valid', 'tested', 'verified'];
-const LICENSES = ['MIT', 'Apache-2.0'];
 const SOURCE_FIELDS = ['repo', 'ref', 'license', 'path'];
-
-const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
-const isText = (v) => typeof v === 'string' && v.trim() !== '';
 
 /** Validate a parsed meta.yaml. Returns a list of problems; empty means valid. */
 export function validateMeta(meta) {

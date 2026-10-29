@@ -1,7 +1,8 @@
 import { parse } from 'yaml';
 
 /**
- * Split a SKILL.md into its YAML frontmatter and Markdown body.
+ * Split a SKILL.md into its YAML frontmatter and Markdown body. `frontmatterText` is the
+ * frontmatter as written, for checks that need the source line rather than the parsed value.
  * Strips a leading BOM and normalizes CRLF to LF first.
  */
 export function parseSkillFile(text) {
@@ -17,5 +18,5 @@ export function parseSkillFile(text) {
   if (frontmatter === null || typeof frontmatter !== 'object' || Array.isArray(frontmatter)) {
     throw new Error('invalid frontmatter: expected a mapping');
   }
-  return { frontmatter, body: match[2] };
+  return { frontmatter, frontmatterText: match[1], body: match[2] };
 }

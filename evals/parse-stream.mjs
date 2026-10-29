@@ -11,17 +11,24 @@ const flatten = (content) => {
   return '';
 };
 
+/** The JSON objects of a JSON-lines transcript; blank and unparsable lines are skipped. */
+function parseJsonLines(raw) {
+  return raw.split('\n').flatMap((line) => {
+    try {
+      return [JSON.parse(line)];
+    } catch {
+      return [];
+    }
+  });
+}
+
+/** The final `result` message of a transcript, or undefined when the run never produced one. */
+export const resultMessage = (raw) => parseJsonLines(raw).findLast((message) => message?.type === 'result');
+
 /** Parse `claude -p --output-format stream-json --verbose` output into an ordered list of events. */
 export function parseStream(raw) {
   const events = [];
-  for (const line of raw.split('\n')) {
-    if (line.trim() === '') continue;
-    let message;
-    try {
-      message = JSON.parse(line);
-    } catch {
-      continue;
-    }
+  for (const message of parseJsonLines(raw)) {
     // Messages produced inside a subagent carry the id of the tool call that started it.
     // They are not the main agent's actions, so they are left out of the grade.
     if (message?.parent_tool_use_id) continue;

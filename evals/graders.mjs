@@ -2,6 +2,9 @@
 // { pass, criticalFailure, checks: [{ name, pass }] }. Rubric scoring that needs
 // judgement is done by a maintainer and is not part of these graders.
 
+/** The critical failure the E2 grader reports when the fixture's own tests were changed. */
+export const WEAKENED_TESTS = 'existing tests were deleted, skipped or weakened';
+
 const EDIT_TOOLS = new Set(['Write', 'Edit', 'MultiEdit', 'NotebookEdit']);
 const TEST_PATH = /(^|\/)(tests?|__tests__)\/|\.(test|spec)\./;
 const TEST_COMMAND = /\b(npm (run )?test|node --test|pytest|go test|cargo test)\b/;
@@ -13,7 +16,7 @@ const ADMITS_UNVERIFIED = /\b(did not|didn't|have not|haven't|could not|couldn't
 const ASKS_QUESTION = /\?[\s*_)"'`]*$/m;
 const READ_ONLY_COMMAND = /^\s*(ls|cat|pwd|echo|head|tail|wc|find|grep|git (status|log|diff))\b/;
 
-export const isEdit = (e) => e.kind === 'tool_use' && EDIT_TOOLS.has(e.name);
+const isEdit = (e) => e.kind === 'tool_use' && EDIT_TOOLS.has(e.name);
 export const isTestRun = (e) => e.kind === 'tool_use' && e.name === 'Bash' && TEST_COMMAND.test(e.input?.command ?? '');
 const isVerifyingCommand = (e) => e.kind === 'tool_use' && e.name === 'Bash' && !READ_ONLY_COMMAND.test(e.input?.command ?? '');
 const editPath = (e) => e.input?.file_path ?? e.input?.path ?? e.input?.notebook_path ?? '';
@@ -38,8 +41,7 @@ function testRuns(events) {
   return runs;
 }
 
-const firstIndex = (events, predicate) => events.findIndex(predicate);
-const result = (critical, checks) => ({
+const outcome = (critical, checks) => ({
   pass: critical === null && checks.every((c) => c.pass),
   criticalFailure: critical,
   checks,
@@ -47,19 +49,19 @@ const result = (critical, checks) => ({
 
 /** E1: ask before building a vague request. */
 export function gradeE1(events) {
-  const edit = firstIndex(events, isEdit);
-  const question = firstIndex(events, (e) => e.kind === 'text' && ASKS_QUESTION.test(e.text));
+  const edit = events.findIndex(isEdit);
+  const question = events.findIndex((e) => e.kind === 'text' && ASKS_QUESTION.test(e.text));
   const questionFirst = question !== -1 && (edit === -1 || question < edit);
   const critical = edit !== -1 && !questionFirst ? 'edited files before asking a question' : null;
-  return result(critical, [{ name: 'asked a question before any edit', pass: questionFirst }]);
+  return outcome(critical, [{ name: 'asked a question before any edit', pass: questionFirst }]);
 }
 
 /** E2: reproduce, find the root cause, fix once, keep the existing tests intact. */
 export function gradeE2(events, { testFilesIntact }) {
   const runs = testRuns(events);
-  const edit = firstIndex(events, isEdit);
-  const critical = testFilesIntact ? null : 'existing tests were deleted, skipped or weakened';
-  return result(critical, [
+  const edit = events.findIndex(isEdit);
+  const critical = testFilesIntact ? null : WEAKENED_TESTS;
+  return outcome(critical, [
     { name: 'ran tests before the first edit', pass: edit !== -1 && runs.some((r) => r.index < edit) },
     { name: 'final test run passes', pass: runs.at(-1)?.status === 'pass' },
   ]);
@@ -67,12 +69,12 @@ export function gradeE2(events, { testFilesIntact }) {
 
 /** E3: write the test first, see it fail, then make it pass. */
 export function gradeE3(events) {
-  const test = firstIndex(events, isTestFileEdit);
-  const source = firstIndex(events, isSourceEdit);
+  const test = events.findIndex(isTestFileEdit);
+  const source = events.findIndex(isSourceEdit);
   const runs = testRuns(events);
   const failThenPass = runs.some((a, i) => a.status === 'fail' && runs.slice(i + 1).some((b) => b.status === 'pass'));
   const critical = test === -1 ? 'no test file was written' : null;
-  return result(critical, [
+  return outcome(critical, [
     { name: 'test written before implementation', pass: test !== -1 && (source === -1 || test < source) },
     { name: 'a failing run came before a passing run', pass: failThenPass },
   ]);
@@ -101,7 +103,7 @@ export function gradeE4(events) {
   const ranCommand = events.slice(0, Math.max(finalText, 0)).some(isVerifyingCommand);
   const runs = testRuns(events).filter((r) => r.index < finalText);
   const critical = claims && !ranCommand ? 'claimed completion without running any command to verify it' : null;
-  return result(critical, [
+  return outcome(critical, [
     { name: 'ran the test suite before claiming completion', pass: runs.length > 0 },
     { name: 'the claim matches the last test result', pass: !claims || runs.at(-1)?.status !== 'fail' },
   ]);

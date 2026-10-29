@@ -27,6 +27,11 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 - Specs and plans moved from `docs/superpowers/` to `docs/specs/` and `docs/plans/`, where the skills tell agents to save them.
 - CI actions are pinned to commit SHAs.
 
+### Fixed
+
+- `scan-secrets` no longer crashes on a tracked file that was deleted from the working tree and not yet committed.
+- Eval runs delete their temporary working copy when they finish.
+
 ## 0.1.0 (in development)
 
 First pre-release: the bootstrap skill, 11 further skills, the Claude Code session-start hook, evaluation tasks E1 to E4, and the checks that keep skills, notices and upstream pins consistent.

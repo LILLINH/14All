@@ -1,9 +1,9 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { COMMIT_SHA, isText, LICENSES } from './shared.mjs';
 
 const FIELDS = ['id', 'repo', 'ref', 'commit', 'licenseFile', 'license'];
-const LICENSES = ['MIT', 'Apache-2.0'];
 
 /**
  * Validate upstream/sources.json. Every entry must have a LICENSE file at the pinned
@@ -15,14 +15,12 @@ export function validateSources(data) {
   data.forEach((entry, i) => {
     const label = entry?.id ?? `#${i}`;
     for (const field of FIELDS) {
-      if (typeof entry?.[field] !== 'string' || entry[field].trim() === '') {
-        problems.push(`${label}: ${field} is required`);
-      }
+      if (!isText(entry?.[field])) problems.push(`${label}: ${field} is required`);
     }
-    if (typeof entry?.commit === 'string' && entry.commit !== '' && !/^[0-9a-f]{40}$/.test(entry.commit)) {
+    if (isText(entry?.commit) && !COMMIT_SHA.test(entry.commit)) {
       problems.push(`${label}: commit must be 40 hex characters`);
     }
-    if (typeof entry?.license === 'string' && entry.license !== '' && !LICENSES.includes(entry.license)) {
+    if (isText(entry?.license) && !LICENSES.includes(entry.license)) {
       problems.push(`${label}: license "${entry.license}" must be one of ${LICENSES.join(', ')}`);
     }
   });

@@ -9,12 +9,14 @@
 // goes next to it. These runs call a model and are never part of CI.
 
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { runIfMain } from './cli.mjs';
 import { GRADERS, testsIntact } from './graders.mjs';
-import { parseStream } from './parse-stream.mjs';
+import { parseStream, resultMessage } from './parse-stream.mjs';
+import { RUNS_ROOT } from './runs-dir.mjs';
 import { invalidReason } from './validity.mjs';
 
 const evalsDir = fileURLToPath(new URL('.', import.meta.url));
@@ -45,11 +47,7 @@ export function testFilesIntactFor(fixtureDir, workDir) {
   });
 }
 
-function runOnce(task, mode, index, outDir) {
-  const fixtureDir = join(evalsDir, 'fixtures', task.fixture);
-  const workDir = mkdtempSync(join(tmpdir(), `14all-eval-${task.id}-`));
-  cpSync(fixtureDir, workDir, { recursive: true });
-
+function invokeClaude(task, mode, workDir) {
   const args = [
     '-p', task.prompt,
     '--setting-sources', 'project,local',
@@ -59,49 +57,56 @@ function runOnce(task, mode, index, outDir) {
     '--allowedTools', ALLOWED_TOOLS.join(','),
   ];
   if (mode === '14all') args.push('--plugin-dir', repoRoot);
+  return spawnSync('claude', args, { cwd: workDir, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, timeout: 15 * 60 * 1000 });
+}
 
-  const started = Date.now();
-  const proc = spawnSync('claude', args, { cwd: workDir, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, timeout: 15 * 60 * 1000 });
-  const raw = proc.stdout ?? '';
-
-  const rawDir = join(outDir, 'raw');
-  mkdirSync(rawDir, { recursive: true });
-  const stem = `${task.id}-${mode}-${index}`;
-  writeFileSync(join(rawDir, `${stem}.jsonl`), raw);
-
-  const events = parseStream(raw);
-  const testFilesIntact = testFilesIntactFor(fixtureDir, workDir);
-  const grade = GRADERS[task.grader](events, { testFilesIntact });
-  const final = raw.trim().split('\n').map((l) => { try { return JSON.parse(l); } catch { return null; } }).findLast((m) => m?.type === 'result');
-  const summary = {
+function summarize({ task, mode, index, proc, raw, durationMs, testFilesIntact }) {
+  const final = resultMessage(raw);
+  return {
     taskId: task.id,
     mode,
     run: index,
     exitStatus: proc.status,
-    durationMs: Date.now() - started,
+    durationMs,
     costUsd: final?.total_cost_usd ?? null,
     turns: final?.num_turns ?? null,
     models: final?.modelUsage ? Object.keys(final.modelUsage) : [],
     testFilesIntact,
     invalid: invalidReason({ exitStatus: proc.status, raw }),
-    grade,
+    grade: GRADERS[task.grader](parseStream(raw), { testFilesIntact }),
   };
-  writeFileSync(join(outDir, `${stem}.json`), `${JSON.stringify(summary, null, 2)}\n`);
-  return summary;
 }
 
-function main() {
-  const { taskId, mode, runs } = parseArgs(process.argv.slice(2));
+function runOnce(task, mode, index, outDir) {
+  const fixtureDir = join(evalsDir, 'fixtures', task.fixture);
+  const workDir = mkdtempSync(join(tmpdir(), `14all-eval-${task.id}-`));
+  try {
+    cpSync(fixtureDir, workDir, { recursive: true });
+
+    const started = Date.now();
+    const proc = invokeClaude(task, mode, workDir);
+    const durationMs = Date.now() - started;
+    const raw = proc.stdout ?? '';
+
+    const rawDir = join(outDir, 'raw');
+    mkdirSync(rawDir, { recursive: true });
+    const stem = `${task.id}-${mode}-${index}`;
+    writeFileSync(join(rawDir, `${stem}.jsonl`), raw);
+
+    const testFilesIntact = testFilesIntactFor(fixtureDir, workDir);
+    const summary = summarize({ task, mode, index, proc, raw, durationMs, testFilesIntact });
+    writeFileSync(join(outDir, `${stem}.json`), `${JSON.stringify(summary, null, 2)}\n`);
+    return summary;
+  } finally {
+    rmSync(workDir, { recursive: true, force: true });
+  }
+}
+
+function main(argv) {
+  const { taskId, mode, runs } = parseArgs(argv);
   const task = JSON.parse(readFileSync(join(evalsDir, 'tasks', `${taskId}.json`), 'utf8'));
-  const outDir = join(evalsDir, 'runs', new Date().toISOString().slice(0, 10));
+  const outDir = join(RUNS_ROOT, new Date().toISOString().slice(0, 10));
   for (let i = 1; i <= runs; i += 1) console.log(JSON.stringify(runOnce(task, mode, i, outDir)));
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try {
-    main();
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
-}
+runIfMain(import.meta.url, main);

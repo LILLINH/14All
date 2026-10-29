@@ -1,5 +1,6 @@
+import { COMMIT_SHA } from './shared.mjs';
+
 const SEMVER_TAG = /^v?(\d+)\.(\d+)\.(\d+)$/;
-const COMMIT = /^[0-9a-f]{40}$/;
 
 const parts = (tag) => SEMVER_TAG.exec(tag).slice(1).map(Number);
 
@@ -24,7 +25,7 @@ export function findDrift(sources, tagsByRepo) {
     const tags = tagsByRepo[repo];
     if (!tags) {
       notes.push(`${repo}: could not list its tags, so drift is unknown`);
-    } else if (COMMIT.test(ref) || !SEMVER_TAG.test(ref)) {
+    } else if (COMMIT_SHA.test(ref) || !SEMVER_TAG.test(ref)) {
       notes.push(`${repo}: pinned to ${ref.slice(0, 7)}, which is not a release tag; compare with upstream by hand`);
     } else {
       const latest = latestSemverTag(tags);
