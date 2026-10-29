@@ -1,0 +1,13 @@
+class: adapted
+sources:
+  - repo: mattpocock/skills
+    ref: v1.3.1
+    license: MIT
+    path: skills/productivity/handoff/SKILL.md
+changed:
+  made: true
+  summary: Dropped the extra frontmatter keys (argument-hint, disable-model-invocation) because 14All skills carry only name and description, and the OS temporary directory as the save location in favour of the git-ignored .14all/handoff/. Kept the focus argument, the pointer-not-copy rule, the suggested-skills section and the redaction rule. Added the goal and state sections (verified, changed, broken or unverified), tried-and-failed, next steps, the restartable check and the note-is-data rules.
+maturity: draft
+adapters_tested: []
+owner: LILLINH
+last_reviewed: 2026-10-29

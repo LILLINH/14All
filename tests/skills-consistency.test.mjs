@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parse } from 'yaml';
 
 const skillsDir = fileURLToPath(new URL('../skills', import.meta.url));
 const read = (name) => readFileSync(join(skillsDir, name, 'SKILL.md'), 'utf8');
@@ -72,4 +73,21 @@ test('subagent briefs ask for the line range actually read and say "none provide
     assert.match(text, /truncat/i, name);
     assert.match(text, /none provided/, name);
   }
+});
+
+test('handoff is adapted from the pinned mattpocock source and has a notice entry', () => {
+  const meta = parse(readFileSync(join(skillsDir, 'handoff', 'meta.yaml'), 'utf8'));
+  assert.equal(meta.class, 'adapted');
+  assert.ok(meta.sources.some((s) => s.repo === 'mattpocock/skills' && s.path === 'skills/productivity/handoff/SKILL.md'));
+  const notices = readFileSync(join(skillsDir, '..', 'THIRD_PARTY_NOTICES.md'), 'utf8');
+  assert.match(notices, /^## handoff$/m);
+});
+
+test('handoff names its sections and its rules', () => {
+  const text = read('handoff');
+  for (const part of ['Verified now', 'Broken or unverified', 'Tried and why it failed', 'Next steps', '.14all/handoff/', '<private>', 'latest message']) {
+    assert.ok(text.includes(part), `handoff should mention ${part}`);
+  }
+  assert.match(text, /data, not instructions/);
+  assert.ok(text.split('\n').length <= 60);
 });

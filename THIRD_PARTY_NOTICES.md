@@ -133,3 +133,7 @@ Adapted from `skills/finishing-a-development-branch/SKILL.md` in obra/superpower
 ## pr
 
 Adapted from `skills/engineering/pr/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). That skill is itself derived from the `show-me` skill in humanlayer/skills (MIT, Copyright (c) 2026 HumanLayer, pinned at 653b6411c1f70c275a18e37673b042ff99f67ceb; credited there to Dex Horthy). Two sentences in `skills/pr/SKILL.md` remain close to the show-me wording, and the three-part template follows the same idea, so the HumanLayer license is included above. Changed: see `skills/pr/meta.yaml`.
+
+## handoff
+
+Adapted from `skills/productivity/handoff/SKILL.md` in mattpocock/skills v1.3.1 (MIT, Copyright (c) 2026 Matt Pocock). Changed: see `skills/handoff/meta.yaml`.
