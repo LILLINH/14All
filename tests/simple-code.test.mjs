@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
@@ -77,4 +77,59 @@ test('it offers and does not write the conventions file', () => {
 
 test('it names no agent tools', () => {
   assert.doesNotMatch(text(), /\b(TodoWrite|Task tool|Skill tool|Bash tool|Read tool|Edit tool|Write tool|Agent tool)\b/);
+});
+
+// ---- references: the shape every file must have, and the index that lists them
+
+const refsDir = join(dir, 'references');
+const STATUS_LINE = 'Status: draft, not measured.';
+const SECTIONS = ['Simple here looks like', 'Do', 'Do not (what agents over-build here)', 'Check before finishing'];
+const MAX_REFERENCE_LINES = 90;
+
+// A framework file, and the language file it builds on.
+const LANGUAGE_OF = {
+  react: 'javascript',
+  vue: 'javascript',
+  nextjs: 'javascript',
+  nuxt: 'javascript',
+  'nodejs-express': 'javascript',
+  django: 'python',
+  fastapi: 'python',
+  'spring-boot': 'java',
+  laravel: 'php',
+  rails: 'ruby',
+  'aspnet-core': 'csharp',
+};
+
+const referenceNames = () => (existsSync(refsDir) ? readdirSync(refsDir).filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3)).sort() : []);
+const indexedNames = () => [...text().matchAll(/^- `references\/([a-z0-9-]+)\.md`:/gm)].map((m) => m[1]).sort();
+const reference = (name) => readFileSync(join(refsDir, `${name}.md`), 'utf8');
+
+test('every indexed reference exists and every reference file is indexed', () => {
+  assert.deepEqual(indexedNames(), referenceNames());
+});
+
+test('every reference has the same shape', () => {
+  for (const name of referenceNames()) {
+    const lines = reference(name).replace(/\n$/, '').split('\n');
+    assert.equal(lines[0], STATUS_LINE, `${name}: line 1`);
+    assert.ok(lines[2]?.startsWith('# '), `${name}: line 3 must be the title`);
+    assert.deepEqual(lines.filter((l) => l.startsWith('## ')).map((l) => l.slice(3)), SECTIONS, `${name}: sections`);
+    assert.ok(lines.length <= MAX_REFERENCE_LINES, `${name}: ${lines.length} lines (max ${MAX_REFERENCE_LINES})`);
+    const check = lines.slice(lines.indexOf(`## ${SECTIONS[3]}`) + 1).filter((l) => l.startsWith('- '));
+    assert.ok(check.length >= 3 && check.length <= 5, `${name}: ${check.length} check questions (3 to 5)`);
+    for (const question of check) assert.ok(question.trimEnd().endsWith('?'), `${name}: "${question}" must end with ?`);
+  }
+});
+
+test('every framework reference points at its language reference', () => {
+  for (const [framework, language] of Object.entries(LANGUAGE_OF)) {
+    if (referenceNames().includes(framework)) assert.ok(reference(framework).includes(`\`${language}.md\``), `${framework} must name \`${language}.md\``);
+  }
+});
+
+test('no reference names an agent tool', () => {
+  for (const name of referenceNames()) {
+    assert.doesNotMatch(reference(name), /\b(TodoWrite|Task tool|Skill tool|Bash tool|Read tool|Edit tool|Write tool|Agent tool)\b/, name);
+  }
 });
