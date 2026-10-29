@@ -70,6 +70,10 @@ Runs for Option 1 and for confirmed discards. Options 2 and 3 keep the worktree.
 
 If removal is refused because the worktree has modified or untracked files, those files exist nowhere else. Never force it on your own. Show the user `git -C "$WORKTREE_PATH" status --porcelain -uall`, and offer: commit them to the branch first, move them into the main repo, or delete them (unrecoverable). Do what they choose, then remove the worktree. Never clean up a worktree that is not under `.worktrees/` or `worktrees/`.
 
+## If the change reaches users
+
+Before you merge a change that users will see, say three things in your summary: how it will reach them (all at once, or in steps), what would show that it is going wrong (an error, a metric, a complaint), and how it is undone (a revert, a switch, a migration back). If it cannot be undone (a dropped column, a sent message), say so plainly and ask before you merge.
+
 ## Rationalizations
 
 | Excuse | Reality |

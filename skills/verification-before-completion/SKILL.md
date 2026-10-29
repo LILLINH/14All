@@ -39,6 +39,18 @@ Skipping a step is not verifying.
 
 For requirements: re-read the plan or spec, make a checklist, verify each item, then report the gaps or the completion.
 
+## Definition of done
+
+A task is done when its acceptance criteria are met and the standing conditions hold. The acceptance criteria are what the task asked for. The standing conditions are what every task owes:
+
+- The verifying command passes, run fresh, and you read its output.
+- No new warning, and no test skipped or removed to get there.
+- No debug output, commented-out code or stray file is left behind.
+- The documentation and the changelog that the change touches are updated.
+- The user's request is answered, not only the code written.
+
+Criteria met without the conditions is not done. Conditions met without the criteria is not done either.
+
 ## Red flags
 
 Stop if you are about to use "should", "probably" or "seems to"; express satisfaction ("Great!", "Done!") before verifying; commit, push or open a PR without verifying; trust an agent's success report; rely on a partial check; or feel tired and want it over. Different wording does not exempt you: any phrase that implies success before you ran the check is covered.

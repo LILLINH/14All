@@ -191,3 +191,19 @@ test('the AGENTS.md template is small and has every section', () => {
     assert.match(text, new RegExp(`^## ${heading}$`, 'm'), heading);
   }
 });
+
+test('verification-before-completion has a definition of done with acceptance criteria and standing conditions', () => {
+  const text = read('verification-before-completion').toLowerCase();
+  for (const part of ['## definition of done', 'acceptance criteria', 'standing conditions', 'passes, run fresh', 'skipped or removed', 'debug output', 'changelog', 'request is answered']) {
+    assert.ok(text.includes(part), `verification-before-completion should mention ${part}`);
+  }
+  assert.ok(read('verification-before-completion').split('\n').length < 400);
+});
+
+test('finishing-a-development-branch asks how a change reaches users, what shows it going wrong and how it is undone', () => {
+  const text = read('finishing-a-development-branch').toLowerCase();
+  for (const part of ['## if the change reaches users', 'how it will reach them', 'going wrong', 'how it is undone', 'cannot be undone']) {
+    assert.ok(text.includes(part), `finishing-a-development-branch should mention ${part}`);
+  }
+  assert.ok(read('finishing-a-development-branch').split('\n').length < 400);
+});
