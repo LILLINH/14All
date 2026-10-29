@@ -9,5 +9,5 @@ changed:
   summary: Condensed to one file, renamed skill references, replaced the shared ledger scripts (sdd-workspace, task-start, task-done, review-package) with a plain progress file under .14all/progress/, dropped the process diagram and the cross-executor ledger sharing, and pointed the final review at the 14All code-review skill.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

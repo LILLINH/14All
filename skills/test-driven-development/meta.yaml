@@ -13,5 +13,5 @@ changed:
   summary: Merged the superpowers iron-law loop with the mattpocock seams, anti-patterns and vertical-slice rules. Kept a refactor step while green (mattpocock moves refactoring to review), dropped the code examples and the separate writing-good-tests file, and condensed.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

@@ -9,5 +9,5 @@ changed:
   summary: Condensed to a single file. Removed the workspace and ledger scripts, the decision graphs and the five reference documents, replaced the script-based ledger with a plain progress file, and inlined the implementer and reviewer briefs as prose.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

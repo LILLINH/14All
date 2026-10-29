@@ -13,5 +13,5 @@ changed:
   summary: Merged the superpowers root-cause-first phases with the mattpocock feedback-loop, minimise, ranked-hypothesis and cleanup phases. Dropped the supporting technique files, the pressure-test files, the HITL script reference and the code examples, and condensed.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

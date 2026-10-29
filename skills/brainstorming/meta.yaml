@@ -13,5 +13,5 @@ changed:
   summary: Merged superpowers brainstorming with the mattpocock grilling design-tree rounds as a "grilling mode". Dropped the visual companion and its scripts, inlined the builder-check brief, renamed skill references and the design path to docs/specs/, and condensed the text.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

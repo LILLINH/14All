@@ -9,5 +9,5 @@ changed:
   summary: Condensed, merged the key-pattern examples into the claim table, and removed the rationalization table and code blocks. The rule and the gate are unchanged.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

@@ -9,5 +9,5 @@ changed:
   summary: Renamed to 14All, removed per-harness list and Superpowers-specific skill names, added the 14ALL-BOOTSTRAP-V1 marker, rewrote skill priority for 14All skills, and wrote a new Claude Code tool map.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

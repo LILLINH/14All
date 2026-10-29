@@ -23,14 +23,12 @@ Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Security: [SECURITY.md](SECURI
 
 ## Install (Claude Code, not yet tested)
 
-Once the repository is published, the intended commands are:
+The repository is published at https://github.com/LILLINH/14All. The commands are:
 
 ```
-/plugin marketplace add OWNER/14all
+/plugin marketplace add LILLINH/14All
 /plugin install 14all@14all
 ```
-
-`OWNER` is a placeholder until the repository exists. `npm run check:release` fails while any `OWNER` placeholder is left.
 
 ## Design
 

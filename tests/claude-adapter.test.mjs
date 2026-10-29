@@ -16,9 +16,9 @@ test('plugin.json is named 14all with the package version', () => {
   assert.equal(plugin().license, 'MIT');
 });
 
-test('plugin.json uses the OWNER placeholder for repository and homepage', () => {
-  assert.match(plugin().repository, /github\.com\/OWNER\/14all/);
-  assert.match(plugin().homepage, /github\.com\/OWNER\/14all/);
+test('plugin.json points repository and homepage at the published repository', () => {
+  assert.equal(plugin().repository, 'https://github.com/LILLINH/14All');
+  assert.equal(plugin().homepage, 'https://github.com/LILLINH/14All');
 });
 
 test('marketplace.json lists the 14all plugin from the repository root', () => {

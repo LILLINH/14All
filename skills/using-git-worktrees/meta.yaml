@@ -9,5 +9,5 @@ changed:
   summary: Condensed, replaced the named native tool with a generic description, compressed the per-language setup block and the quick-reference table. The detection, consent, ignore-check and baseline steps are unchanged.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

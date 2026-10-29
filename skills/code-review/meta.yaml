@@ -17,5 +17,5 @@ changed:
   summary: Merged the mattpocock two-axis review (standards and spec, parallel reviewers, smell baseline) with the superpowers request and receive guidance into one skill. Removed the issue-tracker setup dependency and the reviewer prompt template file, condensed the examples, and added the Critical, Important and Minor grading.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

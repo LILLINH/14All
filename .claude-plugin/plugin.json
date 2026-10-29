@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "A curated, cross-agent toolkit of skills, hooks and workflows that makes AI coding agents more reliable.",
   "author": {
-    "name": "OWNER"
+    "name": "LILLINH"
   },
-  "homepage": "https://github.com/OWNER/14all",
-  "repository": "https://github.com/OWNER/14all",
+  "homepage": "https://github.com/LILLINH/14All",
+  "repository": "https://github.com/LILLINH/14All",
   "license": "MIT",
   "keywords": ["skills", "workflow", "tdd", "debugging", "code-review"]
 }

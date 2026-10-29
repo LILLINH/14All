@@ -9,5 +9,5 @@ changed:
   summary: Condensed, removed the decision graph and dispatch pseudo-syntax, described dispatch as an action instead of naming a tool, and shortened the example.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

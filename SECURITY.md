@@ -4,7 +4,7 @@
 
 ## Reporting a problem
 
-Open a private security advisory on the repository (Security, then Report a vulnerability). Do not post details in a public issue. Once the repository has a published `OWNER`, the advisory page is the contact; until then, contact the maintainer directly.
+Open a private security advisory on the repository (Security, then Report a vulnerability). Do not post details in a public issue. The advisory page of https://github.com/LILLINH/14All is the contact.
 
 Useful reports include: a hook that runs something it should not, a skill that tells an agent to exfiltrate data or bypass its permissions, a way to make the session-start hook emit something other than the bootstrap skill, or a secret committed to the repository.
 

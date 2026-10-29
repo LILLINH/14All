@@ -13,5 +13,5 @@ changed:
   summary: Condensed and reworded the mattpocock pr skill, which is itself derived from the HumanLayer show-me skill. Kept the three-section template (summary, evidence, merge danger) and two sentences that remain close to the show-me wording ("Skip preambles and keep the prose brief", "Pick the smallest view that makes the key point clear"). Dropped the credits block, the GLOSSARY.md reference and the long code samples.
 maturity: draft
 adapters_tested: []
-owner: OWNER
+owner: LILLINH
 last_reviewed: 2026-10-28

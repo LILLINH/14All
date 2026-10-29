@@ -43,7 +43,7 @@ This shows the denial JSON is read by Claude Code and stops that tool call. It d
 
 ## What this does not show
 
-- Installing through a marketplace (`/plugin marketplace add`, `/plugin install`). The repository is not published yet, and the `OWNER` placeholder is unreplaced. Not tested.
+- Installing through a marketplace (`/plugin marketplace add`, `/plugin install`). The repository is now published at github.com/LILLINH/14All and the manifests name it, but the install was not tried. Not tested.
 - That the model then invokes 14All skills correctly. That is what evaluations E1 to E4 measure (Task 14 and Task 15).
 - The `compact`, `clear` and `startup` matchers individually. Only the headless startup path was run.
 - Windows. `hooks/run-hook.cmd` has a Windows branch that has never been run.
