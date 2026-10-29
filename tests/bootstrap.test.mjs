@@ -34,3 +34,7 @@ test('bootstrap names no agent tools and points to the tools reference', () => {
 test('bootstrap states that user instructions take precedence over skills', () => {
   assert.match(text(), /user'?s? (explicit )?instructions/i);
 });
+
+test('bootstrap points code-writing work at simple-code', () => {
+  assert.match(text(), /Writing or changing code[^\n]*`simple-code`/);
+});

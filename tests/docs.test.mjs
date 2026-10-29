@@ -72,3 +72,8 @@ test('the README does not claim more agents than the evidence files back', () =>
   assert.doesNotMatch(intro, /Codex|Cursor|Gemini/, 'the opening lines must not name agents that have no evidence file');
   assert.match(intro, /only Claude Code/i);
 });
+
+test('README says simple-code exists and is unmeasured', () => {
+  assert.match(readme, /`skills\/simple-code`/);
+  assert.match(readme, /unmeasured/i);
+});

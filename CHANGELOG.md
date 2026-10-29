@@ -6,6 +6,7 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- `simple-code` skill with 25 references (14 languages, 11 frameworks): learn the project's conventions, follow written rules, keep new code simple. Draft and unmeasured.
 - `executing-plans` skill: inline execution of a plan with a progress file and rulings.
 - `hooks/guard`, a PreToolUse hook that denies recursive removes of `/` or `~`, force pushes to main or master, download-into-shell pipes, writes to raw disks, and reads of secret files. Switch off with `ALL14_GUARD=off`.
 - `npm run new-skill`, `npm run eval:report`, `npm run check:release` and `npm run check:drift`.

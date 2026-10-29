@@ -30,6 +30,7 @@ When several skills apply, process skills come first. They set the approach; imp
 - Building something new or changing behavior: `brainstorming`, then `writing-plans`.
 - Fixing a bug or a failing test: `systematic-debugging` first.
 - Writing code: `test-driven-development`.
+- Writing or changing code in a project: `simple-code`.
 - About to say work is done: `verification-before-completion`.
 
 ## Red Flags
