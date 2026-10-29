@@ -40,3 +40,13 @@ test('orders rows by task, then 14all before baseline', () => {
   assert.ok(report.indexOf('| E1 | 14all') < report.indexOf('| E1 | baseline'));
   assert.ok(report.indexOf('| E1 | baseline') < report.indexOf('| E2 | baseline'));
 });
+
+test('has an Inconclusive column that counts inconclusive runs and reads a grade without the field as zero', () => {
+  const report = renderReport([
+    run('E4', '14all', { grade: { pass: false, criticalFailure: null, inconclusive: true, checks: [] } }),
+    run('E1', '14all'),
+  ]);
+  assert.match(report, /Avg turns \| Inconclusive \|/);
+  assert.match(report, /\| E4 \| 14all \| 0 of 1 \| 0 \| \$0\.100 \| 4\.0 \| 1 \|/);
+  assert.match(report, /\| E1 \| 14all \| 1 of 1 \| 0 \| \$0\.100 \| 4\.0 \| 0 \|/);
+});

@@ -331,3 +331,40 @@ test('test files do not count toward the simple-code file and line limits', () =
   assert.equal(checkNamed(g, 'added at most 40 lines').pass, true);
   assert.equal(g.pass, true);
 });
+
+// ---- inconclusive: a test run whose output cannot be read is not a failure
+
+const UNREADABLE_OUTPUT = 'TAP version 13\n# some output cut off before any summary\n';
+test('E2 is inconclusive, not failing, when the final test run cannot be read', () => {
+  const events = [bash('npm test', 'r1'), result('r1', FAIL_OUTPUT), edit('src/report.mjs', 'e1'), bash('npm test | head -3', 'r2'), result('r2', UNREADABLE_OUTPUT)];
+  const g = gradeE2(events, { testFilesIntact: true });
+  assert.equal(g.pass, false);
+  assert.equal(g.inconclusive, true);
+  assert.equal(g.criticalFailure, null);
+  assert.equal(checkNamed(g, 'final test run passes').inconclusive, true);
+});
+
+test('E2 with a readable failing final run, or a passing one, is not inconclusive', () => {
+  const failing = [bash('npm test', 'r1'), result('r1', FAIL_OUTPUT), edit('src/report.mjs', 'e1'), bash('npm test', 'r2'), result('r2', FAIL_OUTPUT)];
+  assert.ok(!gradeE2(failing, { testFilesIntact: true }).inconclusive);
+  assert.ok(!gradeE2(e2Good(), { testFilesIntact: true }).inconclusive);
+});
+
+test('E2 is not inconclusive when a definite failure stands next to the unreadable run', () => {
+  const events = [edit('src/report.mjs', 'e1', 'Edit'), bash('npm test | head -3', 'r1'), result('r1', UNREADABLE_OUTPUT)];
+  const g = gradeE2(events, { testFilesIntact: true });
+  assert.equal(g.pass, false);
+  assert.ok(!g.inconclusive, 'the first edit came before any test run, which is a definite failure');
+});
+
+test('E3 is inconclusive when the run before the passing one cannot be read', () => {
+  const g = gradeE3([
+    edit('tests/slugify.test.mjs', 'e1'),
+    bash('npm test | head -3', 'r1'), result('r1', UNREADABLE_OUTPUT),
+    edit('src/slugify.mjs', 'e2'),
+    bash('npm test', 'r2'), result('r2', PASS_OUTPUT),
+  ]);
+  assert.equal(g.pass, false);
+  assert.equal(g.inconclusive, true);
+  assert.equal(checkNamed(g, 'a failing run came before a passing run').inconclusive, true);
+});

@@ -3,7 +3,9 @@
 //   node evals/report.mjs <date>      e.g. node evals/report.mjs 2026-10-28
 //
 // Runs marked invalid (the agent never ran: not signed in, out of quota, timeout) are left out
-// of every count and reported separately, so they cannot count against either mode.
+// of every count and reported separately, so they cannot count against either mode. A run is
+// inconclusive when its evidence could not be read (a test run cut off before its summary): it
+// is counted in its own column and is not a pass.
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -38,7 +40,8 @@ function row(runs) {
   const critical = runs.filter((r) => r.grade.criticalFailure).length;
   const cost = average(runs, 'costUsd', (v) => `$${v.toFixed(3)}`);
   const turns = average(runs, 'turns', (v) => v.toFixed(1));
-  return `| ${taskId} | ${mode} | ${passing} of ${runs.length} | ${critical} | ${cost} | ${turns} |`;
+  const inconclusive = runs.filter((r) => r.grade.inconclusive).length;
+  return `| ${taskId} | ${mode} | ${passing} of ${runs.length} | ${critical} | ${cost} | ${turns} | ${inconclusive} |`;
 }
 
 /** Markdown for a list of run summaries (as written by run.mjs and regrade.mjs). */
@@ -47,7 +50,7 @@ export function renderReport(summaries) {
   const valid = summaries.filter((s) => !s.invalid);
   const invalid = summaries.length - valid.length;
 
-  const lines = ['| Task | Mode | Passing | Critical failures | Avg cost | Avg turns |', '|---|---|---|---|---|---|'];
+  const lines = ['| Task | Mode | Passing | Critical failures | Avg cost | Avg turns | Inconclusive |', '|---|---|---|---|---|---|---|'];
   for (const runs of groupByTaskAndMode(valid)) lines.push(row(runs));
   if (invalid > 0) lines.push('', `${invalid} invalid run${invalid === 1 ? '' : 's'} left out (the agent did not run to completion).`);
   return `${lines.join('\n')}\n`;
