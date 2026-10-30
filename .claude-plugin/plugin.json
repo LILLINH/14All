@@ -1,6 +1,6 @@
 {
   "name": "14all",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code and Codex.",
   "author": {
     "name": "LILLINH"
@@ -8,5 +8,11 @@
   "homepage": "https://github.com/LILLINH/14All",
   "repository": "https://github.com/LILLINH/14All",
   "license": "MIT",
-  "keywords": ["skills", "workflow", "tdd", "debugging", "code-review"]
+  "keywords": [
+    "skills",
+    "workflow",
+    "tdd",
+    "debugging",
+    "code-review"
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "14all",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code and Codex.",
   "author": {
     "name": "LILLINH"
@@ -8,7 +8,13 @@
   "homepage": "https://github.com/LILLINH/14All",
   "repository": "https://github.com/LILLINH/14All",
   "license": "MIT",
-  "keywords": ["skills", "workflow", "tdd", "debugging", "code-review"],
+  "keywords": [
+    "skills",
+    "workflow",
+    "tdd",
+    "debugging",
+    "code-review"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "14All",
@@ -16,7 +22,11 @@
     "longDescription": "14All gives a coding agent better working habits: agree on what to build before building, find the real cause before fixing a bug, write the test first, and check that something works before saying it is done. Early release; tried with Claude Code and Codex.",
     "developerName": "LILLINH",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
     "defaultPrompt": [
       "I want to add a feature to this project. Help me agree on what to build first.",
       "This test fails and I do not know why. Find the cause before changing anything."

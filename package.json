@@ -1,6 +1,6 @@
 {
   "name": "14all",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Skills, hooks and read-only role agents for AI coding assistants. Early release; tried with Claude Code and Codex.",
   "type": "module",
   "license": "MIT",

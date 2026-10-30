@@ -4,6 +4,8 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ## Unreleased
 
+## 0.1.1 - 2026-10-30
+
 ### Changed
 
 - The `using-14all` bootstrap now makes invoking a fitting skill the first action, and the `brainstorming` skill now skips small tasks. A small task (one self-contained thing, cheap to redo, nothing else depends on it) gets no brainstorming and no plan: the assumptions are stated in one line and the thing is built. Larger or vaguer work still goes through `brainstorming`. In short runs, a small game invoked `brainstorming` 0 of 12 times and the E1 prompt on an existing app made the model ask before editing 8 of 8 times (0 of 4 without the plugin); a full small build cost about the same as no plugin. Forcing `brainstorming` on small builds was tried first and cost 45% more than no plugin for better-fitted games, which is why it was dropped. Few runs, one prompt each. Evidence in `docs/evidence/bootstrap-trigger.md`.

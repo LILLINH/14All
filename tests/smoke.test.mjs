@@ -8,9 +8,9 @@ test('node major version is at least 22', () => {
   assert.ok(Number(process.versions.node.split('.')[0]) >= 22);
 });
 
-test('package.json is an MIT ESM package at version 0.1.0', () => {
+test('package.json is an MIT ESM package with a semver version', () => {
   const p = pkg();
   assert.equal(p.type, 'module');
   assert.equal(p.license, 'MIT');
-  assert.equal(p.version, '0.1.0');
+  assert.match(p.version, /^\d+\.\d+\.\d+$/);
 });
