@@ -35,6 +35,6 @@ test('bootstrap states that user instructions take precedence over skills', () =
   assert.match(text(), /user'?s? (explicit )?instructions/i);
 });
 
-test('bootstrap points code-writing work at simple-code', () => {
-  assert.match(text(), /Writing or changing code[^\n]*`simple-code`/);
+test('bootstrap points code-writing work at test-driven-development first and then simple-code', () => {
+  assert.match(text(), /Writing code[^\n]*`test-driven-development` first, then `simple-code`/);
 });

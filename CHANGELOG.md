@@ -6,7 +6,11 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
-- The `using-14all` bootstrap now makes invoking a fitting skill the first action, and says that for building something new `brainstorming` comes first even when the request looks clear. On a request to build a small game, the model invoked `brainstorming` in 12 of 12 short runs, against 6 of 13 with the released text, and asked before writing a file in 8 of 12 against 2 of 13; a one-line command still invoked no skill. Cut at 6 turns, one prompt, not re-run on E1 to E4. Evidence in `docs/evidence/bootstrap-trigger.md`.
+- The `using-14all` bootstrap now makes invoking a fitting skill the first action, and the `brainstorming` skill now skips small tasks. A small task (one self-contained thing, cheap to redo, nothing else depends on it) gets no brainstorming and no plan: the assumptions are stated in one line and the thing is built. Larger or vaguer work still goes through `brainstorming`. In short runs, a small game invoked `brainstorming` 0 of 12 times and the E1 prompt on an existing app made the model ask before editing 8 of 8 times (0 of 4 without the plugin); a full small build cost about the same as no plugin. Forcing `brainstorming` on small builds was tried first and cost 45% more than no plugin for better-fitted games, which is why it was dropped. Few runs, one prompt each. Evidence in `docs/evidence/bootstrap-trigger.md`.
+
+### Fixed
+
+- The released 0.1.0 text passed the test-first evaluation (E3) in only 1 of 4 runs: since `simple-code` was added, the model often invoked only that skill and wrote the code before any test. The bootstrap now sends code with behavior to check to `test-driven-development` first and then `simple-code`, and says both are invoked. E3 then passed 8 of 8 runs; E1, E2 and E4 passed 3 of 3 each (baseline not re-run). The README's 12-of-12 figure dates from before `simple-code` existed.
 
 ## 0.1.0 - 2026-10-29
 

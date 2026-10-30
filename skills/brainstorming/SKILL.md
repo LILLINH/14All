@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Use before any creative work such as building a feature, changing behavior, or planning something new, and whenever the user wants to stress-test a plan, decision or idea (grilling). Finds out what they actually want and why before anything is built.
+description: Use before creative work that is not small, such as designing or building a new feature in an existing project, changing behavior others depend on, or planning something new that is costly to redo, and whenever the user wants to stress-test a plan, decision or idea (grilling). Finds out what they actually want and why before anything is built. A small, self-contained task needs none of this.
 ---
 
 # Brainstorming
@@ -9,6 +9,7 @@ You are good at building. You build what you believe the user wants, and that be
 
 ## First: what do you actually know?
 
+- **A small task.** One self-contained thing, such as a script, a page or a small game: one file or a few, cheap to redo from scratch, and nothing existing or anyone else depends on it. Do not brainstorm and do not write a plan. Say your main assumptions in one line, build it, check it, and say how to change course.
 - **Everything that matters is in the request** ("make the icon cornflower blue"). It is a quick, clear task. Do it and say what you did.
 - **Something non-trivial is missing.** Start the conversation below.
 

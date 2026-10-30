@@ -1,0 +1,24 @@
+{
+  "taskId": "E1",
+  "mode": "14all",
+  "run": 2,
+  "exitStatus": 0,
+  "durationMs": 12139,
+  "costUsd": 0.07064599999999999,
+  "turns": 5,
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "testFilesIntact": true,
+  "invalid": null,
+  "grade": {
+    "pass": true,
+    "criticalFailure": null,
+    "checks": [
+      {
+        "name": "asked a question before any edit",
+        "pass": true
+      }
+    ]
+  }
+}

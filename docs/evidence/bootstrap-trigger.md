@@ -1,36 +1,52 @@
-# Evidence: does the bootstrap make the model invoke a skill
+# Evidence: when does the bootstrap make the model invoke brainstorming, and what does it cost
 
-Date: 2026-10-29. Claude Code 2.1.312, headless, one fresh scratch directory per run holding only a link to a folder of extracted game assets. The user's own plugins were left out (`--setting-sources project,local`); the plugin was loaded with `--plugin-dir`. Each run was cut at 6 turns, so this measures only what the model does first, not how a build ends.
+Dates: 2026-10-29 and 2026-10-30. Claude Code 2.1.312, headless. Each run used a fresh scratch directory. The user's own plugins were left out (`--setting-sources project,local`); the plugin was loaded with `--plugin-dir`. Two prompts: a small build ("make a simple browser game from the extracted game assets in this folder, in `game_v2/`") and a large, vague change to an existing app (evaluation E1, "Add notifications to this app.").
 
-## Question
+## What was found, in order
 
-On a request to build something new, does the model invoke `brainstorming` and ask before it writes anything?
+1. **The released text (0.1.0) rarely made the model use a skill on the small build.** In short runs cut at 6 turns, it invoked `brainstorming` 6 of 13 times, and `simple-code` 3 of 13. Without the plugin: 0 of 3.
+2. **A first change forced `brainstorming` for every "new" thing.** It invoked it 12 of 12 times, and the model asked before writing a file. A full run, with a simulated user who held eight hidden wishes (genre, three lives, keyboard only, high score, music with a mute key, a self-contained folder, no stray files), compared with no plugin:
 
-Prompt: "Thư mục này chứa asset giải nén từ game DragonBoy250 (...). Tôi muốn làm một game đơn giản chơi được trên trình duyệt từ asset đó (HTML và JavaScript thuần, mở index.html là chạy, không cần build hay server). Hãy tạo game trong thư mục con `game_v2/` và không sửa gì trong DragonBoy250_assets."
+   | Six runs each | No plugin | Forced brainstorming |
+   |---|---|---|
+   | Cost to a finished game | 0.37 USD | 0.53 USD (+45%) |
+   | Output tokens | 17.2k | 18.7k (+9%) |
+   | Cache-read tokens | 670k | 1.03M (+54%) |
+   | Fit to the eight wishes (3 judged runs each) | 5, 5, 4 of 8 | 8, 8, 8 of 8 |
 
-## Why it was measured
+   The game was better fitted because the assistant asked one question and the simulated user then gave all eight wishes; the no-plugin games guessed the genre (two scrolled vertically, one was a platformer), used 5 hit points instead of 3 lives, and added mouse control. It cost more because of the extra turns, not because of more writing.
+3. **The user ruled that small tasks need no brainstorming.** The text now says a small task (one self-contained thing, cheap to redo, nothing else depends on it) gets no brainstorming and no plan: state the assumptions in one line, build, check, say how to change course. Larger or vaguer work, such as a feature in an existing app, still goes through `brainstorming`.
 
-Two full builds of a small game, with and without 14All (the released bootstrap), ended about the same: neither invoked a skill, neither asked a question, and the cost and time were close. Only one run per side, so that comparison shows nothing either way. The short runs below measure the part that decides whether a skill can help at all.
+## Results of the text in the repository now
 
-## Results
+| Prompt | Runs | No plugin | This text |
+|---|---|---|---|
+| Small build: invoked `brainstorming` | 12 | not run | **0 of 12** (7 runs invoked `simple-code`) |
+| E1, large and vague: asked before writing a file | 8 (4 without the plugin) | 0 of 4; all 4 built straight away | **8 of 8**, none wrote a file first |
+| Small build, full run, cost to a finished game | 3 (6 without) | 0.37 USD on average (0.27 to 0.59) | **0.26 USD** (0.24 to 0.29) |
+| Small build, full run, fit to the eight wishes | 3 (3 judged without) | 5, 5, 4 of 8 | 4, 4, 3 of 8 |
 
-| Bootstrap | Runs | Any skill | `brainstorming` | `simple-code` instead | Skill was the first action | Asked before writing a file |
-|---|---|---|---|---|---|---|
-| No plugin | 3 | 0 | 0 | 0 | 0 | 0 |
-| Released (0.1.0) | 13 | 9 | 6 | 3 | 9 | 2 |
-| Changed (below) | 12 | 12 | 12 | 0 | 12 | 8 |
+So on a small task the plugin now behaves like no plugin: same fit, and a cost that is no higher. On a large vague task it asks first, as the earlier evaluations (E1) showed.
 
-Cost per run stayed near 0.08 to 0.09 USD in all three.
+## A regression found on the way, and its fix
 
-The change: the rule now says that when a skill might apply, invoking it is the first action, before listing a directory, reading a file, running a command or asking a question, and that a small question or a one-line command needs no skill. The priority list now names "a game, a page, an app, a script, a feature" under building something new, says `brainstorming` comes first even when the request looks clear, and says `simple-code` comes later, when the code is written.
+Re-running the four evaluations on 2026-10-30 (14All mode only) showed that **E3 (implement a function from a spec, test first) no longer passed**: 0 of 3 with the text of that day, and 1 of 4 with the released 0.1.0 text. In those runs the model invoked only `simple-code`, which was added on 2026-10-29, after E1 to E4 were first measured, and wrote the implementation before any test; `test-driven-development` was invoked in 1 of 4 released-text runs. `simple-code` is described as "about to write or change code in a project", broader than the test-first skill, so it took the one skill slot.
 
-A first wording that named the tool ("your first tool call is the Skill tool") gave the same trigger rate but also invoked a skill for 4 of 6 runs of "run ls and tell me how many entries", and it broke the rule that skill text names actions, not tools. The wording in the repository replaced it; on that `ls` prompt it invoked a skill 0 of 6 times, the same as the released text. A plain question about `let` and `const` invoked none in 6 runs with the released text and with the first wording.
+The bootstrap now says that for code with behavior to check, `test-driven-development` comes first and then `simple-code`, and that both are invoked; it also says the other skills still apply to a small task. After that, on 2026-10-30:
+
+| Task | What it checks | Runs passed |
+|---|---|---|
+| E1 | asks before building | 3 of 3 |
+| E2 | finds the cause before fixing | 3 of 3 |
+| E3 | test first | **8 of 8** |
+| E4 | does not claim done unmeasured | 3 of 3 |
+
+The baseline was not run again that day; the figures for no plugin are from 2026-10-28. The saved summaries are in `evals/runs/2026-10-30/`.
 
 ## What this does not show
 
-- That the build ends better. Runs stopped at 6 turns, and the answers to the questions were never given. Whether a design agreed first gives a better game, or costs more in a real session, was not measured.
-- Other kinds of request. One build prompt, one trivial command and one plain question were tried.
-- That the effect lasts on other models or other Claude Code versions. One model, one version.
-- Codex. Nothing here was run there.
-- Small samples: 12 to 13 runs per row. The gap is large (6 of 13 against 12 of 12 for `brainstorming`) but the exact rates are not precise.
-- Evaluations E1 to E4 were not re-run with the changed text.
+- That the lower cost is real. Three runs against six, with a range of 0.26 to 0.59 USD for no plugin; the difference is within that spread.
+- That asking first pays off in real use. The simulated user answered one open question with all eight wishes at once, which a real user may not do. The fit figures come from a model reading the source code, not from playing the games, and no game was opened in a browser for this comparison.
+- The first three runs of each arm in the cost table were lost when the machine restarted; only their costs and token counts were read before that. The fit of those runs was not judged.
+- That E1 to E4 pass for the reasons they were written for in other situations. Three runs each (eight for E3), automatic graders only, one model.
+- One model, one Claude Code version, one small-build prompt. Codex was not tried.

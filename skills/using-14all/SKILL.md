@@ -27,10 +27,10 @@ After invoking a skill, say "Using [skill] to [purpose]" and follow it exactly. 
 
 When several skills apply, process skills come first. They set the approach; implementation skills then carry it out.
 
-- Building something new (a game, a page, an app, a script, a feature) or changing behavior: `brainstorming` first, even when the request looks clear, then `writing-plans`. `simple-code` comes later, when you write the code.
+- Building something new or changing behavior, when it is not a small task (it changes an existing system, has several parts, or is costly to redo): `brainstorming` first, then `writing-plans`. `simple-code` comes later, when you write the code.
+- A small task (one self-contained thing you could redo in minutes, such as a script, a page or a small game) needs no `brainstorming` and no plan: state your main assumptions in one line, build it, check it, and say how to change course. The other skills still apply to a small task: test first, and verify before you say it is done.
 - Fixing a bug or a failing test: `systematic-debugging` first.
-- Writing code: `test-driven-development`.
-- Writing or changing code in a project: `simple-code`.
+- Writing code that has behavior to check: `test-driven-development` first, then `simple-code` for how the project writes code. Invoke both: `simple-code` alone is not enough.
 - About to say work is done: `verification-before-completion`.
 
 ## Red Flags

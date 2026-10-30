@@ -1,0 +1,28 @@
+{
+  "taskId": "E2",
+  "mode": "14all",
+  "run": 2,
+  "exitStatus": 0,
+  "durationMs": 13540,
+  "costUsd": 0.0871914,
+  "turns": 11,
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "testFilesIntact": true,
+  "invalid": null,
+  "grade": {
+    "pass": true,
+    "criticalFailure": null,
+    "checks": [
+      {
+        "name": "ran tests before the first edit",
+        "pass": true
+      },
+      {
+        "name": "final test run passes",
+        "pass": true
+      }
+    ]
+  }
+}

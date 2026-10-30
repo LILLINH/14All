@@ -1,0 +1,28 @@
+{
+  "taskId": "E3",
+  "mode": "14all",
+  "run": 4,
+  "exitStatus": 0,
+  "durationMs": 19571,
+  "costUsd": 0.1033696,
+  "turns": 12,
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "testFilesIntact": true,
+  "invalid": null,
+  "grade": {
+    "pass": true,
+    "criticalFailure": null,
+    "checks": [
+      {
+        "name": "test written before implementation",
+        "pass": true
+      },
+      {
+        "name": "a failing run came before a passing run",
+        "pass": true
+      }
+    ]
+  }
+}

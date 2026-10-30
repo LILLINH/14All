@@ -114,6 +114,8 @@ Here is what is known, and what is not.
 
 **One early test.** On four small tasks (ask before building, find the cause before fixing, test first, check before claiming done), Claude Code with 14All passed the automatic grader in 12 of 12 runs. Without 14All it passed in 2 of 12. That is three runs per case, one model, automatic graders only, and the graders were corrected after the runs, so read the limits in [docs/evidence/plan-1-acceptance.md](docs/evidence/plan-1-acceptance.md) before relying on these numbers.
 
+**The same four tasks, run again on 2026-10-30** (14All mode only; the baseline was not re-run): the released 0.1.0 text passed the test-first task in 1 of 4 runs, because the `simple-code` skill, added after the first test, took the place of `test-driven-development`. After a fix to the bootstrap, 14All passed E1 in 3 of 3 runs, E2 in 3 of 3, E3 in 8 of 8 and E4 in 3 of 3. See [docs/evidence/bootstrap-trigger.md](docs/evidence/bootstrap-trigger.md).
+
 **Everything added after that has not been measured.** The newer skills, the notes feature, the guard's newer rules and the helper agents are covered by unit tests and checks, but no evaluation has measured them. Three evaluations are written but have never been run: E13 and E14 (for `skills/simple-code`, in a React and a Vue project) and E15 (one error in a long log, for `tool-output`).
 
 **What was seen in a real session:**
