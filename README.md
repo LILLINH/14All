@@ -112,7 +112,7 @@ At the start of a session, after you clear the conversation, and after it is sho
 
 Here is what is known, and what is not.
 
-**One early test.** On four small tasks (ask before building, find the cause before fixing, test first, check before claiming done), Claude Code with 14All passed the automatic grader in 12 of 12 runs. Without 14All it passed in 2 of 12. That is three runs per case, one model, automatic graders only, and the graders were corrected after the runs, so read the limits in [docs/evidence/plan-1-acceptance.md](docs/evidence/plan-1-acceptance.md) before relying on these numbers.
+**One early test.** On four small tasks (ask before building, find the cause before fixing, test first, check before claiming done), Claude Code with 14All passed the automatic grader in 12 of 12 runs. Without 14All it passed in 2 of 12. That is three runs per case, one model, automatic graders only, and the graders were corrected after the runs. Treat these numbers as a first signal, not a measurement.
 
 **The same four tasks, run again on 2026-10-30** (14All mode only; the baseline was not re-run): the released 0.1.0 text passed the test-first task in 1 of 4 runs, because the `simple-code` skill, added after the first test, took the place of `test-driven-development`. After a fix to the bootstrap, 14All passed E1 in 3 of 3 runs, E2 in 3 of 3, E3 in 8 of 8 and E4 in 3 of 3. See [docs/evidence/bootstrap-trigger.md](docs/evidence/bootstrap-trigger.md).
 
@@ -136,4 +136,3 @@ Here is what is known, and what is not.
 - Adding or changing things: [CONTRIBUTING.md](CONTRIBUTING.md). Security: [SECURITY.md](SECURITY.md). Changes: [CHANGELOG.md](CHANGELOG.md).
 - Rules for working on this repository: [AGENTS.md](AGENTS.md).
 - Where ideas and text came from: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-- The first design: `docs/specs/2026-10-28-14all-design.md`.

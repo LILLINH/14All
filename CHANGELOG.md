@@ -4,6 +4,10 @@ Notable changes to 14All. The format follows [Keep a Changelog](https://keepacha
 
 ## Unreleased
 
+### Removed
+
+- The finished plans and specs in `docs/plans/` and `docs/specs/`, `docs/evidence/plan-1-acceptance.md`, and the saved eval run summaries in `evals/runs/`. The folders `docs/plans/` and `docs/specs/` stay, empty, as the place the skills save new ones.
+
 ## 0.1.1 - 2026-10-30
 
 ### Changed

@@ -16,7 +16,7 @@ Tools are limited to file tools plus `npm test`, `node`, `ls` and `cat` in the t
 
 ## Output
 
-- `evals/runs/<date>/<task>-<mode>-<i>.json`: one summary per run (grader result, cost, turns, model, duration). Safe to commit.
+- `evals/runs/<date>/<task>-<mode>-<i>.json`: one summary per run (grader result, cost, turns, model, duration). Not committed.
 - `evals/runs/<date>/raw/<task>-<mode>-<i>.jsonl`: the raw stream. Git-ignored, because transcripts contain local paths and environment details. Keep them locally as the evidence behind a summary.
 
 ## What is graded

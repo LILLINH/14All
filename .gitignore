@@ -3,3 +3,4 @@ node_modules/
 .superpowers/
 evals/runs/*/raw/
 .14all/
+evals/runs/

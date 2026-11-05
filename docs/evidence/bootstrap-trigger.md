@@ -41,7 +41,7 @@ The bootstrap now says that for code with behavior to check, `test-driven-develo
 | E3 | test first | **8 of 8** |
 | E4 | does not claim done unmeasured | 3 of 3 |
 
-The baseline was not run again that day; the figures for no plugin are from 2026-10-28. The saved summaries are in `evals/runs/2026-10-30/`.
+The baseline was not run again that day; the figures for no plugin are from 2026-10-28. The run summaries were removed from the repository on 2026-11-05.
 
 ## What this does not show
 

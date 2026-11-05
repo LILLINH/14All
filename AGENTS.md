@@ -17,8 +17,8 @@ A plugin of skills, hooks, read-only role agents and evaluations that make AI co
 
 - `skills/<name>/`: `SKILL.md` and `meta.yaml`; detail in `references/`, read on demand.
 - `agents/`: read-only role agents. `hooks/`: `session-start` (bootstrap and resume block), `guard` (PreToolUse), `run-hook.cmd`.
-- `scripts/`: the checks behind `npm run check`. `evals/`: tasks, fixtures, graders and saved run summaries.
-- `docs/specs`, `docs/plans`: designs and plans. `docs/evidence`: what was run and what it shows.
+- `scripts/`: the checks behind `npm run check`. `evals/`: tasks, fixtures and graders.
+- `docs/specs`, `docs/plans`: where the brainstorming and writing-plans skills save designs and plans (empty for now). `docs/evidence`: what was run and what it shows.
 - `upstream/sources.json`: pinned third-party sources. `.upstream/` is a local clone and is ignored.
 
 ## Conventions
@@ -37,13 +37,12 @@ Run `npm test`, `npm run check` and `npm run check:release`, and read their outp
 ## Do not touch
 
 - `evals/runs/*/raw/` holds local paths: do not commit it.
-- `evals/runs/<date>/*.json` are saved summaries: regenerate them with `node evals/regrade.mjs <date>`; do not edit them by hand.
+- `evals/runs/<date>/*.json` are run summaries and are not committed; regenerate them with `node evals/regrade.mjs <date>` and do not edit them by hand.
 - `.upstream/` and `node_modules/` are local and ignored.
 
 ## Where more is written
 
 - `CONTRIBUTING.md`: how to add a skill, a role agent, an agent adapter or an evaluation.
-- `docs/specs/2026-10-28-14all-design.md`: the first design. The later specs in `docs/specs/` extend it.
 - `SECURITY.md` and `THIRD_PARTY_NOTICES.md`.
 
 ## Notes for the next session
